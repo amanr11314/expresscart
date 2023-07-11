@@ -5,7 +5,7 @@ exports.getCartDetails = (callback) => {
     return callback(cart)
 }
 
-exports.addProductToCart = (productId, price) {
+exports.addProductToCart = (productId, price) => {
     // add product to loggedIn user's cart
     // https://github.com/leelanarasimha/node-express-app/blob/main/models/Cart.js
     this.getCartDetails((cart) => {
