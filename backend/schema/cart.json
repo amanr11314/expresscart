@@ -1,0 +1,9 @@
+{
+    "type": "generate",
+    "name": "Cart",
+    "attributes": [
+        {
+            "id": "BIGINT"
+        }
+    ]
+}

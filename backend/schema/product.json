@@ -1,0 +1,18 @@
+{
+    "type": "generate",
+    "name": "Product",
+    "attributes": [
+        {
+            "title": "STRING"
+        },
+        {
+            "description": "STRING"
+        },
+        {
+            "price": "DOUBLE"
+        },
+        {
+            "imgUrl": "STRING"
+        }
+    ]
+}

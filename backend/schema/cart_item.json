@@ -1,0 +1,9 @@
+{
+    "type": "generate",
+    "name": "CartItem",
+    "attributes": [
+        {
+            "quantity": "INTEGER"
+        }
+    ]
+}

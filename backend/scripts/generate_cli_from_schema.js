@@ -1,6 +1,9 @@
 
 // npx sequelize model:create --name User --attributes "username:string,unique:true]
-const jsonData = require('../schema/user.json')
+// const jsonData = require('../schema/user.json')
+// const jsonData = require('../schema/product.json')
+// const jsonData = require('../schema/cart.json')
+const jsonData = require('../schema/cart_item.json')
 
 // Extract the model name and attributes from the JSON data
 const modelName = jsonData.name;
