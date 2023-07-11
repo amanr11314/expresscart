@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Product.init({
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.BIGINT
+    },
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.TEXT },
     price: { type: DataTypes.DOUBLE, allowNull: false },
