@@ -1,0 +1,15 @@
+{
+    "type": "generate",
+    "name": "User",
+    "attributes": [
+        {
+            "id": "BIGINT"
+        },
+        {
+            "name": "STRING"
+        },
+        {
+            "email": "STRING"
+        }
+    ]
+}
