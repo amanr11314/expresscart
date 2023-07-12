@@ -1,5 +1,3 @@
-const { Product } = require('../models')
-
 exports.getCart = async (req, res) => {
     const cart = await req?.user?.getCart();
     const cartProducts = await cart?.getProducts();
@@ -7,12 +5,13 @@ exports.getCart = async (req, res) => {
     let totaAmount = 0;
     if (cartProducts) {
         cartProducts.forEach((product) => {
-            totaAmount += +product.cartItem.quantity * +product.price
+            console.log(JSON.stringify(product))
+            totaAmount += +product?.CartItem?.quantity * +product.price
         })
     }
 
     const resp = {
-        cartProducts,
+        cartProducts: cartProducts || [],
         totaAmount
     }
 
@@ -21,50 +20,90 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
 
-    const productId = req.body.productId
-    let newQuantity = 1;
+    const productId = req.body?.productId
+    const count = req.body?.count || 1;
+    const type = req.body?.type || 'increment';
+
+    let newQuantity;
+
 
     let cart = await req?.user?.getCart();
 
     if (!cart) {
+        // creates record in Carts table with userId as req?.user?.userId
         cart = await req?.user.createCart();
     }
 
     let fetchedCart = cart;
-    const cartProducts = await cart?.getProducts({
+
+    const cartProducts = await fetchedCart?.getProducts({
         where: { id: productId }
     });
 
-    let product;
+
+    // product already in cart
     if (cartProducts.length) {
-        newQuantity = cartProducts[0].cartItem.quantity + 1;
-        product = cartProducts[0];
-    }
-
-    const data = await fetchedCart.addProduct(product, {
-        through: {
-            quantity: newQuantity
+        const cartItem = cartProducts[0]?.CartItem;
+        if (type === 'increment') {
+            newQuantity = cartItem?.quantity + (parseInt(count) || 1);
+        } else {
+            newQuantity = (cartItem?.quantity - (parseInt(count) || 1))
+            newQuantity = Math.max(newQuantity, 0);
         }
-    })
 
-    const resp = {
-        data
+        // update new quantity of existing product
+        cartItem
+            .update({ quantity: newQuantity })
+            .then((data) => {
+                const resp = {
+                    data,
+                    msg: 'Item quantiy updated to ' + newQuantity
+                }
+
+                res.send(resp)
+            })
+    } else {
+        // add product in cart
+        newQuantity = (parseInt(count) || 1);
+        newQuantity = Math.max(newQuantity, 1);
+
+        fetchedCart
+            .addProduct(productId, {
+                through: {
+                    quantity: newQuantity
+                }
+            })
+            .then((data) => {
+                const resp = {
+                    data,
+                    msg: 'Item added to cart'
+                }
+
+                res.send(resp)
+            })
     }
-
-    res.send(resp)
-
 }
 
 exports.deleteCartItem = async (req, res) => {
-    const productId = req.body.productId;
+    const productId = req.body?.productId;
+    console.debug({ productId })
     const fetchedCart = await req?.user?.getCart();
-    const product = await Product.findByPk(productId)
+    const cartProducts = await fetchedCart?.getProducts({
+        where: { id: productId }
+    });
+    if (cartProducts.length) {
+        const data = await fetchedCart?.removeProduct(productId)
 
-    const data = await fetchedCart.removeProduct(product)
+        const resp = {
+            data,
+            msg: data + 'Iten removed from cart'
+        }
 
-    const resp = {
-        msg: 'Iten removed from cart'
+        res.send(resp)
+    } else {
+        res.send({
+            msg: 'Product not found in cart'
+        })
     }
 
-    res.send(resp)
 }

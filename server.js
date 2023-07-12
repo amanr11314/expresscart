@@ -6,7 +6,10 @@ require('dotenv').config()
 const app = express();
 const backend = require('./backend/core')
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(backend)
+
 
 app.set('port', process.env.PORT || 3000)
 

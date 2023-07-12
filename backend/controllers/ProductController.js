@@ -20,6 +20,8 @@ exports.getProductDetail = async (req, res) => {
         product
     }
 
+    console.log(JSON.stringify(resp))
+
     res.send(resp)
 
 }
