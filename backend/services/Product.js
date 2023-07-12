@@ -33,6 +33,12 @@ exports.deleteProductById = (productId) => {
     })
 }
 
+db.User.findByPk(1)
+    .then((data) => {
+        console.log(JSON.stringify(data))
+    })
+    .catch((err) => console.log(err))
+
 // // db.User.findAll().then((data) => console.log(JSON.stringify(data)))
 // const newProduct = {
 //     title: 'Nothing Phone 2',
