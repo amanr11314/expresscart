@@ -1,0 +1,79 @@
+<div class="wrapper">
+  <!-- action="/products/store" -->
+  <!-- method="POST" -->
+
+  <form
+    [formGroup]="formCreateProduct"
+    id="regForm"
+    class="space-y-4"
+    enctype="multipart/form-data"
+    (ngSubmit)="onSubmit(formCreateProduct)"
+  >
+    <div>
+      <div>
+        <label for="title" class="label-input">Name</label>
+        <input
+          formControlName="title"
+          id="title"
+          type="text"
+          name="title"
+          class="input-name"
+        />
+      </div>
+      <!-- @if ($errors->has('name'))
+                    <p class="error-msg">
+                        {{ $errors->first('name') }} </p>
+                @endif -->
+    </div>
+
+    <div>
+      <div>
+        <label for="description" class="label-input">Description</label>
+        <textarea
+          rows="4"
+          id="description"
+          class="input-desc"
+          name="description"
+          formControlName="description"
+        ></textarea>
+      </div>
+      <!-- @if ($errors->has('description'))
+      <p class="error-msg">
+        {{ $errors->first('description') }}
+      </p>
+      @endif -->
+    </div>
+
+    <div>
+      <label for="price" class="label-input">Price</label>
+      <input
+        formControlName="price"
+        id="price"
+        type="number"
+        min="0"
+        name="price"
+        class="input-name"
+      />
+    </div>
+
+    <div>
+      <div>
+        <label class="label-input" for="image">Image</label>
+        <input
+          formControlName="image"
+          id="image"
+          name="image"
+          class="input-img"
+          type="file"
+        />
+      </div>
+      <!-- @if ($errors->has('image'))
+      <p class="error-msg">
+        {{ $errors->first('image') }}
+      </p>
+      @endif -->
+    </div>
+
+    <button type="submit" class="btn-action-primary">Submit</button>
+  </form>
+</div>

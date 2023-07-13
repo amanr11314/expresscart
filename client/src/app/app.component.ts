@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'expresscart';
+  ngOnInit(): void {
+    initFlowbite();
+  }
 }

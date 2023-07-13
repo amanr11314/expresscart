@@ -1,0 +1,30 @@
+<div class="wrapper">
+  <img
+    *ngIf="productDetails?.imgUrl !== '#'"
+    class="img-show-wrapper"
+    src="{{ productDetails?.imgUrl }}"
+    alt="product image"
+  />
+  <div class="px-5 pb-5">
+    <p class="label-text-show-col">
+      Name:
+      <strong class="font-semibold text-gray-900">{{
+        productDetails?.title
+      }}</strong>
+    </p>
+
+    <p class="label-text-show-col">
+      Price:
+      <strong class="font-semibold text-gray-900">{{
+        "Rs " + productDetails?.price
+      }}</strong>
+    </p>
+
+    <p class="label-text-show-col">
+      Description:
+      <strong class="font-semibold text-gray-900">{{
+        productDetails?.description
+      }}</strong>
+    </p>
+  </div>
+</div>

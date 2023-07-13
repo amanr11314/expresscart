@@ -1,0 +1,20 @@
+<!-- <button
+  [ngStyle]="{ 'background-color': color }"
+  class="btn"
+  (click)="onClick()"
+>
+  {{ text }}
+</button> -->
+
+<button
+  *ngIf="element === 'BUTTON'"
+  type="button"
+  [ngClass]="classNames"
+  (click)="onClick()"
+>
+  {{ text }}
+</button>
+
+<a *ngIf="element === 'LINK'" href="{{ urlIfLink }}" [ngClass]="classNames">{{
+  text
+}}</a>
