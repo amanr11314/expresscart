@@ -12,6 +12,7 @@ import { ButtonComponent } from './components/button/button.component';
 import { ProductsTableComponent } from './products-table/products-table.component';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { CreateProductComponent } from './create-product/create-product.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { CreateProductComponent } from './create-product/create-product.componen
 
     ProductsTableComponent,
     ProductDetailsComponent,
-    CreateProductComponent
+    CreateProductComponent,
+    NavigationComponent,
   ],
   imports: [
     BrowserModule,
