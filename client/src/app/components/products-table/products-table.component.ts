@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskService } from '../services/task.service';
-import { Product } from '../Product';
+import { TaskService } from '../../services/task.service';
+import { Product } from '../../Product';
 
 @Component({
   selector: 'app-products-table',

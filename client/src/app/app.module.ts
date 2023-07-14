@@ -9,10 +9,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ButtonComponent } from './components/button/button.component';
-import { ProductsTableComponent } from './products-table/products-table.component';
-import { ProductDetailsComponent } from './product-details/product-details.component';
-import { CreateProductComponent } from './create-product/create-product.component';
-import { NavigationComponent } from './navigation/navigation.component';
+import { ProductsTableComponent } from './components/products-table/products-table.component';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { CreateProductComponent } from './components/create-product/create-product.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 
 @NgModule({

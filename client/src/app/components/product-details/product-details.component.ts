@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Product } from '../Product';
+import { Product } from '../../Product';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { TaskService } from '../services/task.service';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-product-details',
