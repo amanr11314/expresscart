@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { Observable, map, pipe } from 'rxjs'
+import { Observable, retry } from 'rxjs'
 import { Product } from '../Product';
-
-// import { Task } from '../Task';
-// import { TASKS } from '../mock-tasks';
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskService {
+export class BackendService {
 
   private apiUrl = 'http://localhost:3000'
 
@@ -24,4 +20,15 @@ export class TaskService {
     return this.http.get<any>(this.apiUrl + '/product/details/' + id);
   }
 
+  createProduct(product: Product): Observable<any> {
+    return this.http.post<any>(this.apiUrl + '/product/create', product)
+  }
+
+  updateProduct(product: Product): Observable<any> {
+    return this.http.post<any>(this.apiUrl + '/product/edit', product)
+  }
+
+  deleteProduct(id: number | string): Observable<any> {
+    return this.http.post<any>(this.apiUrl + '/product/delete', { id })
+  }
 }

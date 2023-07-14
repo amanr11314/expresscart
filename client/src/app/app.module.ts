@@ -13,6 +13,8 @@ import { ProductsTableComponent } from './components/products-table/products-tab
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { CreateProductComponent } from './components/create-product/create-product.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { EditProductComponent } from './components/edit-product/edit-product.component';
+import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
 
 
 @NgModule({
@@ -25,6 +27,8 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     ProductDetailsComponent,
     CreateProductComponent,
     NavigationComponent,
+    EditProductComponent,
+    DeleteDialogComponent,
   ],
   imports: [
     BrowserModule,

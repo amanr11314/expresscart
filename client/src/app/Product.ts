@@ -4,8 +4,8 @@ export interface Product {
   description: string;
   price: number;
   imgUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-  UserId?:string;
-  User?:string
+  createdAt?: string;
+  updatedAt?: string;
+  UserId?: string;
+  User?: string
 }

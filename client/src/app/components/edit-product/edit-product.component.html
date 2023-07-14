@@ -1,0 +1,128 @@
+<div class="wrapper">
+  <form
+    [formGroup]="formEditProduct"
+    id="regForm"
+    class="space-y-4"
+    enctype="multipart/form-data"
+    (ngSubmit)="onSubmit(formEditProduct)"
+  >
+    <div>
+      <div>
+        <label for="title" class="label-input">Name</label>
+        <input
+          formControlName="title"
+          id="title"
+          type="text"
+          name="title"
+          class="input-name"
+        />
+      </div>
+      <div
+        *ngIf="
+          formEditProduct?.get('title')?.invalid &&
+          (formEditProduct?.get('title')?.dirty ||
+            formEditProduct?.get('title')?.touched)
+        "
+      >
+        <p *ngIf="formEditProduct.get('title')?.errors" class="error-msg">
+          {{ (formEditProduct.get('title')?.errors?.['required']) ? 
+              "Name is required" :
+              (formEditProduct.get('title')?.errors?.['noWhitespaceMinLength']) ?
+              "Name must be at least 4 characters long" : ""
+          }}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <label for="description" class="label-input">Description</label>
+        <textarea
+          rows="4"
+          id="description"
+          class="input-desc"
+          name="description"
+          formControlName="description"
+        ></textarea>
+      </div>
+      <div
+        *ngIf="
+          formEditProduct?.get('description')?.invalid &&
+          (formEditProduct?.get('description')?.dirty ||
+            formEditProduct?.get('description')?.touched)
+        "
+      >
+        <p *ngIf="formEditProduct.get('description')?.errors" class="error-msg">
+          {{ 
+            (formEditProduct.get('description')?.errors?.['required']) ? 
+            "Description is required" :
+          (formEditProduct.get('description')?.errors?.['noWhitespaceMinLength']) ?
+            "Description must be at least 6 characters long" : ""
+          }}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <label for="price" class="label-input">Price</label>
+        <input
+          formControlName="price"
+          id="price"
+          type="number"
+          min="0"
+          name="price"
+          class="input-name"
+        />
+      </div>
+      <div
+        *ngIf="
+          formEditProduct?.get('price')?.invalid &&
+          (formEditProduct?.get('price')?.dirty ||
+            formEditProduct?.get('price')?.touched)
+        "
+      >
+        <p *ngIf="formEditProduct.get('price')?.errors" class="error-msg">
+          {{
+              (formEditProduct.get('price')?.errors?.['required']) ?
+              "Price is required" :
+            (formEditProduct.get('price')?.errors?.['min']) ?
+              "Price value must be greater than 0" : ""
+          }}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <label class="label-input" for="image">Image</label>
+        <input
+          formControlName="image"
+          id="image"
+          name="image"
+          class="input-img"
+          type="file"
+        />
+      </div>
+    </div>
+
+    <!-- disable submit button if no changes from original product -->
+    <button
+      [disabled]="!hasChange"
+      type="submit"
+      class="btn-action-primary"
+      [ngClass]="{
+        'cursor-not-allowed': !hasChange
+      }"
+    >
+      Submit
+    </button>
+    <!-- display mesage why button is disabled -->
+    <p
+      *ngIf="!hasChange"
+      class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+    >
+      Make changes in product to update
+    </p>
+  </form>
+</div>
