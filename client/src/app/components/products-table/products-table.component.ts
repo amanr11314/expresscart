@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
-import { Product } from '../../Product';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { User } from 'src/app/shared/User';
+import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-products-table',
@@ -16,13 +18,17 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   backendServiceAllProductsSubscription?: Subscription;
   backendServiceDeleteProductSubscription?: Subscription;
 
+  currentUser?: User
+
 
   products: Product[] = [];
   modal?: Modal
 
   deleteProduct?: Product;
 
-  constructor(private backendService: BackendService, private router: Router) { }
+  constructor(private backendService: BackendService, private router: Router, public authService: AuthService,
+    private actRoute: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
     this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(

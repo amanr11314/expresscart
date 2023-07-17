@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+import { AuthInterceptor } from './services/auth/authconfig.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { AppRoutingModule } from './app-routing.module';
@@ -35,9 +36,9 @@ import { RegisterComponentComponent } from './components/register-component/regi
     DeleteDialogComponent,
 
     FileUploadComponentComponent,
-     LoginComponentComponent,
-     CustomLabelInputComponent,
-     RegisterComponentComponent,
+    LoginComponentComponent,
+    CustomLabelInputComponent,
+    RegisterComponentComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +48,13 @@ import { RegisterComponentComponent } from './components/register-component/regi
     FontAwesomeModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

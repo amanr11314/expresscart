@@ -1,4 +1,4 @@
-require('dotenv').config({ path: "/home/csolution/Desktop/AMAN TRAINING/expresscart/.env" }); // this is important!
+require('dotenv').config({ path: "/home/csolution/Desktop/AMAN TRAINING/expresscart/server/.env" }); // this is important!
 // console.log(JSON.stringify({
 //   "username": process.env.DB_USERNAME,
 //   "password": process.env.DB_PASSWORD,

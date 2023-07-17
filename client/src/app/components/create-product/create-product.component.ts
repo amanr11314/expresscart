@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Product } from 'src/app/Product';
+import { Product } from 'src/app/shared/Product';
 import { noWhitespaceMinLengthValidator } from 'src/app/utils/custom_validators';
 import { BackendService } from 'src/app/services/backend.service';
 import { Subscription } from 'rxjs';

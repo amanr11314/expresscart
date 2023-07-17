@@ -8,11 +8,12 @@ import { EditProductComponent } from './components/edit-product/edit-product.com
 import { FileUploadComponentComponent } from './components/file-upload-component/file-upload-component.component';
 import { LoginComponentComponent } from './components/login-component/login-component.component';
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
+import { AuthGuard } from './shared/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -25,13 +26,21 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: ProductsTableComponent
+    component: ProductsTableComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'product/details/:id', component: ProductDetailsComponent,
+    canActivate: [AuthGuard]
   },
-  { path: 'product/create', component: CreateProductComponent },
-  { path: 'product/edit/:id', component: EditProductComponent },
+  {
+    path: 'product/create', component: CreateProductComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'product/edit/:id', component: EditProductComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: 'file-upload',
     component: FileUploadComponentComponent
