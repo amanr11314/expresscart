@@ -15,6 +15,10 @@ import { CreateProductComponent } from './components/create-product/create-produ
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { EditProductComponent } from './components/edit-product/edit-product.component';
 import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { FileUploadComponentComponent } from './components/file-upload-component/file-upload-component.component';
+import { LoginComponentComponent } from './components/login-component/login-component.component';
+import { CustomLabelInputComponent } from './components/custom-label-input/custom-label-input.component';
+import { RegisterComponentComponent } from './components/register-component/register-component.component';
 
 
 @NgModule({
@@ -29,15 +33,17 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
     NavigationComponent,
     EditProductComponent,
     DeleteDialogComponent,
+
+    FileUploadComponentComponent,
+     LoginComponentComponent,
+     CustomLabelInputComponent,
+     RegisterComponentComponent,
   ],
   imports: [
     BrowserModule,
-
     AppRoutingModule,
-
     FormsModule,
     ReactiveFormsModule,
-
     FontAwesomeModule,
     HttpClientModule
   ],

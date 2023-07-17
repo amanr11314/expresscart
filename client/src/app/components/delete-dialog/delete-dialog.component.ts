@@ -8,9 +8,7 @@ import type { ModalOptions } from 'flowbite'
   styleUrls: ['./delete-dialog.component.css'],
 })
 export class DeleteDialogComponent implements OnInit {
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
+
   modal?: Modal
 
   @Output()

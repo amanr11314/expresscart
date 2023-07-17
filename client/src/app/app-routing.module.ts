@@ -5,14 +5,37 @@ import { ProductDetailsComponent } from './components/product-details/product-de
 import { CreateProductComponent } from './components/create-product/create-product.component';
 import { EditProductComponent } from './components/edit-product/edit-product.component';
 
+import { FileUploadComponentComponent } from './components/file-upload-component/file-upload-component.component';
+import { LoginComponentComponent } from './components/login-component/login-component.component';
+import { RegisterComponentComponent } from './components/register-component/register-component.component';
+
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginComponentComponent
+  },
+  {
+    path: 'register',
+    component: RegisterComponentComponent
+  },
+  {
+    path: 'home',
     component: ProductsTableComponent
   },
-  { path: 'product/details/:id', component: ProductDetailsComponent },
+  {
+    path: 'product/details/:id', component: ProductDetailsComponent,
+  },
   { path: 'product/create', component: CreateProductComponent },
   { path: 'product/edit/:id', component: EditProductComponent },
+  {
+    path: 'file-upload',
+    component: FileUploadComponentComponent
+  },
 ];
 
 @NgModule({
