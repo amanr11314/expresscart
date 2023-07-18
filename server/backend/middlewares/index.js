@@ -8,7 +8,7 @@ const { Product } = require('../models')
  * @param {*} next 
  */
 exports.validateProductId = async (req, res, next) => {
-
+    console.log(req.body)
     const id = req.params?.id || req.body?.id
     console.log('id = ', id)
     if (!!id) {

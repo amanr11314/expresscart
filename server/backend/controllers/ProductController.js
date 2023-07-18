@@ -42,6 +42,12 @@ exports.editProduct = async (req, res) => {
     // const product = await Product.findOne({ where: { id } });
     const product = req.product
 
+    let path = '#'
+    if (req.file) {
+        path = req.file.filename;
+        productObj['imgUrl'] = path;
+    }
+
     const updatedProduct = {
         ...product,
         ...productObj

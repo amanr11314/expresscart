@@ -33,12 +33,6 @@ export class BackendService {
       formData.append('file', file)
     }
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        "Content-Type": "multipart/form-data" // 👈,
-      })
-    };
-
     const req = new HttpRequest('POST', this.apiUrl + '/product/create', formData, {
       reportProgress: true,
       responseType: 'json'
@@ -49,8 +43,28 @@ export class BackendService {
     return this.http.request(req)
   }
 
-  updateProduct(product: Product): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/product/edit', product)
+  updateProduct(product: Product, file: any): Observable<any> {
+    // return this.http.post<any>(this.apiUrl + '/product/edit', product)
+    const formData = new FormData();
+
+    formData.append('title', product.title)
+    formData.append('description', product.description)
+    formData.append('price', product.price.toString())
+
+    if (file) {
+      console.log('appending file: ', file);
+
+      formData.append('file', file)
+    }
+
+    const req = new HttpRequest('POST', this.apiUrl + '/product/edit', formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+
+    // return this.http.post<any>(this.apiUrl + '/product/edit', product, httpOptions)
+    return this.http.request(req)
   }
 
   deleteProduct(id: number | string): Observable<any> {

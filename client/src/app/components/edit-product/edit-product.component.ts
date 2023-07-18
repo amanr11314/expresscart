@@ -5,7 +5,8 @@ import { Product } from '../../shared/Product';
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../../services/backend.service';
 import { noWhitespaceMinLengthValidator } from 'src/app/utils/custom_validators';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { FileUploadService } from 'src/app/services/upload.service';
 
 
 @Component({
@@ -16,6 +17,12 @@ import { Subscription } from 'rxjs';
 
 })
 export class EditProductComponent implements OnInit, OnDestroy {
+
+  // img-file-upload
+  file: any = ''
+
+  fileInfos?: Observable<any>;
+
   formEditProduct!: FormGroup
   valueChangesSubscription?: Subscription;
   backendServiceSubscription?: Subscription;
@@ -25,7 +32,14 @@ export class EditProductComponent implements OnInit, OnDestroy {
   private subRoute?: any;
   productDetails?: Product
 
-  constructor(private route: ActivatedRoute, private backendService: BackendService, private router: Router) { }
+  constructor(private route: ActivatedRoute, private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
+
+  selectFile(event: any): void {
+    const img = event.target.files[0];
+    if (img) {
+      this.file = img;
+    }
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -103,9 +117,10 @@ export class EditProductComponent implements OnInit, OnDestroy {
       price
     }
 
-    this.backendServiceSubscription = this.backendService.updateProduct(updateProductValue).subscribe((response: any) => {
+    this.backendServiceSubscription = this.backendService.updateProduct(updateProductValue, this.file).subscribe((response: any) => {
       console.log(response);
-      this.router.navigate(['/'])
+      window.location.href = '/'
+      // this.router.navigate(['/'])
     })
   }
 

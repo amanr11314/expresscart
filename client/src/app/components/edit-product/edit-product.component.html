@@ -97,6 +97,7 @@
       <div>
         <label class="label-input" for="image">Image</label>
         <input
+          (change)="selectFile($event)"
           formControlName="image"
           id="image"
           name="image"
