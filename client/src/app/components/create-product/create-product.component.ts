@@ -29,7 +29,6 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
   selectFile(event: any): void {
     const img = event.target.files[0];
-    console.log('selected image: ', img)
     if (img) {
       this.file = img;
     }

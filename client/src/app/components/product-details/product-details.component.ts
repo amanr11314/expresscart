@@ -21,6 +21,17 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   productDetails?: Product
 
 
+  get productImgUrl() {
+    if (this.productDetails!.imgUrl === '#') {
+      return null;
+    }
+    // check if already url
+    if (this.productDetails?.imgUrl?.startsWith('https://')) return this.productDetails.imgUrl;
+
+    return 'http://localhost:3000/' + this.productDetails?.imgUrl
+  }
+
+
   constructor(private route: ActivatedRoute, private backendService: BackendService) { }
 
   ngOnInit(): void {

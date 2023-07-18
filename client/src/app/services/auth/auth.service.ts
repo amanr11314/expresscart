@@ -59,7 +59,7 @@ export class AuthService {
               localStorage.setItem(key, user[key])
             })
             this.isLoggedInSubject.next(true);
-            this.router.navigate(['/']);
+            window.location.replace('/')
           });
       },
         (err: HttpErrorResponse) => {

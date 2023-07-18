@@ -19,6 +19,7 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
 import { LoginComponentComponent } from './components/login-component/login-component.component';
 import { CustomLabelInputComponent } from './components/custom-label-input/custom-label-input.component';
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
+import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { RegisterComponentComponent } from './components/register-component/regi
     LoginComponentComponent,
     CustomLabelInputComponent,
     RegisterComponentComponent,
+    MultiSelectDropdownComponent,
   ],
   imports: [
     BrowserModule,
