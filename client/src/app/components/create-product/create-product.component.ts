@@ -5,6 +5,9 @@ import { Product } from 'src/app/shared/Product';
 import { noWhitespaceMinLengthValidator } from 'src/app/utils/custom_validators';
 import { BackendService } from 'src/app/services/backend.service';
 import { Subscription } from 'rxjs';
+import { FileUploadService } from 'src/app/services/upload.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-product',
@@ -14,11 +17,23 @@ import { Subscription } from 'rxjs';
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
 
+  // img-file-upload
+  file: any = ''
+
+  fileInfos?: Observable<any>;
 
   formCreateProduct!: FormGroup
   backendServiceSubscription?: Subscription;
 
-  constructor(private backendService: BackendService, private router: Router) { }
+  constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
+
+  selectFile(event: any): void {
+    const img = event.target.files[0];
+    console.log('selected image: ', img)
+    if (img) {
+      this.file = img;
+    }
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -76,7 +91,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       description,
       price,
     }
-    this.backendServiceSubscription = this.backendService.createProduct(product).subscribe((response: any) => {
+    this.backendServiceSubscription = this.backendService.createProduct(product, this.file).subscribe((response: any) => {
       console.log(response);
       this.router.navigate(['/'])
     })

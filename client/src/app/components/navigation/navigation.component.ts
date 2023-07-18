@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { User } from 'src/app/shared/User';
 
 
 @Component({
@@ -9,7 +10,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   providers: [AuthService]
 })
 export class NavigationComponent implements OnInit {
-  constructor(public authService: AuthService) { }
+  user?: User
+  constructor(public authService: AuthService) {
+    this.user = authService.getUserDetails
+  }
 
   ngOnInit(): void {
 
@@ -17,5 +21,6 @@ export class NavigationComponent implements OnInit {
 
   logOut() {
     this.authService.doLogout();
+    this.user = undefined;
   }
 }

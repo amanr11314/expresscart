@@ -5,7 +5,6 @@ import { ProductDetailsComponent } from './components/product-details/product-de
 import { CreateProductComponent } from './components/create-product/create-product.component';
 import { EditProductComponent } from './components/edit-product/edit-product.component';
 
-import { FileUploadComponentComponent } from './components/file-upload-component/file-upload-component.component';
 import { LoginComponentComponent } from './components/login-component/login-component.component';
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
 import { AuthGuard } from './shared/auth.guard';
@@ -40,11 +39,7 @@ const routes: Routes = [
   {
     path: 'product/edit/:id', component: EditProductComponent,
     canActivate: [AuthGuard]
-  },
-  {
-    path: 'file-upload',
-    component: FileUploadComponentComponent
-  },
+  }
 ];
 
 @NgModule({

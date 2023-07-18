@@ -4,67 +4,150 @@
   <div
     class="w-full px-6 py-4 mt-6 overflow-hidden bg-white shadow-md sm:max-w-md sm:rounded-lg"
   >
-    <form method="POST" action="#">
+    <p *ngIf="!!authService.authErr" class="error-msg">
+      {{ authService.authErr }}
+    </p>
+    <form [formGroup]="formSignupUser" (ngSubmit)="signupUser()">
       <!-- Name -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700"> Name </label>
-
-        <input
-          class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          id="name"
-          type="text"
-          name="name"
-          required
-          autofocus
-          autocomplete="name"
-          placeholder="Name"
-        />
+        <div>
+          <label class="block text-sm font-medium text-gray-700"> Name </label>
+          <input
+            class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            id="name"
+            type="text"
+            name="name"
+            required
+            autofocus
+            autocomplete="name"
+            placeholder="Name"
+            formControlName="name"
+          />
+        </div>
+        <div
+          *ngIf="
+            formSignupUser?.get('name')?.invalid &&
+            (formSignupUser?.get('name')?.dirty ||
+              formSignupUser?.get('name')?.touched)
+          "
+        >
+          <p *ngIf="formSignupUser.get('name')?.errors" class="error-msg">
+            {{ (formSignupUser.get('name')?.errors?.['required']) ?
+                "Name is required" :
+                (formSignupUser.get('name')?.errors?.['minLength']) ?
+              "Name must be at least 4 characters long" : ""
+            }}
+          </p>
+        </div>
       </div>
 
       <!-- Email Address -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700"> Email </label>
-
-        <input
-          class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          id="email"
-          type="email"
-          name="email"
-          required
-          autofocus
-          autocomplete="username"
-          placeholder="Email"
-        />
+        <div>
+          <label class="block text-sm font-medium text-gray-700"> Email </label>
+          <input
+            class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            id="email"
+            type="email"
+            name="email"
+            required
+            autofocus
+            autocomplete="username"
+            placeholder="Email"
+            formControlName="email"
+          />
+        </div>
+        <div
+          *ngIf="
+            formSignupUser?.get('email')?.invalid &&
+            (formSignupUser?.get('email')?.dirty ||
+              formSignupUser?.get('email')?.touched)
+          "
+        >
+          <p *ngIf="formSignupUser.get('email')?.errors" class="error-msg">
+            {{ (formSignupUser.get('email')?.errors?.['required']) ?
+                "Email is required" :
+                (formSignupUser.get('email')?.errors?.['email']) ?
+                "Email must be a valid email address" : ""
+            }}
+          </p>
+        </div>
       </div>
 
       <!-- Password -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700 max-w-fit">
-          Password
-        </label>
-        <input
-          class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          id="password"
-          type="password"
-          name="password"
-          required
-          placeholder="Password"
-        />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 max-w-fit">
+            Password
+          </label>
+          <input
+            class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            id="password"
+            type="password"
+            name="password"
+            required
+            placeholder="Password"
+            formControlName="password"
+          />
+        </div>
+        <div
+          *ngIf="
+            (formSignupUser?.get('password')?.invalid || !passowrdMatches) &&
+            (formSignupUser?.get('password')?.dirty ||
+              formSignupUser?.get('password')?.touched)
+          "
+        >
+          <p *ngIf="formSignupUser.get('password')?.errors" class="error-msg">
+            {{ (formSignupUser.get('password')?.errors?.['required']) ? 
+              "Password is required" :
+              (formSignupUser.get('password')?.errors?.['minLength']) ?
+              "Password must be at least 6 characters long" : ""
+            }}
+          </p>
+          <p *ngIf="!passowrdMatches" class="error-msg">
+            Password doesn't match.
+          </p>
+        </div>
       </div>
 
       <!-- Confirm Password -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700 max-w-fit">
-          Confirm Password
-        </label>
-        <input
-          class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          id="password_confirmation"
-          type="password"
-          name="password_confirmation"
-          required
-          placeholder="Confirm Password"
-        />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 max-w-fit">
+            Confirm Password
+          </label>
+          <input
+            class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            id="password_confirmation"
+            type="password"
+            name="password_confirmation"
+            required
+            placeholder="Confirm Password"
+            formControlName="confirm_password"
+          />
+        </div>
+        <div
+          *ngIf="
+            (formSignupUser?.get('confirm_password')?.invalid ||
+              !passowrdMatches) &&
+            (formSignupUser?.get('confirm_password')?.dirty ||
+              formSignupUser?.get('confirm_password')?.touched)
+          "
+        >
+          <p
+            *ngIf="formSignupUser.get('confirm_password')?.errors"
+            class="error-msg"
+          >
+            {{ (formSignupUser.get('confirm_password')?.errors?.['required']) ? 
+              "Confirm Password is required" :
+              (formSignupUser.get('confirm_password')?.errors?.['minLength']) ?
+              "Password must be at least 6 characters long" : ""
+            }}
+          </p>
+          <p *ngIf="!passowrdMatches" class="error-msg">
+            Password doesn't match.
+          </p>
+        </div>
       </div>
 
       <div>
@@ -77,6 +160,7 @@
           </a>
 
           <button
+            type="submit"
             class="inline-flex items-center px-4 py-2 ml-4 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             {{ "Register" }}

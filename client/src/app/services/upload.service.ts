@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,13 +7,24 @@ import { Observable } from 'rxjs';
 })
 export class FileUploadService {
 
-  baseApiUrl = "https://file.io"
+  private baseUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) { }
 
-  upload(file: any): Observable<any> {
-    const formData = new FormData();
-    formData.append("file", file, file.name);
-    return this.http.post(this.baseApiUrl, formData)
+  upload(file: File): Observable<HttpEvent<any>> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+
+    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.http.request(req);
+  }
+
+  getFiles(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/files`);
   }
 }

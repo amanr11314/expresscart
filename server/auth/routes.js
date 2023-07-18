@@ -102,8 +102,7 @@ router.post("/signin", (req, res, next) => {
 
 // Get Single User
 router.route("/user/:id").get(authorize, async (req, res, next) => {
-    // await userSchema
-    //     .findById(req.params.id, req.body)
+
     const id = req.params?.id || req.body?.id
     User.findOne({
         attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],

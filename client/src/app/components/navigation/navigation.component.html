@@ -8,7 +8,7 @@
         >Products</span
       >
     </a>
-    <div class="flex items-center md:order-2">
+    <div *ngIf="authService.isLoggedIn" class="flex items-center md:order-2">
       <button
         type="button"
         class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -31,11 +31,11 @@
       >
         <div class="px-4 py-3">
           <span class="block text-sm text-gray-900 dark:text-white">{{
-            "Aman Raj"
+            this.user?.name
           }}</span>
           <span
             class="block text-sm text-gray-500 truncate dark:text-gray-400"
-            >{{ "amanr11314@gmail.com" }}</span
+            >{{ this.user?.email }}</span
           >
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">

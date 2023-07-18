@@ -36,6 +36,13 @@ export function noWhitespaceMinLengthValidator(minContentLength: number): Valida
     }
 }
 
+export function confirmPasswordValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+
+        return control.value.password === control.value.confirm_password ? null : { PasswordNoMatch: true }
+    }
+}
+
 // export function getFormErrors(form: AbstractControl) {
 //     if (form instanceof FormControl) {
 //         // Return FormControl errors or null

@@ -5,6 +5,7 @@ require('dotenv').config()
 const app = express();
 const auth = require('./auth/auth')
 const backend = require('./backend/core')
+const multer = require("multer")
 
 
 // import for db connection
@@ -13,6 +14,8 @@ const { User, sequelize } = require('./backend/models')
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+app.use(express.static(`${__dirname}/public`))
 
 // sync db and Associations
 sequelize

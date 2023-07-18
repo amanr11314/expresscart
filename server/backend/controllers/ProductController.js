@@ -21,11 +21,16 @@ exports.getProductDetail = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     const productObj = req.body || {};
-    const { title, imgUrl = '#', description = '#', price = 0 } = productObj;
+    console.log(req)
+    let path = '#'
+    if (req.file) {
+        path = req.file.filename;
+    }
+    const { title, description = '#', price = 0 } = productObj;
     const resp = await Product.create({
         title,
         description,
-        imgUrl,
+        imgUrl: path,
         price
     })
     res.send(resp)

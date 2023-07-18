@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../../shared/User';
-import { Observable, throwError, BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
   HttpClient,
@@ -8,11 +7,17 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { User } from '../../shared/User';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+
+  authErr: any;
+
 
 
   endpoint: string = 'http://localhost:3000/auth';
@@ -23,9 +28,19 @@ export class AuthService {
   currentuser = {}
 
   // Sign-up
-  signUp(user: User): Observable<any> {
+  signUp(user: any) {
+    console.log('called signup');
+
     let api = `${this.endpoint}/register`;
-    return this.http.post(api, user).pipe(catchError(this.handleError));
+    return this.http.post(api, user).subscribe(
+      (res: any) => {
+        this.authErr = null;
+        this.router.navigate(['/']);
+      },
+      (err: HttpErrorResponse) => {
+        this.authErr = err.error?.['message'] || 'Something went wrong'
+      }
+    );
   }
 
   // Sign-in
@@ -35,19 +50,37 @@ export class AuthService {
       .subscribe((res: any) => {
         localStorage.setItem('access_token', res.token);
 
-        this.getUserProfile(res.id).subscribe((data) => {
+        this.getUserProfile(res.id).subscribe(
+          (data) => {
+            this.authErr = null;
+            const user = data['data']
+            const keys = ['id', 'name', 'email'];
+            keys.forEach(key => {
+              localStorage.setItem(key, user[key])
+            })
+            this.isLoggedInSubject.next(true);
+            this.router.navigate(['/']);
+          });
+      },
+        (err: HttpErrorResponse) => {
 
-          // this.currentuser = data['data']
-          // console.log('setting current user', data);
-
-          this.router.navigate(['/']);
-        });
-      });
+          this.authErr = err.error?.['message'] || 'Something went wrong'
+        }
+      );
   }
 
 
   getToken() {
     return localStorage.getItem('access_token');
+  }
+
+  get getUserDetails(): User {
+    const user: User = {
+      id: localStorage.getItem('id')!,
+      name: localStorage.getItem('name')!,
+      email: localStorage.getItem('email')!,
+    }
+    return user;
   }
 
   get isLoggedIn(): boolean {
@@ -56,10 +89,9 @@ export class AuthService {
   }
 
   doLogout() {
-    let removeToken = localStorage.removeItem('access_token');
-    if (removeToken == null) {
-      this.router.navigate(['login']);
-    }
+    const keys = ['id', 'name', 'email', 'access_token'];
+    keys.forEach(key => localStorage.removeItem(key))
+    this.router.navigate(['login']);
   }
 
   // User profile
