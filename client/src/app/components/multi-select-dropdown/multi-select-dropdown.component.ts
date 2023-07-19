@@ -1,8 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, Inject } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
-import { Cart, CartProductsEntity } from 'src/app/shared/Cart';
+import { CartProductsEntity } from 'src/app/shared/Cart';
 import { Product } from 'src/app/shared/Product';
-import { switchMap, map } from 'rxjs';
 
 
 @Component({
@@ -16,100 +15,99 @@ export class MultiSelectDropdownComponent implements OnInit {
 
   constructor(@Inject(CartService) private cartService: CartService) { }
 
-  @Input() list: any[] = [];
-
-  getCartItemsId() {
-    const cartproducts = this.cart?.cartProducts || []
-    if (cartproducts.length) {
-      return cartproducts.map(
-        (product: CartProductsEntity) => {
-          return product.id
-        }
-      )
-    }
-    return [];
+  ngOnInit(): void {
+    this.fetchInitialCart();
   }
+
+  @Input() list: any[] = [];
+  selectedOptions: string[] = [];
+
+  showDropDown = false;
 
   @Output() onItemCheck = new EventEmitter();
   @Output() onItemUncheck = new EventEmitter();
 
-  showDropDown: boolean = false
+  toggleOption(option: any, idx: number) {
+    const index = this.selectedOptions.indexOf(option.id);
 
-
-  checkedList: any[] = [];
-  currentSelected: {} = {};
-
-  cart: Cart = { cartProducts: [], totaAmount: 0 }
-
-  ngOnInit(): void {
-    // this.cartService.fetchCart().subscribe(
-    //   (data) => {
-    //     this.cart = data
-    //   }
-    // )
-    // // already in cart
-    // this.checkedList = this.getCartItemsId();
-    // console.log(this.cart);
-    // console.log(this.checkedList);
-
-    // console.log('oninit = ', this.getCartItemsId());
-    // console.log('cart', this.cart);
-
-  }
-
-  getSelectedValue(status: Boolean, value: String) {
-    if (status) {
-      this.checkedList.push(value);
-    } else {
-      var index = this.checkedList.indexOf(value);
-      this.checkedList.splice(index, 1);
-    }
-
-    this.currentSelected = { checked: status, name: value };
-
-    // //share checked list
-    // this.shareCheckedlist();
-
-    // //share individual selected item
-    // this.shareIndividualStatus();
-  }
-
-  // when checkbox change, add/remove the item from the array
-  onChange(checked: Boolean, item: Product, index: number) {
-    if (checked) {
+    if (index === -1) {
       // Removes it from the index
-      this.list.splice(index, 1);
+      this.list.splice(idx, 1);
 
       // Push it in the first position
-      this.list.unshift(item);
+      this.list.unshift(option);
 
-      this.checkedList.push(item.id);
+      // add to selected list
+      this.selectedOptions.push(option.id);
 
-      // call on item check
-      // this.onItemCheck.emit(item)
+      // add this product to cart
+      this.cartService.addToCart(option.id).subscribe(
+        {
+          next(value) {
+            console.log(option.title + ' added to cart ');
+            console.log(value);
+          },
+          error(err) {
+            console.log(option.title + ' not added to cart ');
+            console.log(err);
+          },
+        }
+      )
+      // this.updateOptionStatus(option.id, true); // Update status to 'true'
     } else {
-      // remove from checked list
-      this.checkedList.splice(this.checkedList.indexOf(item.id), 1);
+      // remove from selected list
+      this.selectedOptions.splice(index, 1);
 
       // Removes it from the index
-      this.list.splice(index, 1);
+      this.list.splice(idx, 1);
 
       // Push it to last
-      this.list.push(item)
+      this.list.push(option)
 
-      // call on item uncheck
-      // this.onItemUncheck.emit(item)
+      // remove from cart
+      this.cartService.removeFromCart(option.id).subscribe(
+        {
+          next(value) {
+            console.log(option.title + ' removed from cart ');
+            console.log(value);
+          },
+          error(err) {
+            console.log(option.title + ' not removed from cart ');
+            console.log(err);
+          },
+        }
+      )
+      // this.updateOptionStatus(option.id, false); // Update status to 'false'
     }
-
-    // console.log(this.checkedList);
-
-    // //share checked list
-    // this.shareCheckedlist();
-
-    // //share individual selected item
-    // this.shareIndividualStatus();
   }
 
+  fetchInitialCart() {
+    this.cartService.fetchCart().subscribe(
+      data => {
+        const v = data.cartProducts?.map(
+          (val: CartProductsEntity) => val.id
+        );
+        this.selectedOptions = v!;
 
+        // maintain selected products at top
+        this.customSort(this.list, this.selectedOptions)
+
+      }
+    )
+  }
+
+  customSort(list: Product[], selectedOptions: string[]) {
+    list.sort(function (x, y) {
+      const a = selectedOptions.includes(x.id!)
+      const b = selectedOptions.includes(y.id!)
+      if (a && b) {
+        return 0;
+      }
+      if (a) {
+        return -1;
+      }
+      return 1;
+    });
+  }
 
 }
