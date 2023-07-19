@@ -24,8 +24,10 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   productsCopy: Product[] = [];
 
-  modal?: Modal
+  previewModal?: Modal
+  previewProduct?: Product
 
+  deleteModal?: Modal
   deleteProduct?: Product;
 
   getThumbnailURL(product: Product) {
@@ -53,7 +55,13 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       }
     )
 
+    this.initDeleteModal();
 
+    this.initPreviewModal();
+
+  }
+
+  initDeleteModal() {
     const $modal = document.getElementById('popup-modal-delete');
 
     // options with default values
@@ -73,11 +81,41 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
         console.log('modal has been toggled');
       }
     };
-    this.modal = new Modal($modal, options)
+    this.deleteModal = new Modal($modal, options)
+  }
+
+  initPreviewModal() {
+    const $modal = document.getElementById('popup-modal-preview');
+
+    // options with default values
+    const options: ModalOptions = {
+      placement: 'top-center',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+      closable: true,
+      onHide: () => {
+        console.log('modal is hidden');
+        document.querySelector('body > :last-child')?.remove();
+      },
+      onShow: () => {
+        console.log('modal is shown');
+      },
+      onToggle: () => {
+        console.log('modal has been toggled');
+      }
+    };
+    this.previewModal = new Modal($modal, options)
+  }
+
+  showPreview(_product: Product) {
+    console.log('called show preview');
+
+    this.previewModal?.show();
+    this.previewProduct = _product;
   }
 
   handleDelete(_product: Product) {
-    this.modal?.show();
+    this.deleteModal?.show();
     this.deleteProduct = _product;
   }
 
@@ -89,7 +127,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
         (response: any) => {
           console.log(response)
           this.products = this.products.filter(item => item.id != productId)
-          this.modal?.hide();
+          this.deleteModal?.hide();
         }
       )
     }

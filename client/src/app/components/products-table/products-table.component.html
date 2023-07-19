@@ -37,6 +37,7 @@
           </td>
           <td>
             <img
+              (click)="showPreview(product)"
               *ngIf="getThumbnailURL(product); else fallback_thumbnail"
               src="{{ getThumbnailURL(product) }}"
               alt="{{ product.title }}"
@@ -74,3 +75,5 @@
 <app-delete-dialog
   (btnConfirmClick)="handleConfirmDelete()"
 ></app-delete-dialog>
+
+<app-preview-modal [previewProduct]="previewProduct"> </app-preview-modal>

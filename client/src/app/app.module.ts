@@ -20,6 +20,7 @@ import { LoginComponentComponent } from './components/login-component/login-comp
 import { CustomLabelInputComponent } from './components/custom-label-input/custom-label-input.component';
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
 import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
+import { PreviewModalComponent } from './components/preview-modal/preview-modal.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { MultiSelectDropdownComponent } from './components/multi-select-dropdown
     CustomLabelInputComponent,
     RegisterComponentComponent,
     MultiSelectDropdownComponent,
+    PreviewModalComponent,
   ],
   imports: [
     BrowserModule,
