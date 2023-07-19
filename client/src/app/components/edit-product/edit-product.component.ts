@@ -20,6 +20,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
 
   // img-file-upload
   file: any = ''
+  fileUploadURL: any = null
 
   fileInfos?: Observable<any>;
 
@@ -32,12 +33,37 @@ export class EditProductComponent implements OnInit, OnDestroy {
   private subRoute?: any;
   productDetails?: Product
 
+  get productImgUrl() {
+    // if fileUploadURL is set then populate that image
+    if (this.fileUploadURL) {
+      return this.fileUploadURL
+    }
+
+    if (this.productDetails) {
+      if (this.productDetails!.imgUrl === '#') {
+        return null;
+      }
+      // check if already url
+      if (this.productDetails?.imgUrl?.startsWith('https://')) return this.productDetails.imgUrl;
+
+      return 'http://localhost:3000/' + this.productDetails?.imgUrl
+    } return null;
+  }
+
   constructor(private route: ActivatedRoute, private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
 
   selectFile(event: any): void {
     const img = event.target.files[0];
     if (img) {
       this.file = img;
+      this.hasChange = true;
+
+      // preview handling using FileReader API
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fileUploadURL = reader.result as string;
+      }
+      reader.readAsDataURL(img)
     }
   }
 

@@ -94,6 +94,13 @@
     </div>
 
     <div>
+      <img
+        *ngIf="productImgUrl"
+        class="img-show-wrapper"
+        src="{{ productImgUrl }}"
+        alt="product image"
+      />
+
       <div>
         <label class="label-input" for="image">Image</label>
         <input
@@ -102,6 +109,7 @@
           id="image"
           name="image"
           class="input-img"
+          accept="image/*"
           type="file"
         />
       </div>
