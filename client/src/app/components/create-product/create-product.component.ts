@@ -19,11 +19,21 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
   // img-file-upload
   file: any = ''
+  fileUploadURL: any = null
 
   fileInfos?: Observable<any>;
 
   formCreateProduct!: FormGroup
   backendServiceSubscription?: Subscription;
+
+  get productImgUrl() {
+    // if fileUploadURL is set then populate that image
+    if (this.fileUploadURL) {
+      return this.fileUploadURL
+    }
+
+    return null;
+  }
 
   constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
 
@@ -31,6 +41,13 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     const img = event.target.files[0];
     if (img) {
       this.file = img;
+
+      // preview handling using FileReader API
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fileUploadURL = reader.result as string;
+      }
+      reader.readAsDataURL(img)
     }
   }
 

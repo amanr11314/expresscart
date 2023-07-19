@@ -16,6 +16,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(express.static(`${__dirname}/public`))
+app.use('/thumbnails', express.static(`${__dirname}/public/thumbnails`))
 
 // sync db and Associations
 sequelize

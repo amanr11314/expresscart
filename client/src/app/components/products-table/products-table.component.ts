@@ -26,6 +26,19 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   deleteProduct?: Product;
 
+  getThumbnailURL(product: Product) {
+
+    if (product) {
+      if (product!.imgUrl === '#') {
+        return null;
+      }
+      // check if already url
+      if (product?.imgUrl?.startsWith('https://')) return product.imgUrl;
+
+      return 'http://localhost:3000/' + 'thumbnails/' + product?.imgUrl
+    } return null;
+  }
+
   constructor(private backendService: BackendService, private router: Router, public authService: AuthService,
     private actRoute: ActivatedRoute
   ) { }

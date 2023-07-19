@@ -75,6 +75,7 @@
         min="0"
         name="price"
         class="input-name"
+        accept="image/*"
       />
     </div>
 
@@ -96,6 +97,12 @@
     </div>
 
     <div>
+      <img
+        *ngIf="productImgUrl"
+        class="max-w-xs img-show-wrapper"
+        src="{{ productImgUrl }}"
+        alt="product image"
+      />
       <div>
         <label class="label-input" for="image">Image</label>
         <input
@@ -107,11 +114,6 @@
           type="file"
         />
       </div>
-      <!-- @if ($errors->has('image'))
-      <p class="error-msg">
-        {{ $errors->first('image') }}
-      </p>
-      @endif -->
     </div>
 
     <button type="submit" class="btn-action-primary">Submit</button>
