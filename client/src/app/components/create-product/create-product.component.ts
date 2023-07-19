@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Product } from 'src/app/shared/Product';
@@ -20,6 +20,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   // img-file-upload
   file: any = ''
   fileUploadURL: any = null
+  @ViewChild('fileInput') fileInputRef?: ElementRef;
 
   fileInfos?: Observable<any>;
 
@@ -36,6 +37,13 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
+
+  resetFile() {
+    if (this.file) {
+      this.file = ''
+      this.fileInputRef!.nativeElement.value = null;
+    }
+  }
 
   selectFile(event: any): void {
     const img = event.target.files[0];
