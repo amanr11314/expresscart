@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
@@ -22,6 +22,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
 
   products: Product[] = [];
+  productsCopy: Product[] = [];
+
   modal?: Modal
 
   deleteProduct?: Product;
@@ -46,9 +48,11 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
       (data) => {
+        this.productsCopy = [...data['products']]
         return this.products = data['products'] || [];
       }
     )
+
 
     const $modal = document.getElementById('popup-modal-delete');
 

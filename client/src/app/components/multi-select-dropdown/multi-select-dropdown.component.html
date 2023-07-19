@@ -11,7 +11,11 @@
       <i class="fa fa-angle-down"></i>
     </button>
     <div class="drop-show" *ngIf="showDropDown">
-      <div class="flex items-center" *ngFor="let i = index; let a; of: list">
+      <div
+        [ngClass]="{ 'bg-green-300': a.checked }"
+        class="flex items-center"
+        *ngFor="let i = index; let a; of: list"
+      >
         <label
           class="my-2 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
         >

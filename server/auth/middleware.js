@@ -2,14 +2,19 @@ require('dotenv').config({ path: "/home/csolution/Desktop/AMAN TRAINING/expressc
 const { User } = require('../backend/models')
 
 const jwt = require("jsonwebtoken");
-exports.authorize = (req, res, next) => {
+exports.authorize = async (req, res, next) => {
     console.log('body in authroise', req.body)
     try {
         const token = req.headers.authorization.split(" ")[1];
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const email = decoded.email;
+        const user = await User.findOne({ where: { email } })
+        console.log(user)
+        req.user = user;
         next();
     } catch (error) {
-        res.status(401).json({ message: "No token provided" });
+        console.log(error);
+        res.status(401).json({ message: "Unauthorized request" });
     }
 };
 
