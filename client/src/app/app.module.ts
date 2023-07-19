@@ -21,6 +21,7 @@ import { CustomLabelInputComponent } from './components/custom-label-input/custo
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
 import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
 import { PreviewModalComponent } from './components/preview-modal/preview-modal.component';
+import { CartComponent } from './components/cart/cart.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { PreviewModalComponent } from './components/preview-modal/preview-modal.
     RegisterComponentComponent,
     MultiSelectDropdownComponent,
     PreviewModalComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
