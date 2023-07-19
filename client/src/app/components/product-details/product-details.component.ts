@@ -22,13 +22,15 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
 
   get productImgUrl() {
-    if (this.productDetails!.imgUrl === '#') {
-      return null;
-    }
-    // check if already url
-    if (this.productDetails?.imgUrl?.startsWith('https://')) return this.productDetails.imgUrl;
+    if (this.productDetails) {
+      if (this.productDetails!.imgUrl === '#') {
+        return null;
+      }
+      // check if already url
+      if (this.productDetails?.imgUrl?.startsWith('https://')) return this.productDetails.imgUrl;
 
-    return 'http://localhost:3000/' + this.productDetails?.imgUrl
+      return 'http://localhost:3000/' + this.productDetails?.imgUrl
+    } return null;
   }
 
 

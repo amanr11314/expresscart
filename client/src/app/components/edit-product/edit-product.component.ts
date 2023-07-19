@@ -117,6 +117,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
       price
     }
 
+    // console.log(updateProductValue)
+
     this.backendServiceSubscription = this.backendService.updateProduct(updateProductValue, this.file).subscribe((response: any) => {
       console.log(response);
       window.location.href = '/'

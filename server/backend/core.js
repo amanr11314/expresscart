@@ -6,7 +6,8 @@ const rootDir = require('./utils/path')
 const homeRoutes = require('./routes/home')
 
 const app = express();
-
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 
 // use routes 

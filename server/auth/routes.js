@@ -57,47 +57,51 @@ router.post("/register", validEmail, async (req, res, next) => {
 router.post("/signin", (req, res, next) => {
     let getUser;
 
-    User.findOne({
-        where: { email: req.body.email, }
-    })
-        .then((user) => {
-            if (!user) {
-                return res.status(401).json({
-                    message: "No user found with this email",
-                });
-            }
-            getUser = user;
-            return bcrypt.compare(req.body.password, user.password);
+
+
+    try {
+        User.findOne({
+            where: { email: req.body.email, }
         })
-        .then((response) => {
-            console.log(response);
-            if (!response) {
-                return res.status(401).json({
-                    message: "Incorrect password",
-                });
-            }
-            let jwtToken = jwt.sign(
-                {
-                    email: getUser.email,
-                    userId: getUser.id,
-                },
-                process.env.ACCESS_TOKEN_SECRET,
-                {
-                    expiresIn: "1h",
+            .then((user) => {
+                if (!user) {
+                    return res.status(401).json({
+                        message: "No user found with this email",
+                    });
                 }
-            );
-            res.status(200).json({
-                token: jwtToken,
-                expiresIn: 3600,
-                id: getUser.id,
-            });
-        })
-        .catch((err) => {
-            console.log('Error');
-            return res.status(401).json({
-                message: "Authentication failed" + err,
-            });
+                getUser = user;
+                return bcrypt.compare(req.body.password, user.password);
+            })
+            .then((response) => {
+                console.log(response);
+                if (!response) {
+                    return res.status(401).json({
+                        message: "Incorrect password",
+                    });
+                }
+                let jwtToken = jwt.sign(
+                    {
+                        email: getUser.email,
+                        userId: getUser.id,
+                    },
+                    process.env.ACCESS_TOKEN_SECRET,
+                    {
+                        expiresIn: "1h",
+                    }
+                );
+                res.status(200).json({
+                    token: jwtToken,
+                    expiresIn: 3600,
+                    id: getUser.id,
+                });
+            })
+    }
+    catch (err) {
+        console.log('Error');
+        return res.status(401).json({
+            message: "Authentication failed" + err,
         });
+    };
 });
 
 // Get Single User

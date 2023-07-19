@@ -38,9 +38,10 @@ exports.createProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
     const productObj = req.body || {};
+    console.log('received body', JSON.stringify(productObj))
     // const { id = null, ...rest } = productObj;
     // const product = await Product.findOne({ where: { id } });
-    const product = req.product
+    // const product = req.product
 
     let path = '#'
     if (req.file) {
@@ -49,24 +50,24 @@ exports.editProduct = async (req, res) => {
     }
 
     const updatedProduct = {
-        ...product,
+        // ...product,
         ...productObj
     }
-    if (product instanceof Product) {
-        const resp = await Product.update(
-            updatedProduct,
-            { where: { id: product.id } }
-        )
-        if (((!!resp) === 1)) {
-            res.send({
-                msg: 'Product updated successfully'
-            })
-        } else {
-            res.send({
-                msg: 'Failed to update product'
-            })
-        }
+    // if (product instanceof Product) {
+    const resp = await Product.update(
+        updatedProduct,
+        { where: { id: productObj.id } }
+    )
+    if (((!!resp) === 1)) {
+        res.send({
+            msg: 'Product updated successfully'
+        })
+    } else {
+        res.send({
+            msg: 'Failed to update product'
+        })
     }
+    // }
 
 }
 

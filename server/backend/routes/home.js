@@ -11,10 +11,11 @@ const router = express.Router();
 
 router.get('/', authorize, getAllProducts)
 router.get('/product/details/:id', authorize, validateProductId, getProductDetail)
-router.post('/product/create',
+router.post('/product/create', authorize,
     withUploadFile.upload('file'),
     createProduct)
-router.post('/product/edit', authorize, validateProductId, withUploadFile.upload('file'), editProduct)
+// router.post('/product/edit', authorize, validateProductId, withUploadFile.upload('file'), editProduct)
+router.post('/product/edit', authorize, withUploadFile.upload('file'), editProduct)
 router.post('/product/delete', authorize, validateProductId, deleteProduct)
 
 router.post('/cart', authorize, addToCart);

@@ -3,6 +3,7 @@ const { User } = require('../backend/models')
 
 const jwt = require("jsonwebtoken");
 exports.authorize = (req, res, next) => {
+    console.log('body in authroise', req.body)
     try {
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);

@@ -21,7 +21,7 @@ export class BackendService {
   }
 
   createProduct(product: Product, file: any): Observable<any> {
-    const formData = new FormData();
+    let formData = new FormData();
 
     formData.append('title', product.title)
     formData.append('description', product.description)
@@ -45,22 +45,28 @@ export class BackendService {
 
   updateProduct(product: Product, file: any): Observable<any> {
     // return this.http.post<any>(this.apiUrl + '/product/edit', product)
-    const formData = new FormData();
-
-    formData.append('title', product.title)
-    formData.append('description', product.description)
-    formData.append('price', product.price.toString())
+    let updateFormData = new FormData();
+    console.log(product['id'])
+    console.log(product.id)
+    updateFormData.append('id', product?.id!)
+    updateFormData.append('title', product.title)
+    updateFormData.append('description', product.description)
+    updateFormData.append('price', product.price.toString())
 
     if (file) {
       console.log('appending file: ', file);
 
-      formData.append('file', file)
+      updateFormData.append('file', file)
+      console.log(updateFormData.get('id'));
+
     }
 
-    const req = new HttpRequest('POST', this.apiUrl + '/product/edit', formData, {
+    const req = new HttpRequest('POST', this.apiUrl + '/product/edit', updateFormData, {
       reportProgress: true,
       responseType: 'json'
     });
+    console.debug("formdata", updateFormData.getAll('id'))
+    console.log(req.body)
 
 
     // return this.http.post<any>(this.apiUrl + '/product/edit', product, httpOptions)

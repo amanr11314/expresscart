@@ -8,9 +8,11 @@ const { Product } = require('../models')
  * @param {*} next 
  */
 exports.validateProductId = async (req, res, next) => {
-    console.log(req.body)
-    const id = req.params?.id || req.body?.id
+    console.log('body in validateProductId', req.body)
+
+    const id = req.method === 'POST' ? req.body?.id : req.params?.id
     console.log('id = ', id)
+    console.log('body = ', JSON.stringify(req.body))
     if (!!id) {
         const product = await Product.findOne({ where: { id } })
         if (product) {
