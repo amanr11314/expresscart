@@ -86,7 +86,6 @@ exports.addToCart = async (req, res) => {
 
 exports.deleteCartItem = async (req, res) => {
     const productId = req.body?.productId;
-    console.debug({ productId })
     const fetchedCart = await req?.user?.getCart();
     const cartProducts = await fetchedCart?.getProducts({
         where: { id: productId }

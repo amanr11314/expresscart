@@ -3,7 +3,6 @@ const { Product, User } = require('../models')
 exports.getAllProducts = async (req, res) => {
     const products = await Product.findAll({ include: [{ model: User }] })
 
-    console.log(products)
     const resp = {
         products
     }
@@ -15,7 +14,6 @@ exports.getProductDetail = async (req, res) => {
     const resp = {
         product: req.product
     }
-    console.log(JSON.stringify(resp))
     res.send(resp)
 }
 
@@ -38,10 +36,6 @@ exports.createProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
     const productObj = req.body || {};
-    console.log('received body', JSON.stringify(productObj))
-    // const { id = null, ...rest } = productObj;
-    // const product = await Product.findOne({ where: { id } });
-    // const product = req.product
 
     let path = '#'
     if (req.file) {

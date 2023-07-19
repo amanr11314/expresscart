@@ -27,17 +27,12 @@ var corsOptionsDelegate = function (req, callback) {
 
 // Sign-up
 router.post("/register", validEmail, async (req, res, next) => {
-    // const err = validationResult(req);
-    // if (err.isEmpty()) {
-    console.log('inside register');
     const hash = await bcrypt.hash(req.body.password, 10);
-    console.log('hash=', hash);
     const user = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: hash,
     })
-    console.log('new user', user);
     if (user) {
         console.log('user created successfully');
         res.status(201).json({

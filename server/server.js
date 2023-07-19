@@ -27,7 +27,6 @@ sequelize
                 if (!user) {
                     console.log('No user found');
                 } else {
-                    console.log(JSON.stringify(user))
                     console.log('User logged in by default');
                 }
             })

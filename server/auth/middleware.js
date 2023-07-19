@@ -15,13 +15,10 @@ exports.authorize = (req, res, next) => {
 
 exports.validEmail = async (req, res, next) => {
     const email = req.params?.email || req.body?.email
-    console.log('email = ', email)
     if (!!email) {
         const user = await User.findOne({ where: { email } })
-        console.log(user)
         if (!user) {
             req.user = user;
-            console.log('passing next');
             next();
         } else {
             res.status(404).json({ message: 'Email already in use' })
