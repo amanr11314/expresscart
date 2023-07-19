@@ -8,6 +8,7 @@ import { EditProductComponent } from './components/edit-product/edit-product.com
 import { LoginComponentComponent } from './components/login-component/login-component.component';
 import { RegisterComponentComponent } from './components/register-component/register-component.component';
 import { AuthGuard } from './shared/auth.guard';
+import { CartComponent } from './components/cart/cart.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,11 @@ const routes: Routes = [
   {
     path: 'home',
     component: ProductsTableComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'cart',
+    component: CartComponent,
     canActivate: [AuthGuard]
   },
   {
