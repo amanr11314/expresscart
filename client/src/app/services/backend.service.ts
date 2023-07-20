@@ -12,8 +12,12 @@ export class BackendService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(): Observable<any> {
-    return this.http.get<any>(this.apiUrl)
+  getProducts(params?: any): Observable<any> {
+    if (params?.search) {
+      return this.http.get<any>(this.apiUrl, { params })
+    }
+    else
+      return this.http.get<any>(this.apiUrl);
   }
 
   getProductDetail(id: number): Observable<any> {

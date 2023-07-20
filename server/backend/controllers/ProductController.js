@@ -1,7 +1,22 @@
-const { Product, User } = require('../models')
+const { Product, User, Op } = require('../models')
 
 exports.getAllProducts = async (req, res) => {
-    const products = await Product.findAll({ include: [{ model: User }] })
+    const query = req.query['search'];
+    console.log(JSON.stringify(query));
+    console.log('query = ', query)
+    let products;
+    if (query) {
+        products = await Product.findAll({
+            include: [{ model: User }],
+            where: {
+                title: {
+                    [Op.iLike]: '%' + query + '%'
+                }
+            }
+        })
+    } else {
+        products = await Product.findAll({ include: [{ model: User }] })
+    }
 
     const resp = {
         products

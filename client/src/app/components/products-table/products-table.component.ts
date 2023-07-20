@@ -20,6 +20,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   currentUser?: User
 
+  searchString: string = '';
+
 
   products: Product[] = [];
   productsCopy: Product[] = [];
@@ -46,6 +48,29 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   constructor(private backendService: BackendService, private router: Router, public authService: AuthService,
     private actRoute: ActivatedRoute
   ) { }
+
+  onProductSearch(val: string) {
+    // fetch products with filter
+    this.searchString = val;
+    this.backendServiceAllProductsSubscription = this.backendService.getProducts({
+      search: this.searchString
+    }).subscribe(
+      (data) => {
+        this.productsCopy = [...data['products']]
+        return this.products = data['products'] || [];
+      }
+    )
+  }
+
+  onSearchReset(val: any) {
+    this.searchString = '';
+    this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
+      (data) => {
+        this.productsCopy = [...data['products']]
+        return this.products = data['products'] || [];
+      }
+    )
+  }
 
   ngOnInit(): void {
     this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(

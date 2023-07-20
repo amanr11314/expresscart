@@ -1,8 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CartService } from 'src/app/services/cart.service';
-import { Cart, CartProductsEntity } from 'src/app/shared/Cart';
-import { Product } from 'src/app/shared/Product';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -16,38 +12,28 @@ export class HeaderComponent {
   @Input()
   productsList: any[] = []
 
+  @Output()
+  onProductSearch = new EventEmitter();
+
+  @Output()
+  onSearchReset = new EventEmitter();
+
+  onSubmitSearch() {
+    console.log('searchtext = ', this.searchText);
+    this.onProductSearch.emit(this.searchText);
+  }
+
   clearForm() {
     this.searchText = '';
+    this.onSearchReset.emit();
   }
 
   onValueChange(val: any) {
     this.searchText = val
   }
 
+  // for dropdown
   onItemChange(count: number) {
     console.log('COUNT = ', count);
   }
-
-  // onItemCheck(item: Product) {
-
-  //   this.cartService.addToCart(item.id).subscribe(
-  //     (data: any) => {
-  //       console.log('Added product = ', item);
-  //       console.log(data);
-  //     }
-
-  //   )
-  // }
-
-  // onItemUncheck(item: Product) {
-  //   console.log('Removed product = ', item);
-  //   this.cartService.removeFromCart(item.id).subscribe(
-  //     (data: any) => {
-  //       console.log('Removed product = ', item);
-  //       console.log(data);
-
-  //     }
-  //   )
-  // }
-
 }

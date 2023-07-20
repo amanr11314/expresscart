@@ -1,5 +1,9 @@
 <div class="container px-4 py-2">
-  <app-header [productsList]="productsCopy"></app-header>
+  <app-header
+    [productsList]="productsCopy"
+    (onProductSearch)="onProductSearch($event)"
+    (onSearchReset)="onSearchReset($event)"
+  ></app-header>
   <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
     <table class="table-container">
       <thead class="table-col-container">
