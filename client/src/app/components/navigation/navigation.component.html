@@ -15,7 +15,7 @@
         class="relative inline-flex items-center p-3 mr-6 text-sm font-medium text-center text-white focus:ring-4 focus:outline-none focus:ring-blue-300"
       >
         <a
-          [routerLink]="cartItemCount ? ['/cart'] : '#'"
+          [routerLink]="cartItemCount ? ['/cart'] : null"
           class="flex items-center"
         >
           <svg
@@ -48,9 +48,6 @@
               />
             </svg>
           </ng-template>
-          <span class="sr-only">{{
-            cartItemCount ? "Cart" : "Empty Cart"
-          }}</span>
           <div
             *ngIf="cartItemCount"
             class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-1 dark:border-gray-900"
@@ -64,7 +61,7 @@
         role="tooltip"
         class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
       >
-        Cart
+        {{ !!cartItemCount ? "Cart" : "Empty Cart" }}
         <div class="tooltip-arrow" data-popper-arrow></div>
       </div>
 
