@@ -10,11 +10,19 @@ import { Router } from '@angular/router';
   providers: [AuthService]
 })
 export class LoginComponentComponent implements OnInit {
+
+  msg?: string;
+
   formLoginUser!: FormGroup
   constructor(
     public authService: AuthService,
     public router: Router
   ) {
+
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras.state as { msg: string };
+    this.msg = state.msg;
+
     this.formLoginUser = new FormGroup({
       email: new FormControl('', [
         Validators.required,

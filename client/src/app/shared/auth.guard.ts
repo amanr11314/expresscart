@@ -4,6 +4,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
   Router,
+  NavigationExtras,
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
@@ -22,7 +23,9 @@ export class AuthGuard {
     | UrlTree {
     if (this.authService.isLoggedIn !== true) {
       // window.alert('Access not allowed!');
-      this.router.navigate(['login']);
+      const navigationExtras: NavigationExtras = { state: { msg: 'Please login to continue' } };
+      this.router.navigate(['login'], navigationExtras);
+      // this.router.navigate(['login']);
     }
     return true;
   }

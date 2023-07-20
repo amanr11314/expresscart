@@ -6,7 +6,7 @@ import {
   HttpHeaders,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { User } from '../../shared/User';
 
 @Injectable({
@@ -83,9 +83,22 @@ export class AuthService {
     return user;
   }
 
+  private tokenExpired(token: string) {
+    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+    return (Math.floor((new Date).getTime() / 1000)) >= expiry;
+  }
+
   get isLoggedIn(): boolean {
     let authToken = localStorage.getItem('access_token');
-    return authToken !== null ? true : false;
+
+    if (authToken !== null) {
+      // check expiry
+      if (this.tokenExpired(authToken)) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   doLogout() {

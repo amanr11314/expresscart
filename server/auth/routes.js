@@ -52,8 +52,6 @@ router.post("/register", validEmail, async (req, res, next) => {
 router.post("/signin", (req, res, next) => {
     let getUser;
 
-
-
     try {
         User.findOne({
             where: { email: req.body.email, }
