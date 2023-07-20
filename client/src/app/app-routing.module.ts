@@ -45,6 +45,10 @@ const routes: Routes = [
   {
     path: 'product/edit/:id', component: EditProductComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'lazy',
+    loadChildren: () => import('./lazy.module').then(m => m.LazyModule)
   }
 ];
 
