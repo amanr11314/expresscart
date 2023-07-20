@@ -1,13 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Cart } from '../shared/Cart';
-import { Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
   apiUrl = 'http://localhost:3000/cart'
+
+  private localSelectedItemsCount = new BehaviorSubject(0);
+  localSelectedItemsCount$ = this.localSelectedItemsCount.asObservable();
+
+  changeSelectedCount(count: number) {
+    this.localSelectedItemsCount.next(count);
+  }
 
   private cartSource: ReplaySubject<Cart> = new ReplaySubject(1)
   cart = this.cartSource.asObservable();

@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-gray-100">
-  <app-navigation></app-navigation>
-
-  <router-outlet></router-outlet>
+  <app-navigation [cartItemCount]="cartItemCount"></app-navigation>
+  <router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
 </div>

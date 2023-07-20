@@ -8,12 +8,12 @@ import { Product } from 'src/app/shared/Product';
   selector: 'app-multi-select-dropdown',
   templateUrl: './multi-select-dropdown.component.html',
   styleUrls: ['./multi-select-dropdown.component.css'],
-  providers: [CartService]
+  // providers: [CartService]
 })
 export class MultiSelectDropdownComponent implements OnInit {
 
 
-  constructor(@Inject(CartService) private cartService: CartService) { }
+  constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
     this.fetchInitialCart();
@@ -24,8 +24,7 @@ export class MultiSelectDropdownComponent implements OnInit {
 
   showDropDown = false;
 
-  @Output() onItemCheck = new EventEmitter();
-  @Output() onItemUncheck = new EventEmitter();
+  @Output() onItemChange = new EventEmitter();
 
   toggleOption(option: any, idx: number) {
     const index = this.selectedOptions.indexOf(option.id);
@@ -79,6 +78,16 @@ export class MultiSelectDropdownComponent implements OnInit {
       )
       // this.updateOptionStatus(option.id, false); // Update status to 'false'
     }
+
+    this.onItemChange.emit(this.selectedOptions.length)
+    this.cartService.changeSelectedCount(this.selectedOptions.length)
+    this.cartService.localSelectedItemsCount$.subscribe(
+      data => {
+        console.log('changed in service', data);
+
+      }
+    )
+
   }
 
   fetchInitialCart() {
@@ -88,7 +97,9 @@ export class MultiSelectDropdownComponent implements OnInit {
           (val: CartProductsEntity) => val.id
         );
         this.selectedOptions = v!;
+        console.log('setting count in initial fetch');
 
+        this.cartService.changeSelectedCount(this.selectedOptions.length)
         // maintain selected products at top
         this.customSort(this.list, this.selectedOptions)
 

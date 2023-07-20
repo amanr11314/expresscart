@@ -8,7 +8,6 @@ import { Product } from 'src/app/shared/Product';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  providers: [CartService]
 })
 export class HeaderComponent {
 
@@ -23,6 +22,10 @@ export class HeaderComponent {
 
   onValueChange(val: any) {
     this.searchText = val
+  }
+
+  onItemChange(count: number) {
+    console.log('COUNT = ', count);
   }
 
   // onItemCheck(item: Product) {

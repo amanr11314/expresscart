@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 
@@ -10,6 +10,10 @@ import { User } from 'src/app/shared/User';
   providers: [AuthService]
 })
 export class NavigationComponent implements OnInit {
+
+  @Input()
+  cartItemCount?: number;
+
   user?: User
   constructor(public authService: AuthService) {
     this.user = authService.getUserDetails

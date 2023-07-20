@@ -60,7 +60,11 @@
   </div>
 
   <!-- Multi Select Filter -->
-  <app-multi-select-dropdown [list]="productsList"> </app-multi-select-dropdown>
+  <app-multi-select-dropdown
+    [list]="productsList"
+    (onItemChange)="onItemChange($event)"
+  >
+  </app-multi-select-dropdown>
 
   <!-- {{-- Add new product --}} -->
   <div class="text-right">

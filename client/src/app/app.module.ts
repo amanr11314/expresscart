@@ -57,7 +57,7 @@ import { CartComponent } from './components/cart/cart.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
   ],
   bootstrap: [AppComponent]
 })
