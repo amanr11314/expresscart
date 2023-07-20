@@ -104,7 +104,7 @@ export class AuthService {
   doLogout() {
     const keys = ['id', 'name', 'email', 'access_token'];
     keys.forEach(key => localStorage.removeItem(key))
-    this.router.navigate(['login']);
+    window.location.href = '/login'
   }
 
   // User profile

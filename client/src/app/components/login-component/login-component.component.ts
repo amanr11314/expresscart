@@ -21,7 +21,7 @@ export class LoginComponentComponent implements OnInit {
 
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as { msg: string };
-    this.msg = state.msg;
+    if (state) this.msg = state.msg;
 
     this.formLoginUser = new FormGroup({
       email: new FormControl('', [
