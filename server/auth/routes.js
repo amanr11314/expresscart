@@ -8,6 +8,8 @@ const { User } = require('../backend/models')
 const { authorize, validEmail } = require("./middleware");
 const { validationResult } = require("express-validator");
 
+let refreshTokens = []
+
 const cors = require("cors");
 // CORS OPTIONS
 var whitelist = ["http://localhost:4200", "http://localhost:4000"];
@@ -47,7 +49,6 @@ router.post("/register", validEmail, async (req, res, next) => {
     }
 });
 
-
 // Sign-in
 router.post("/signin", (req, res, next) => {
     let getUser;
@@ -79,11 +80,24 @@ router.post("/signin", (req, res, next) => {
                     },
                     process.env.ACCESS_TOKEN_SECRET,
                     {
-                        expiresIn: "1h",
+                        expiresIn: "60s",
                     }
                 );
+                // generate refresh token too at login
+                let refreshToken = jwt.sign(
+                    {
+                        email: getUser.email,
+                        userId: getUser.id,
+                    },
+                    process.env.REFRESH_TOKEN_SECRET,
+                    {
+                        expiresIn: "5d",
+                    }
+                )
+                refreshTokens.push(refreshToken)
                 res.status(200).json({
                     token: jwtToken,
+                    refreshToken,
                     expiresIn: 3600,
                     id: getUser.id,
                 });
@@ -96,6 +110,32 @@ router.post("/signin", (req, res, next) => {
         });
     };
 });
+
+router.post("/token", (req, res, next) => {
+    // cureent refreshToken
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        const accessToken = jwt.sign(
+            {
+                email: user.email,
+                userId: user.id,
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: "60s",
+            }
+        );
+        res.json({ accessToken, refreshToken })
+    })
+})
+
+router.post('/logout', (req, res) => {
+    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+    res.sendStatus(204);
+})
 
 // Get Single User
 router.route("/user/:id").get(authorize, async (req, res, next) => {
