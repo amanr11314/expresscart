@@ -47,6 +47,12 @@ export class AuthService {
     });
   }
 
+  refreshToken(token: string) {
+    return this.http.post(this.endpoint + '/token', {
+      token
+    });
+  }
+
   // Sign-in
   signIn(user: User) {
     return this.http
@@ -55,6 +61,7 @@ export class AuthService {
         next: (res: any) => {
           // save token
           this.tokenService.saveToken(res.token)
+          this.tokenService.saveRefreshToken(res.refreshToken);
 
           // getuser details
           this.getUserProfile(res.id).subscribe({
@@ -96,20 +103,18 @@ export class AuthService {
 
   get isLoggedIn(): boolean {
     let authToken = this.tokenService.getToken();
-
-    if (authToken !== null) {
-      // check expiry
-      if (this.tokenExpired(authToken)) {
-        return false;
-      }
-      return true;
-    }
-    return false;
+    return !!authToken;
   }
 
   doLogout() {
-    this.tokenService.signOut();
-    window.location.href = '/login'
+    this.http.post(this.endpoint + '/logout', {
+      token: this.tokenService.getRefreshToken()
+    }).subscribe({
+      complete: () => {
+        this.tokenService.signOut();
+        window.location.href = '/login'
+      }
+    })
   }
 
   // User profile

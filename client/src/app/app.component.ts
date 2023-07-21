@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { CartService } from './services/cart.service';
 import { CartComponent } from './components/cart/cart.component';
+import { Subscription } from 'rxjs';
+import { EventBusService } from './shared/event-bus.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +14,8 @@ export class AppComponent {
 
   cartItemCount: number = 0;
 
-  constructor(public cartService: CartService) { }
+
+  constructor(public cartService: CartService, private eventBusService: EventBusService) { }
 
   ngOnInit(): void {
     initFlowbite();
