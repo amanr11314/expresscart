@@ -16,11 +16,10 @@ export class NavigationComponent implements OnInit {
 
   user?: User
   constructor(public authService: AuthService) {
-    this.user = authService.getUserDetails
   }
 
   ngOnInit(): void {
-
+    this.user = this.authService.getUserDetails
   }
 
   logOut() {

@@ -6,8 +6,9 @@ import {
   HttpHeaders,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { User } from '../../shared/User';
+import { TokenService } from 'src/app/token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class AuthService {
   endpoint: string = 'http://localhost:3000/auth';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-  constructor(private http: HttpClient, public router: Router) { }
+  constructor(private http: HttpClient, public router: Router, private tokenService: TokenService) { }
 
   currentuser = {}
 
@@ -32,54 +33,59 @@ export class AuthService {
     console.log('called signup');
 
     let api = `${this.endpoint}/register`;
-    return this.http.post(api, user).subscribe(
-      (res: any) => {
+    return this.http.post(api, user).subscribe({
+      next: (res: any) => {
+        console.log(res);
+      },
+      complete: () => {
         this.authErr = null;
         this.router.navigate(['/']);
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.authErr = err.error?.['message'] || 'Something went wrong'
       }
-    );
+    });
   }
 
   // Sign-in
   signIn(user: User) {
     return this.http
       .post<any>(`${this.endpoint}/signin`, user)
-      .subscribe((res: any) => {
-        localStorage.setItem('access_token', res.token);
+      .subscribe({
+        next: (res: any) => {
+          // save token
+          this.tokenService.saveToken(res.token)
 
-        this.getUserProfile(res.id).subscribe(
-          (data) => {
-            this.authErr = null;
-            const user = data['data']
-            const keys = ['id', 'name', 'email'];
-            keys.forEach(key => {
-              localStorage.setItem(key, user[key])
-            })
-            this.isLoggedInSubject.next(true);
-            window.location.replace('/')
-          });
-      },
-        (err: HttpErrorResponse) => {
-
+          // getuser details
+          this.getUserProfile(res.id).subscribe({
+            next: (data) => {
+              this.authErr = null;
+              const user: User = data['data']
+              // save user details
+              this.tokenService.saveUser(user);
+              this.isLoggedInSubject.next(true)
+            },
+            error: (err: any) => {
+              console.log('error while fetching user data: ', err)
+            }
+          })
+        },
+        complete: () => {
+          window.location.replace('/')
+        },
+        error: (err: HttpErrorResponse) => {
           this.authErr = err.error?.['message'] || 'Something went wrong'
         }
-      );
+      });
   }
 
 
   getToken() {
-    return localStorage.getItem('access_token');
+    return this.tokenService.getToken();
   }
 
   get getUserDetails(): User {
-    const user: User = {
-      id: localStorage.getItem('id')!,
-      name: localStorage.getItem('name')!,
-      email: localStorage.getItem('email')!,
-    }
+    const user: User = this.tokenService.getUser();
     return user;
   }
 
@@ -89,7 +95,7 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    let authToken = localStorage.getItem('access_token');
+    let authToken = this.tokenService.getToken();
 
     if (authToken !== null) {
       // check expiry
@@ -102,8 +108,7 @@ export class AuthService {
   }
 
   doLogout() {
-    const keys = ['id', 'name', 'email', 'access_token'];
-    keys.forEach(key => localStorage.removeItem(key))
+    this.tokenService.signOut();
     window.location.href = '/login'
   }
 
