@@ -80,7 +80,7 @@ router.post("/signin", (req, res, next) => {
                     },
                     process.env.ACCESS_TOKEN_SECRET,
                     {
-                        expiresIn: "60s",
+                        expiresIn: "1h",
                     }
                 );
                 // generate refresh token too at login
@@ -125,7 +125,7 @@ router.post("/token", (req, res, next) => {
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: "60s",
+                expiresIn: "1h",
             }
         );
         res.json({ accessToken, refreshToken })
