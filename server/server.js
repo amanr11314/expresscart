@@ -5,6 +5,7 @@ require('dotenv').config()
 const app = express();
 const auth = require('./auth/auth')
 const backend = require('./backend/core')
+const email = require('./email/email')
 const multer = require("multer")
 
 
@@ -35,6 +36,7 @@ sequelize
 
 app.use(auth)
 app.use(backend)
+app.use(email)
 
 app.set('port', process.env.PORT || 3000)
 
