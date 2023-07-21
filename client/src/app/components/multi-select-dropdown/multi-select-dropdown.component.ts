@@ -94,7 +94,7 @@ export class MultiSelectDropdownComponent implements OnInit {
   }
 
   fetchInitialCart() {
-    this.cartService.fetchCart().subscribe(
+    this.cartService.fetchCartCache().subscribe(
       data => {
         const v = data.cartProducts?.map(
           (val: CartProductsEntity) => val.id

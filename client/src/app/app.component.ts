@@ -17,7 +17,7 @@ export class AppComponent {
   ngOnInit(): void {
     initFlowbite();
 
-    this.cartService.fetchCart().subscribe(
+    this.cartService.fetchCartCache().subscribe(
       data => {
         const count = data.cartProducts?.length
         this.cartService.changeSelectedCount(count!)

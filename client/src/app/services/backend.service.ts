@@ -14,14 +14,6 @@ export class BackendService {
 
   constructor(private http: HttpClient) { }
 
-  // getProducts(params?: any): Observable<any> {
-  //   if (params?.search) {
-  //     return this.http.get<any>(this.apiUrl, { params })
-  //   }
-  //   else
-  //     return this.http.get<any>(this.apiUrl);
-  // }
-
   getProducts(params?: any): Observable<Product[]> {
     if (!this.sharedProducts$) {
       if (params?.search) {

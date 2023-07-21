@@ -12,7 +12,7 @@ export class HeaderComponent {
   searchText: string = '';
 
   @Input()
-  productsList: Product[] = []
+  products$?: Observable<Product[]>;
 
   @Output()
   onProductSearch = new EventEmitter();
@@ -34,10 +34,13 @@ export class HeaderComponent {
 
   onValueChange(val: any) {
     this.searchText = val
+    if (val === '') {
+      this.clearForm();
+    }
   }
 
   // for dropdown
-  onItemChange(count: number) {
+  onItemChange(_: number) {
     // console.log('COUNT = ', count);
   }
 }

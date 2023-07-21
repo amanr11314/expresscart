@@ -27,12 +27,8 @@ export class CartService {
     this.cartSource.next(newCart)
   }
 
-  // fetchCart(): Observable<Cart> {
-  //   return this.http.get<Cart>(this.apiUrl);
-  // }
-
-  fetchCart(): Observable<Cart> {
-    // API potimization: Check if the shared data is already available
+  fetchCartCache(): Observable<Cart> {
+    // API optimization: Check if the shared data is already available
     if (!this.sharedCart$) {
       this.sharedCart$ = this.http.get<Cart>(this.apiUrl)
         .pipe(
@@ -40,6 +36,12 @@ export class CartService {
           shareReplay(1)
         )
     }
+    return this.sharedCart$;
+  }
+
+  fetchCart(): Observable<Cart> {
+    // fetch forced from backend
+    this.sharedCart$ = this.http.get<Cart>(this.apiUrl);
     return this.sharedCart$;
   }
 

@@ -61,25 +61,11 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     // fetch products with filter
     this.searchString = val;
     this.loadProducts(val)
-    // this.backendServiceAllProductsSubscription = this.backendService.getProducts({
-    //   search: this.searchString
-    // }).subscribe(
-    //   (data) => {
-    //     this.productsCopy = [...data['products']]
-    //     return this.products = data['products'] || [];
-    //   }
-    // )
   }
 
   onSearchReset(val: any) {
     this.searchString = '';
     this.loadProducts();
-    // this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
-    //   (data) => {
-    //     this.productsCopy = [...data['products']]
-    //     return this.products = data['products'] || [];
-    //   }
-    // )
   }
 
   ngOnInit(): void {

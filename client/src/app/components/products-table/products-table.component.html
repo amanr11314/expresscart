@@ -1,16 +1,11 @@
 <div class="container px-4 py-2">
   <!-- Here searchbar is not refreshed -->
-  <!-- <app-header
-    [productsList]="[]"
-    (onProductSearch)="onProductSearch($event)"
-    (onSearchReset)="onSearchReset($event)"
-  ></app-header> -->
   <app-header
-    *ngIf="products$ | async as products"
-    [productsList]="products"
+    [products$]="products$"
     (onProductSearch)="onProductSearch($event)"
     (onSearchReset)="onSearchReset($event)"
   ></app-header>
+
   <ng-container *ngIf="products$ | async as products">
     <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
       <table class="table-container">

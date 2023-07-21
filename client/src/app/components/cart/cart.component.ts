@@ -9,18 +9,14 @@ import { BehaviorSubject, Subscription, map, tap, first, Observable, of } from '
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
-  // providers: [CartComponent]
 })
 export class CartComponent implements OnInit {
-  // cart?: Cart;
-  cart: any;
 
   @Input()
   sharedCartService?: CartService
 
   cart$: Observable<Cart | null> = of();
 
-  // constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
     this.fetchInitialCart();
@@ -28,11 +24,6 @@ export class CartComponent implements OnInit {
 
   fetchInitialCart() {
     if (!this.sharedCartService) return;
-    // this.sharedCartService.fetchCart().subscribe(
-    //   data => {
-    //     this.cart = data
-    //   }
-    // )
     this.cart$ = this.sharedCartService.fetchCart()
   }
 
