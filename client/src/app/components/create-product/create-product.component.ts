@@ -115,10 +115,14 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       description,
       price,
     }
-    this.backendServiceSubscription = this.backendService.createProduct(product, this.file).subscribe((response: any) => {
-      console.log(response);
-      window.location.href = '/'
-      // this.router.navigate(['/'])
+    this.backendServiceSubscription = this.backendService.createProduct(product, this.file).subscribe({
+      next: (val) => {
+        console.log('called next after creating ', val);
+      },
+      complete: () => {
+        console.log('called complete after creating product');
+        window.location.href = '/'
+      }
     })
   }
 

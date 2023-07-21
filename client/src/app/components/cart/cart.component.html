@@ -8,25 +8,27 @@
           <th scope="col" class="table-col">Price</th>
         </tr>
       </thead>
-      <tbody>
-        <tr
-          class="bg-white border-b hover:bg-gray-400"
-          *ngFor="let product of cart?.cartProducts; let idx = index"
-        >
-          <td class="px-6 py-4 font-semibold text-gray-900">
-            {{ idx + 1 }}
-          </td>
-          <td class="px-6 py-4 font-semibold text-gray-900">
-            <a [routerLink]="['/product/details', product.id]">{{
-              product.title
-            }}</a>
-          </td>
+      <ng-container *ngIf="cart$ | async as cart">
+        <tbody>
+          <tr
+            class="bg-white border-b hover:bg-gray-400"
+            *ngFor="let product of cart.cartProducts; let idx = index"
+          >
+            <td class="px-6 py-4 font-semibold text-gray-900">
+              {{ idx + 1 }}
+            </td>
+            <td class="px-6 py-4 font-semibold text-gray-900">
+              <a [routerLink]="['/product/details', product.id]">{{
+                product.title
+              }}</a>
+            </td>
 
-          <td class="px-6 py-4 font-semibold text-gray-900">
-            {{ product.price }}
-          </td>
-        </tr>
-      </tbody>
+            <td class="px-6 py-4 font-semibold text-gray-900">
+              {{ product.price }}
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
     </table>
   </div>
 </div>

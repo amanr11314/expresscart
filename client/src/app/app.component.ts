@@ -1,8 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { CartService } from './services/cart.service';
-import { ProductsTableComponent } from './components/products-table/products-table.component';
-import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
 import { CartComponent } from './components/cart/cart.component';
 
 @Component({
@@ -22,16 +20,12 @@ export class AppComponent {
     this.cartService.fetchCart().subscribe(
       data => {
         const count = data.cartProducts?.length
-        console.log('setting count in appmodule initial fetch');
-
         this.cartService.changeSelectedCount(count!)
-
       }
     )
 
     this.cartService.localSelectedItemsCount$.subscribe(
       data => {
-        console.log('called in appmodule count in service = ', data);
         this.cartItemCount = data
       }
     )
@@ -44,3 +38,53 @@ export class AppComponent {
   }
 
 }
+
+/**
+export class AppComponent implements OnInit {
+  users = [
+    { id: '1', name: 'John', isActive: true },
+    { id: '2', name: 'Jack', isActive: true },
+    { id: '2', name: 'Mike', isActive: true },
+  ]
+
+  user$ = new BehaviorSubject<{ id: string, name: string } | null>(null)
+
+  users$ = of(this.users)
+  usernames$ = this.users$.pipe(
+    map((users) => users.map((user) => user.name))
+  )
+  filteredUsers$ = this.users$.pipe(filter((users) => users.every((user) => user.isActive)))
+
+  data$ = combineLatest([
+    this.users$,
+    this.usernames$, this.filteredUsers$
+  ]).pipe(map(
+    ([users, usernames, filteredUsers]) => ({
+      users,
+      usernames,
+      filteredUsers
+    })
+  ))
+
+  // documentClick$ = fromEvent(document, 'click')
+
+  ngOnInit(): void {
+    // this.documentClick$.subscribe(
+    //   e => {
+    //     console.log(e);
+
+    //   }
+    // )
+
+    setTimeout(() => {
+      this.user$.next({ id: '1', name: "John" })
+    }, 2000)
+    // this.filteredUsers$.subscribe(
+    //   (users) => {
+    //     console.log('users', users);
+
+    //   }
+    // )
+  }
+}
+*/

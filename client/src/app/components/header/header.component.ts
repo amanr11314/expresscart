@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Product } from 'src/app/shared/Product';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +12,7 @@ export class HeaderComponent {
   searchText: string = '';
 
   @Input()
-  productsList: any[] = []
+  productsList: Product[] = []
 
   @Output()
   onProductSearch = new EventEmitter();
@@ -19,8 +21,10 @@ export class HeaderComponent {
   onSearchReset = new EventEmitter();
 
   onSubmitSearch() {
-    console.log('searchtext = ', this.searchText);
-    this.onProductSearch.emit(this.searchText);
+    if (!!this.searchText.trim()) {
+      console.log('searchtext = ', this.searchText);
+      this.onProductSearch.emit(this.searchText);
+    }
   }
 
   clearForm() {
@@ -34,6 +38,6 @@ export class HeaderComponent {
 
   // for dropdown
   onItemChange(count: number) {
-    console.log('COUNT = ', count);
+    // console.log('COUNT = ', count);
   }
 }

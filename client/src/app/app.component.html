@@ -2,3 +2,39 @@
   <app-navigation [cartItemCount]="cartItemCount"></app-navigation>
   <router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
 </div>
+
+<!-- Using combine latest -->
+<!-- <div *ngIf="data$ | async as data">
+  <div *ngFor="let user of data.users">
+    {{ user.name }}
+  </div>
+
+  <div>--------</div>
+
+  <div *ngFor="let username of data.usernames">
+    {{ username }}
+  </div>
+
+  <div>--------</div>
+
+  <div *ngFor="let user of data.filteredUsers">
+    {{ user.name }}
+  </div>
+</div> -->
+
+<!-- <div *ngFor="let user of users$ | async">
+  {{ user.name }}
+</div>
+
+<div *ngFor="let username of usernames$ | async">
+  {{ username }}
+</div> -->
+
+<!-- <div *ngFor="let user of filteredUsers$ | async">
+  {{ user.name }}
+</div> -->
+
+<!-- <div *ngIf="user$ | async as user">
+  {{ user.name }}
+</div> -->
+<!-- </div> -->

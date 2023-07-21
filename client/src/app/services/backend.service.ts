@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http'
-import { Observable, retry } from 'rxjs'
+import { HttpClient, HttpRequest } from '@angular/common/http'
+import { Observable, map, shareReplay } from 'rxjs'
 import { Product } from '../shared/Product';
 
 @Injectable({
@@ -10,14 +10,40 @@ export class BackendService {
 
   private apiUrl = 'http://localhost:3000'
 
+  private sharedProducts$?: Observable<Product[]>;
+
   constructor(private http: HttpClient) { }
 
-  getProducts(params?: any): Observable<any> {
-    if (params?.search) {
-      return this.http.get<any>(this.apiUrl, { params })
+  // getProducts(params?: any): Observable<any> {
+  //   if (params?.search) {
+  //     return this.http.get<any>(this.apiUrl, { params })
+  //   }
+  //   else
+  //     return this.http.get<any>(this.apiUrl);
+  // }
+
+  getProducts(params?: any): Observable<Product[]> {
+    if (!this.sharedProducts$) {
+      if (params?.search) {
+        return this.http.get<any>(this.apiUrl, { params })
+          .pipe(
+            map((data: { products: Product[] }) => {
+              return data.products
+            }),
+            shareReplay(1)
+          )
+      }
+      else {
+        return this.http.get<any>(this.apiUrl)
+          .pipe(
+            map((data: { products: Product[] }) => {
+              return data.products
+            }),
+            shareReplay(1)
+          )
+      }
     }
-    else
-      return this.http.get<any>(this.apiUrl);
+    return this.sharedProducts$;
   }
 
   getProductDetail(id: number): Observable<any> {

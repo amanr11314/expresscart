@@ -16,10 +16,14 @@ export class MultiSelectDropdownComponent implements OnInit {
   constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
+    this.list = [...this.productList];
     this.fetchInitialCart();
   }
 
-  @Input() list: any[] = [];
+  @Input() productList: any[] = [];
+
+  list: any[] = []
+
   selectedOptions: string[] = [];
 
   showDropDown = false;
@@ -43,12 +47,12 @@ export class MultiSelectDropdownComponent implements OnInit {
       this.cartService.addToCart(option.id).subscribe(
         {
           next(value) {
-            console.log(option.title + ' added to cart ');
-            console.log(value);
+            // console.log(option.title + ' added to cart ');
+            // console.log(value);
           },
           error(err) {
-            console.log(option.title + ' not added to cart ');
-            console.log(err);
+            // console.log(option.title + ' not added to cart ');
+            // console.log(err);
           },
         }
       )
@@ -67,12 +71,12 @@ export class MultiSelectDropdownComponent implements OnInit {
       this.cartService.removeFromCart(option.id).subscribe(
         {
           next(value) {
-            console.log(option.title + ' removed from cart ');
-            console.log(value);
+            // console.log(option.title + ' removed from cart ');
+            // console.log(value);
           },
           error(err) {
-            console.log(option.title + ' not removed from cart ');
-            console.log(err);
+            // console.log(option.title + ' not removed from cart ');
+            // console.log(err);
           },
         }
       )
@@ -83,8 +87,7 @@ export class MultiSelectDropdownComponent implements OnInit {
     this.cartService.changeSelectedCount(this.selectedOptions.length)
     this.cartService.localSelectedItemsCount$.subscribe(
       data => {
-        console.log('changed in service', data);
-
+        // console.log('changed in service', data);
       }
     )
 
@@ -97,7 +100,6 @@ export class MultiSelectDropdownComponent implements OnInit {
           (val: CartProductsEntity) => val.id
         );
         this.selectedOptions = v!;
-        console.log('setting count in initial fetch');
 
         this.cartService.changeSelectedCount(this.selectedOptions.length)
         // maintain selected products at top

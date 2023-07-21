@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, map, tap, first, Observable, of, shareReplay } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -15,16 +15,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
-  backendServiceAllProductsSubscription?: Subscription;
   backendServiceDeleteProductSubscription?: Subscription;
 
   currentUser?: User
 
   searchString: string = '';
 
-
-  products: Product[] = [];
-  productsCopy: Product[] = [];
+  products$: Observable<Product[]> = of([]);
 
   previewModal?: Modal
   previewProduct?: Product
@@ -49,39 +46,45 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     private actRoute: ActivatedRoute
   ) { }
 
+  loadProducts(query?: string) {
+    if (query) {
+      const params = {
+        search: query
+      }
+      this.products$ = this.backendService.getProducts(params)
+    } else {
+      this.products$ = this.backendService.getProducts()
+    }
+  }
+
   onProductSearch(val: string) {
     // fetch products with filter
     this.searchString = val;
-    this.backendServiceAllProductsSubscription = this.backendService.getProducts({
-      search: this.searchString
-    }).subscribe(
-      (data) => {
-        this.productsCopy = [...data['products']]
-        return this.products = data['products'] || [];
-      }
-    )
+    this.loadProducts(val)
+    // this.backendServiceAllProductsSubscription = this.backendService.getProducts({
+    //   search: this.searchString
+    // }).subscribe(
+    //   (data) => {
+    //     this.productsCopy = [...data['products']]
+    //     return this.products = data['products'] || [];
+    //   }
+    // )
   }
 
   onSearchReset(val: any) {
     this.searchString = '';
-    this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
-      (data) => {
-        this.productsCopy = [...data['products']]
-        return this.products = data['products'] || [];
-      }
-    )
+    this.loadProducts();
+    // this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
+    //   (data) => {
+    //     this.productsCopy = [...data['products']]
+    //     return this.products = data['products'] || [];
+    //   }
+    // )
   }
 
   ngOnInit(): void {
-    this.backendServiceAllProductsSubscription = this.backendService.getProducts().subscribe(
-      (data) => {
-        this.productsCopy = [...data['products']]
-        return this.products = data['products'] || [];
-      }
-    )
-
+    this.loadProducts()
     this.initDeleteModal();
-
     this.initPreviewModal();
 
   }
@@ -151,7 +154,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       this.backendServiceDeleteProductSubscription = this.backendService.deleteProduct(productId).subscribe(
         (response: any) => {
           console.log(response)
-          this.products = this.products.filter(item => item.id != productId)
+          this.loadProducts();
+          // this.products = this.products.filter(item => item.id != productId)
           this.deleteModal?.hide();
         }
       )
@@ -159,9 +163,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.backendServiceAllProductsSubscription) {
-      this.backendServiceAllProductsSubscription.unsubscribe();
-    }
     if (this.backendServiceDeleteProductSubscription) {
       this.backendServiceDeleteProductSubscription.unsubscribe();
     }
