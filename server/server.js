@@ -1,5 +1,7 @@
 const express = require('express')
 const cors = require('cors')
+const swaggerJsdoc = require("swagger-jsdoc")
+const swaggerUi = require("swagger-ui-express")
 require('dotenv').config()
 
 const app = express();
@@ -39,6 +41,44 @@ app.use(backend)
 app.use(email)
 
 app.set('port', process.env.PORT || 3000)
+
+const options = {
+    definition: {
+        openapi: "3.1.0",
+        info: {
+            title: "Expresscart API with Swagger",
+            version: "0.1.0",
+            description:
+                "This is a simple CRUD API application made with Express and documented with Swagger",
+            license: {
+                name: "MIT",
+                url: "https://spdx.org/licenses/MIT.html",
+            },
+            contact: {
+                name: "LogRocket",
+                url: "https://logrocket.com",
+                email: "info@email.com",
+            },
+        },
+        servers: [
+            {
+                url: "http://localhost:3000",
+            },
+        ],
+    },
+    // apis: ["./routes/*.js"],
+    apis: [
+        "./auth/routes.js",
+        "./backend/routes/home.js"
+    ]
+};
+const specs = swaggerJsdoc(options);
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs, { explorer: true })
+);
+
 
 app.listen(app.get('port'), function () {
     console.log(`Server listening on port ${app.get('port')}`)
