@@ -68,6 +68,7 @@ export class AuthService {
             next: (data) => {
               this.authErr = null;
               const user: User = data['data']
+              console.log('userdetails= ', user)
               // save user details
               this.tokenService.saveUser(user);
               this.isLoggedInSubject.next(true)
@@ -93,6 +94,7 @@ export class AuthService {
 
   get getUserDetails(): User {
     const user: User = this.tokenService.getUser();
+    console.log(user);
     return user;
   }
 

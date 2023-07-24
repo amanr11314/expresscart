@@ -36,11 +36,15 @@ export class TokenService {
 
   public saveUser(user: User): void {
     localStorage.removeItem(USER_KEY);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    const _user = JSON.stringify(user)
+    console.log('setting user = ', _user);
+    localStorage.setItem(USER_KEY, _user);
   }
 
   public getUser(): any {
     const user = localStorage.getItem(USER_KEY);
+    console.log('getting user= ', user);
+
     if (user) {
       return JSON.parse(user);
     }
