@@ -18,17 +18,18 @@
       </svg>
     </div>
 
-    <form id="searchForm" action="#" method="get" (ngSubmit)="onSubmitSearch()">
-      <input
-        type="text"
-        id="query"
-        class="input-search-box"
-        placeholder="Search Product"
-        name="query"
-        [(ngModel)]="searchText"
-        (ngModelChange)="onValueChange($event)"
-      />
-    </form>
+    <!-- <form id="searchForm" action="#" method="get" (ngSubmit)="onSubmitSearch()"> -->
+    <input
+      type="text"
+      id="query"
+      class="input-search-box"
+      placeholder="Search Product"
+      name="query"
+      [(ngModel)]="searchText"
+      (ngModelChange)="onValueChange($event)"
+      (input)="onSearchQueryInput($event)"
+    />
+    <!-- </form> -->
 
     <div
       *ngIf="searchText.trim().length"
