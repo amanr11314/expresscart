@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { BehaviorSubject, Subscription, map, tap, first, Observable, of, shareReplay } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
