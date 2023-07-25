@@ -47,18 +47,7 @@
         </div>
         <div class="mt-2 text-xs error-container">
           <p class="error-msg msg">
-            {{ 
-              (formLoginUser?.get('email')?.invalid &&
-              (formLoginUser?.get('email')?.dirty ||
-                formLoginUser?.get('email')?.touched) &&
-              formLoginUser.get('email')?.errors) 
-              ?
-              (formLoginUser.get('email')?.errors?.['required'] ?
-                  "Email is required" :
-                  (formLoginUser.get('email')?.errors?.['email']) ?
-                  "Email must be a valid email address" : "") : 
-              ""
-            }}
+            {{ getEmailError }}
           </p>
         </div>
       </div>
@@ -81,18 +70,7 @@
         </div>
         <div class="mt-2 text-xs error-container">
           <p class="error-msg msg">
-            {{ 
-              (formLoginUser?.get('password')?.invalid &&
-              (formLoginUser?.get('password')?.dirty ||
-              formLoginUser?.get('password')?.touched) &&
-              formLoginUser.get('password')?.errors) 
-              ?
-              (formLoginUser.get('password')?.errors?.['required'] ? 
-              "Password is required" :
-              (formLoginUser.get('password')?.errors?.['minLength']) ?
-              "Password must be at least 6 characters long" : "") :
-            ""
-            }}
+            {{ getPasswordError }}
           </p>
         </div>
       </div>

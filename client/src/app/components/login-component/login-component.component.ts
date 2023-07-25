@@ -52,4 +52,30 @@ export class LoginComponentComponent implements OnInit {
     }
   }
 
+  get getEmailError() {
+    return (this.formLoginUser?.get('email')?.invalid &&
+      (this.formLoginUser?.get('email')?.dirty ||
+        this.formLoginUser?.get('email')?.touched) &&
+      this.formLoginUser.get('email')?.errors)
+      ?
+      (this.formLoginUser.get('email')?.errors?.['required'] ?
+        "Email is required" :
+        (this.formLoginUser.get('email')?.errors?.['email']) ?
+          "Email must be a valid email address" : "") :
+      "";
+  }
+
+  get getPasswordError() {
+    return (this.formLoginUser?.get('password')?.invalid &&
+      (this.formLoginUser?.get('password')?.dirty ||
+        this.formLoginUser?.get('password')?.touched) &&
+      this.formLoginUser.get('password')?.errors)
+      ?
+      (this.formLoginUser.get('password')?.errors?.['required'] ?
+        "Password is required" :
+        (this.formLoginUser.get('password')?.errors?.['minlength']) ?
+          "Password must be at least 6 characters long" : "") :
+      ""
+  }
+
 }
