@@ -16,7 +16,9 @@ export class BackendService {
 
   getProducts(params?: any): Observable<Product[]> {
     if (!this.sharedProducts$) {
-      if (params?.search) {
+
+      if (params?.search || params?.order) {
+
         return this.http.get<any>(this.apiUrl, { params })
           .pipe(
             map((data: { products: Product[] }) => {
@@ -26,6 +28,7 @@ export class BackendService {
           )
       }
       else {
+
         return this.http.get<any>(this.apiUrl)
           .pipe(
             map((data: { products: Product[] }) => {

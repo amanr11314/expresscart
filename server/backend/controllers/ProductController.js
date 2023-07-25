@@ -2,8 +2,9 @@ const { Product, User, Op } = require('../models')
 
 exports.getAllProducts = async (req, res) => {
     const query = req.query['search'];
-    console.log(JSON.stringify(query));
-    console.log('query = ', query)
+    const sortCol = req.query['col'] || 'updatedAt';
+    const sortOrder = req.query['order'] || 'DESC';
+    console.log({ sortOrder });
     let products;
     if (query) {
         products = await Product.findAll({
@@ -12,10 +13,18 @@ exports.getAllProducts = async (req, res) => {
                 title: {
                     [Op.iLike]: '%' + query + '%'
                 }
-            }
+            },
+            order: [
+                [sortCol, sortOrder.toUpperCase()],
+            ]
         })
     } else {
-        products = await Product.findAll({ include: [{ model: User }] })
+        products = await Product.findAll({
+            include: [{ model: User }],
+            order: [
+                [sortCol, sortOrder.toUpperCase()],
+            ]
+        })
     }
 
     const resp = {

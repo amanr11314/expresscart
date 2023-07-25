@@ -30,6 +30,12 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   deleteModal?: Modal
   deleteProduct?: Product;
 
+  /**
+   * -1 ASC
+   *  1 DESC
+   */
+  sortOrder = 0;
+
   getThumbnailURL(product: Product) {
 
     if (product) {
@@ -49,24 +55,38 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   loadProducts(query?: string) {
     this.SpinnerServcie.show();
-    if (query) {
-      const params = {
-        search: query
-      }
-      this.products$ = this.backendService.getProducts(params).pipe(
-        tap((data) => this.SpinnerServcie.hide())
-      )
-    } else {
-      this.products$ = this.backendService.getProducts().pipe(
-        tap((data) => this.SpinnerServcie.hide())
-      )
+    // if (query) {
+    const params = {}
+
+    if (this.sortOrder) {
+      Object.assign(params, {
+        order: this.sortOrder === -1 ? 'ASC' : 'DESC',
+        col: 'title'
+      })
     }
+    if (this.searchString.trim().length > 0) {
+      Object.assign(params, { search: this.searchString })
+    }
+
+    this.products$ = this.backendService.getProducts(params).pipe(
+      tap((data) => this.SpinnerServcie.hide())
+    )
+  }
+
+  onSortClick = (val: any) => {
+    if (this.sortOrder) {
+      this.sortOrder *= -1;
+    } else {
+      this.sortOrder = -1;
+    }
+
+    this.loadProducts();
   }
 
   onProductSearch(val: string) {
     // fetch products with filter
     this.searchString = val;
-    this.loadProducts(val)
+    this.loadProducts()
   }
 
   onSearchReset(val: any) {
