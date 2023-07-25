@@ -84,7 +84,11 @@ export class EditProductComponent implements OnInit, OnDestroy {
     this.subRoute = this.route.params.subscribe(
       params => {
         this.id = +params['id'];
+
+        // disable form interaction while product is loaded
+        this.formEditProduct.disable();
         this.isLoadingProduct = true;
+
         this.backendServiceSubscription = this.backendService.getProductDetail(this.id).subscribe({
           next: (data) => {
             console.log(JSON.stringify(data))
@@ -100,9 +104,13 @@ export class EditProductComponent implements OnInit, OnDestroy {
           },
           complete: () => {
             this.isLoadingProduct = false;
+            // enable form interaction once product is loaded
+            this.formEditProduct.enable();
           },
           error: () => {
             this.isLoadingProduct = false;
+            // enable form interaction once product is loaded
+            this.formEditProduct.enable();
           }
         }
         )
@@ -193,6 +201,56 @@ export class EditProductComponent implements OnInit, OnDestroy {
       form.markAllAsTouched();
       form.markAsDirty();
     }
+  }
+
+  get getProductNameError() {
+    const formCreateProduct = this.formEditProduct
+    return (
+      formCreateProduct?.get('title')?.invalid &&
+        (formCreateProduct?.get('title')?.dirty ||
+          formCreateProduct?.get('title')?.touched) &&
+        formCreateProduct.get('title')?.errors
+        ?
+        (formCreateProduct.get('title')?.errors?.['required']) ?
+          "Name is required" :
+          (formCreateProduct.get('title')?.errors?.['noWhitespaceMinLength']) ?
+            "Name must be at least 4 characters long" : ""
+        : ""
+    )
+  }
+
+  get getProductDescError() {
+    const formCreateProduct = this.formEditProduct
+
+    return (
+      formCreateProduct?.get('description')?.invalid &&
+        (formCreateProduct?.get('description')?.dirty ||
+          formCreateProduct?.get('description')?.touched) &&
+        formCreateProduct.get('description')?.errors
+        ?
+        (formCreateProduct.get('description')?.errors?.['required']) ?
+          "Description is required" :
+          (formCreateProduct.get('description')?.errors?.['noWhitespaceMinLength']) ?
+            "Description must be at least 6 characters long" : ""
+        : ""
+    )
+  }
+
+  get getProductPriceError() {
+    const formCreateProduct = this.formEditProduct
+
+    return (
+      formCreateProduct?.get('price')?.invalid &&
+        (formCreateProduct?.get('price')?.dirty ||
+          formCreateProduct?.get('price')?.touched) &&
+        formCreateProduct.get('price')?.errors
+        ?
+        (formCreateProduct.get('price')?.errors?.['required']) ?
+          "Price is required" :
+          (formCreateProduct.get('price')?.errors?.['min']) ?
+            "Price value must be greater than 0" : ""
+        : ""
+    )
   }
 
 }

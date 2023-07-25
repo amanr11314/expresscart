@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs';
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
 
+  isLoading = true;
+
 
   private backendServiceSubscription?: Subscription;
   private routeSubscription?: Subscription;
@@ -37,17 +39,24 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private backendService: BackendService) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.routeSubscription = this.route.params.subscribe(
       params => {
         this.id = +params['id'];
       }
     )
-    this.backendServiceSubscription = this.backendService.getProductDetail(this.id!).subscribe(
-      (data) => {
+    this.backendServiceSubscription = this.backendService.getProductDetail(this.id!).subscribe({
+      next: (data) => {
         console.log(JSON.stringify(data))
         return this.productDetails = data['product']
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
       }
-    )
+    })
   }
 
   ngOnDestroy(): void {
