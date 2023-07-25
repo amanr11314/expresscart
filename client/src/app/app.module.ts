@@ -23,6 +23,7 @@ import { MultiSelectDropdownComponent } from './components/multi-select-dropdown
 import { PreviewModalComponent } from './components/preview-modal/preview-modal.component';
 import { CartComponent } from './components/cart/cart.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { AddCartComponent } from './components/add-cart/add-cart.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MultiSelectDropdownComponent,
     PreviewModalComponent,
     CartComponent,
+    AddCartComponent,
   ],
   imports: [
     BrowserModule,

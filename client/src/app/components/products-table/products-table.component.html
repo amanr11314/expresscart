@@ -4,7 +4,7 @@
     [products$]="products$"
     (onProductSearch)="onProductSearch($event)"
     (onSearchReset)="onSearchReset($event)"
-    (onAddToCart)="onAddToCart($event)"
+    (onAddToCart)="showCartModal($event)"
   ></app-header>
 
   <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
@@ -141,3 +141,9 @@
 ></app-delete-dialog>
 
 <app-preview-modal [previewProduct]="previewProduct"> </app-preview-modal>
+
+<app-add-cart
+  (btnConfirmClick)="handleConfirmAddToCart()"
+  (hideCartModal)="hideCartModal()"
+  [itemCount]="checkedList.length"
+></app-add-cart>

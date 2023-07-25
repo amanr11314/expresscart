@@ -64,6 +64,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   deleteModal?: Modal
   deleteProduct?: Product;
 
+  cartModal?: Modal;
+
   /**
    * -1 ASC
    *  1 DESC
@@ -138,13 +140,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     this.loadProducts()
   }
 
-  onAddToCart(val: any) {
-    console.log('adding items to cart');
-    console.log(this.checkedList);
-    // TODO: create add to cart modal
-    // pass data to modal with info of product count which user wants to add to cart
-  }
-
   onSearchReset(val: any) {
     this.searchString = '';
     this.loadProducts();
@@ -154,6 +149,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     this.loadProducts()
     this.initDeleteModal();
     this.initPreviewModal();
+    this.initCartModal();
   }
 
   initDeleteModal() {
@@ -202,6 +198,29 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     this.previewModal = new Modal($modal, options)
   }
 
+  initCartModal() {
+    const $modal = document.getElementById('popup-modal-cart');
+
+    // options with default values
+    const options: ModalOptions = {
+      placement: 'top-center',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+      closable: true,
+      onHide: () => {
+        console.log('modal is hidden');
+        document.querySelector('body > :last-child')?.remove();
+      },
+      onShow: () => {
+        console.log('modal is shown');
+      },
+      onToggle: () => {
+        console.log('modal has been toggled');
+      }
+    };
+    this.cartModal = new Modal($modal, options)
+  }
+
   showPreview(_product: Product) {
     console.log('called show preview');
 
@@ -227,6 +246,24 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
         }
       )
     }
+  }
+
+  showCartModal(val: any) {
+    console.log('adding items to cart');
+    console.log(this.checkedList);
+    this.cartModal?.show();
+
+    // show cart modal here
+    // TODO: create add to cart modal
+    // pass data to modal with info of product count which user wants to add to cart
+  }
+
+  handleConfirmAddToCart() {
+    this.hideCartModal();
+  }
+
+  hideCartModal() {
+    this.cartModal?.hide();
   }
 
   ngOnDestroy(): void {
