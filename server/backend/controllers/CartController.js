@@ -84,6 +84,46 @@ exports.addToCart = async (req, res) => {
     }
 }
 
+exports.addBulkToCart = async (req, res) => {
+
+    const productIds = req.body?.productIds || []
+    console.log('productsids = ', productIds);
+
+    let cart = await req?.user?.getCart();
+    let cartProducts = []
+
+    if (!cart) {
+        // creates record in Carts table with userId as req?.user?.userId
+        cart = await req?.user.createCart();
+    } else {
+        cartProducts = await cart?.getProducts();
+    }
+
+    let fetchedCart = cart;
+
+    // filter productIds whose product does not exist in cartProducts
+    const productsToAdd = productIds.filter((productId) => {
+        // Check if the productId is not present in any of the cartProducts' ids
+        return !cartProducts.some((cartProduct) => cartProduct.id === productId);
+    })
+
+    if (productsToAdd.length > 0) {
+
+        const resp = await fetchedCart.addProducts(productsToAdd, {
+            through: { quantity: 1 }
+        })
+
+        res.send({
+            status: 'Added ' + productsToAdd.length + ' items to cart',
+            count: productsToAdd.length
+        })
+    } else {
+        res.send({
+            status: 'Items already in cart'
+        })
+    }
+}
+
 exports.deleteCartItem = async (req, res) => {
     const productId = req.body?.productId;
     const fetchedCart = await req?.user?.getCart();

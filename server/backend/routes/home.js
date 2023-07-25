@@ -113,7 +113,7 @@ const express = require('express')
 const { validateProductId } = require('../middlewares/index')
 const withUploadFile = require("../middlewares/upload")
 const { check } = require('express-validator')
-const { addToCart, deleteCartItem, getCart } = require('../controllers/CartController')
+const { addToCart, deleteCartItem, getCart, addBulkToCart } = require('../controllers/CartController')
 const { getAllProducts, getProductDetail, createProduct, editProduct, deleteProduct } = require('../controllers/ProductController')
 const { authorize } = require('../../auth/middleware')
 const { thumbnail } = require('../middlewares/thumbnail')
@@ -132,6 +132,7 @@ router.post('/product/edit', authorize, withUploadFile.upload('file'), editProdu
 router.post('/product/delete', authorize, validateProductId, deleteProduct)
 
 router.post('/cart', authorize, addToCart);
+router.post('/cart/bulk', authorize, addBulkToCart);
 router.get('/cart', authorize, getCart);
 router.post('/cart/remove', authorize, deleteCartItem);
 
