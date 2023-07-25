@@ -80,4 +80,69 @@ export class RegisterComponentComponent {
       this.formSignupUser.markAllAsTouched();
     }
   }
+
+  get getNameError() {
+    return (this.formSignupUser?.get('name')?.invalid &&
+      (this.formSignupUser?.get('name')?.dirty ||
+        this.formSignupUser?.get('name')?.touched) &&
+      this.formSignupUser.get('name')?.errors)
+      ?
+      (this.formSignupUser.get('name')?.errors?.['required']) ?
+        "Name is required" :
+        (this.formSignupUser.get('name')?.errors?.['minLength']) ?
+          "Name must be at least 4 characters long" : "" :
+      "";
+  }
+
+  get getEmailError() {
+    return (this.formSignupUser?.get('email')?.invalid &&
+      (this.formSignupUser?.get('email')?.dirty ||
+        this.formSignupUser?.get('email')?.touched) &&
+      this.formSignupUser.get('email')?.errors)
+      ?
+      (this.formSignupUser.get('email')?.errors?.['required'] ?
+        "Email is required" :
+        (this.formSignupUser.get('email')?.errors?.['email']) ?
+          "Email must be a valid email address" : "") :
+      "";
+  }
+
+  get getPasswordError() {
+    const formSignupUser = this.formSignupUser;
+    return (
+      (formSignupUser?.get('password')?.invalid &&
+        (formSignupUser?.get('password')?.dirty ||
+          formSignupUser?.get('password')?.touched)) &&
+        formSignupUser.get('password')?.errors
+        ?
+        ((formSignupUser.get('password')?.errors?.['required']) ?
+          "Password is required" :
+          (formSignupUser.get('password')?.errors?.['minlength']) ?
+            "Password must be at least 6 characters long" : "") :
+        ""
+    );
+  }
+
+  get getConfirmPasswordError() {
+    const formSignupUser = this.formSignupUser;
+    const passowrdMatches = this.passowrdMatches;
+
+    return (
+      (formSignupUser?.get('confirm_password')?.invalid ||
+        !passowrdMatches) &&
+        (formSignupUser?.get('confirm_password')?.dirty ||
+          formSignupUser?.get('confirm_password')?.touched) &&
+        (formSignupUser.get('confirm_password')?.errors || !passowrdMatches)
+        ?
+        (formSignupUser.get('confirm_password')?.errors?.['required']) ?
+          "Confirm Password is required" :
+          !passowrdMatches ?
+            "Password doesn't match." : "" :
+        ""
+
+    )
+  }
+
+
+
 }
