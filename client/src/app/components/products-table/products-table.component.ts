@@ -16,6 +16,40 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
+  list: any[] = []
+  checkedList: any[] = [];
+
+
+  onChange(item: Product) {
+    const checked = this.checkedList.includes(item.id)
+    if (!checked) {
+      // add to checked list
+      this.checkedList.push(item.id!);
+    } else {
+      // remove from checked list
+      this.checkedList.splice(this.checkedList.indexOf(item.id), 1);
+    }
+    console.log('checked list: ');
+    console.log(this.checkedList);
+
+  }
+
+  isAllSelected = false;
+
+  handleAllSelected(val: any) {
+
+    if (val) {
+      // select all by pushing id
+      this.checkedList = this.list.map(item => item.id)
+    } else {
+      this.checkedList = []
+    }
+
+    console.log('allselected: ', val);
+    console.log(this.checkedList);
+
+  }
+
   backendServiceDeleteProductSubscription?: Subscription;
 
   currentUser?: User
@@ -69,7 +103,22 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     }
 
     this.products$ = this.backendService.getProducts(params).pipe(
-      tap((data) => this.SpinnerServcie.hide())
+      tap((data) => {
+        console.log(data);
+        const newList: any[] = [...data]
+
+        // maintain checked list
+        newList.forEach(
+          (item, idx) => {
+            if (this.checkedList.includes(item.id)) {
+              newList[idx].checked = true;
+            }
+          }
+        )
+        this.list = newList
+
+        this.SpinnerServcie.hide()
+      })
     )
   }
 
@@ -87,6 +136,13 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     // fetch products with filter
     this.searchString = val;
     this.loadProducts()
+  }
+
+  onAddToCart(val: any) {
+    console.log('adding items to cart');
+    console.log(this.checkedList);
+    // TODO: create add to cart modal
+    // pass data to modal with info of product count which user wants to add to cart
   }
 
   onSearchReset(val: any) {

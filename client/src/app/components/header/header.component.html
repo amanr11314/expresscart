@@ -63,6 +63,12 @@
   >
   </app-multi-select-dropdown>
 
+  <div class="text-right">
+    <button class="mt-2 btn-action-primary" (click)="onAddCart($event)">
+      Add to Cart
+    </button>
+  </div>
+
   <!-- {{-- Add new product --}} -->
   <div class="text-right">
     <a [routerLink]="['/product/create']" class="mt-2 btn-action-primary"

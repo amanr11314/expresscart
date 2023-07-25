@@ -23,6 +23,9 @@ export class HeaderComponent implements OnInit {
   @Output()
   onSearchReset = new EventEmitter();
 
+  @Output()
+  onAddToCart = new EventEmitter();
+
   onSubmitSearch() {
     if (!!this.searchText.trim()) {
       console.log('searchtext = ', this.searchText);
@@ -63,5 +66,9 @@ export class HeaderComponent implements OnInit {
   // for dropdown
   onItemChange(_: number) {
     // console.log('COUNT = ', count);
+  }
+
+  onAddCart(val: any) {
+    this.onAddToCart.emit();
   }
 }

@@ -4,12 +4,26 @@
     [products$]="products$"
     (onProductSearch)="onProductSearch($event)"
     (onSearchReset)="onSearchReset($event)"
+    (onAddToCart)="onAddToCart($event)"
   ></app-header>
 
   <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
     <table class="table-container">
       <thead class="table-col-container">
         <tr>
+          <th scope="col" class="p-4">
+            <div class="flex items-center">
+              <input
+                id="checkbox-all"
+                type="checkbox"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                [(ngModel)]="isAllSelected"
+                (change)="handleAllSelected(isAllSelected)"
+                [checked]="checkedList.length === list.length"
+              />
+              <label for="checkbox-all" class="sr-only">checkbox</label>
+            </div>
+          </th>
           <th scope="col" class="table-col">Id</th>
           <th scope="col" class="table-col">Thumbnail</th>
           <th scope="col" class="table-col">
@@ -36,6 +50,18 @@
           class="bg-white border-b hover:bg-gray-400"
           *ngFor="let product of products; let idx = index"
         >
+          <td class="w-4 p-4">
+            <div class="flex items-center">
+              <input
+                id="{{ 'checkbox-table-' + idx }}"
+                type="checkbox"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                [checked]="isAllSelected || checkedList.includes(product.id)"
+                (change)="onChange(list[idx])"
+              />
+              <label for="checkbox-table-1" class="sr-only">checkbox</label>
+            </div>
+          </td>
           <td class="px-6 py-4 font-semibold text-gray-900">
             {{ idx + 1 }}
           </td>
