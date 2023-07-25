@@ -25,6 +25,7 @@ export class AuthGuard {
       // window.alert('Access not allowed!');
       const navigationExtras: NavigationExtras = { state: { msg: 'Please login to continue' } };
       this.router.navigate(['login'], navigationExtras);
+      return false;
       // this.router.navigate(['login']);
     }
     return true;
