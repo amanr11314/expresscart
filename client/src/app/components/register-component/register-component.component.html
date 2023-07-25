@@ -100,13 +100,13 @@
           <p *ngIf="formSignupUser.get('password')?.errors" class="error-msg">
             {{ (formSignupUser.get('password')?.errors?.['required']) ? 
               "Password is required" :
-              (formSignupUser.get('password')?.errors?.['minLength']) ?
+              (formSignupUser.get('password')?.errors?.['minlength']) ?
               "Password must be at least 6 characters long" : ""
             }}
           </p>
-          <p *ngIf="!passowrdMatches" class="error-msg">
+          <!-- <p *ngIf="!passowrdMatches" class="error-msg">
             Password doesn't match.
-          </p>
+          </p> -->
         </div>
       </div>
 
@@ -135,17 +135,17 @@
           "
         >
           <p
-            *ngIf="formSignupUser.get('confirm_password')?.errors"
+            *ngIf="
+              formSignupUser.get('confirm_password')?.errors || !passowrdMatches
+            "
             class="error-msg"
           >
-            {{ (formSignupUser.get('confirm_password')?.errors?.['required']) ? 
+            {{ 
+              (formSignupUser.get('confirm_password')?.errors?.['required']) ? 
               "Confirm Password is required" :
-              (formSignupUser.get('confirm_password')?.errors?.['minLength']) ?
-              "Password must be at least 6 characters long" : ""
+              !passowrdMatches ?
+              "Password doesn't match." : ""
             }}
-          </p>
-          <p *ngIf="!passowrdMatches" class="error-msg">
-            Password doesn't match.
           </p>
         </div>
       </div>
