@@ -45,18 +45,19 @@
             formControlName="email"
           />
         </div>
-        <div
-          *ngIf="
-            formLoginUser?.get('email')?.invalid &&
-            (formLoginUser?.get('email')?.dirty ||
-              formLoginUser?.get('email')?.touched)
-          "
-        >
-          <p *ngIf="formLoginUser.get('email')?.errors" class="error-msg">
-            {{ (formLoginUser.get('email')?.errors?.['required']) ?
-                "Email is required" :
-                (formLoginUser.get('email')?.errors?.['email']) ?
-                "Email must be a valid email address" : ""
+        <div class="mt-2 text-xs error-container">
+          <p class="error-msg msg">
+            {{ 
+              (formLoginUser?.get('email')?.invalid &&
+              (formLoginUser?.get('email')?.dirty ||
+                formLoginUser?.get('email')?.touched) &&
+              formLoginUser.get('email')?.errors) 
+              ?
+              (formLoginUser.get('email')?.errors?.['required'] ?
+                  "Email is required" :
+                  (formLoginUser.get('email')?.errors?.['email']) ?
+                  "Email must be a valid email address" : "") : 
+              ""
             }}
           </p>
         </div>
@@ -78,45 +79,26 @@
             formControlName="password"
           />
         </div>
-        <div
-          *ngIf="
-            formLoginUser?.get('password')?.invalid &&
-            (formLoginUser?.get('password')?.dirty ||
-              formLoginUser?.get('password')?.touched)
-          "
-        >
-          <p *ngIf="formLoginUser.get('password')?.errors" class="error-msg">
-            {{ (formLoginUser.get('password')?.errors?.['required']) ? 
+        <div class="mt-2 text-xs error-container">
+          <p class="error-msg msg">
+            {{ 
+              (formLoginUser?.get('password')?.invalid &&
+              (formLoginUser?.get('password')?.dirty ||
+              formLoginUser?.get('password')?.touched) &&
+              formLoginUser.get('password')?.errors) 
+              ?
+              (formLoginUser.get('password')?.errors?.['required'] ? 
               "Password is required" :
               (formLoginUser.get('password')?.errors?.['minLength']) ?
-              "Password must be at least 6 characters long" : ""
+              "Password must be at least 6 characters long" : "") :
+            ""
             }}
           </p>
         </div>
       </div>
 
-      <!-- Remember Me -->
-      <!-- <div class="block mt-4">
-        <label for="remember_me" class="inline-flex items-center">
-          <input
-            id="remember_me"
-            type="checkbox"
-            class="text-indigo-600 border-gray-300 rounded shadow-sm focus:ring-indigo-500"
-            name="remember"
-          />
-          <span class="ml-2 text-sm text-gray-600">{{ "Remember me" }}</span>
-        </label>
-      </div> -->
-
       <div>
         <div class="flex items-center justify-center mt-4">
-          <!-- <a
-            class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            href="#"
-          >
-            {{ "Forgot your password?" }}
-          </a> -->
-
           <button
             type="submit"
             [disabled]="isLoading"
