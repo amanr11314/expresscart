@@ -159,7 +159,9 @@ export class EditProductComponent implements OnInit, OnDestroy {
         console.log('called next after updating ', val);
       },
       complete: () => {
-        window.location.href = '/'
+        this.router.navigate(['/'], {
+          skipLocationChange: true
+        });
       }
     })
   }

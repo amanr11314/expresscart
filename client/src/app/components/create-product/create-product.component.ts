@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { FileUploadService } from 'src/app/services/upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-create-product',
@@ -36,7 +37,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
+  constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService, private location: Location) { }
 
   resetFile() {
     if (this.file) {
@@ -121,7 +122,9 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('called complete after creating product');
-        window.location.href = '/'
+        this.router.navigate(['/'], {
+          skipLocationChange: true
+        });
       }
     })
   }
