@@ -17,19 +17,9 @@
           class="input-name"
         />
       </div>
-      <div
-        *ngIf="
-          formCreateProduct?.get('title')?.invalid &&
-          (formCreateProduct?.get('title')?.dirty ||
-            formCreateProduct?.get('title')?.touched)
-        "
-      >
-        <p *ngIf="formCreateProduct.get('title')?.errors" class="error-msg">
-          {{ (formCreateProduct.get('title')?.errors?.['required']) ? 
-              "Name is required" :
-              (formCreateProduct.get('title')?.errors?.['noWhitespaceMinLength']) ?
-              "Name must be at least 4 characters long" : ""
-          }}
+      <div class="mt-2 text-xs error-container">
+        <p class="error-msg msg">
+          {{ getProductNameError }}
         </p>
       </div>
     </div>
@@ -45,23 +35,10 @@
           formControlName="description"
         ></textarea>
       </div>
-      <div
-        *ngIf="
-          formCreateProduct?.get('description')?.invalid &&
-          (formCreateProduct?.get('description')?.dirty ||
-            formCreateProduct?.get('description')?.touched)
-        "
-      >
-        <p
-          *ngIf="formCreateProduct.get('description')?.errors"
-          class="error-msg"
-        >
-          {{ 
-            (formCreateProduct.get('description')?.errors?.['required']) ? 
-            "Description is required" :
-          (formCreateProduct.get('description')?.errors?.['noWhitespaceMinLength']) ?
-            "Description must be at least 6 characters long" : ""
-          }}
+
+      <div class="mt-2 text-xs error-container">
+        <p class="error-msg msg">
+          {{ getProductDescError }}
         </p>
       </div>
     </div>
@@ -75,24 +52,12 @@
         min="0"
         name="price"
         class="input-name"
-        accept="image/*"
       />
     </div>
 
-    <div
-      *ngIf="
-        formCreateProduct?.get('price')?.invalid &&
-        (formCreateProduct?.get('price')?.dirty ||
-          formCreateProduct?.get('price')?.touched)
-      "
-    >
-      <p *ngIf="formCreateProduct.get('price')?.errors" class="error-msg">
-        {{ 
-            (formCreateProduct.get('price')?.errors?.['required']) ? 
-            "Price is required" :
-          (formCreateProduct.get('price')?.errors?.['min']) ?
-            "Price value must be greater than 0" : ""
-        }}
+    <div class="mt-2 text-xs error-container">
+      <p class="error-msg msg">
+        {{ getProductPriceError }}
       </p>
     </div>
 

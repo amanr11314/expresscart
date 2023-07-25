@@ -148,4 +148,56 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     }
   }
 
+  get getProductNameError() {
+    const formCreateProduct = this.formCreateProduct
+    return (
+      formCreateProduct?.get('title')?.invalid &&
+        (formCreateProduct?.get('title')?.dirty ||
+          formCreateProduct?.get('title')?.touched) &&
+        formCreateProduct.get('title')?.errors
+        ?
+        (formCreateProduct.get('title')?.errors?.['required']) ?
+          "Name is required" :
+          (formCreateProduct.get('title')?.errors?.['noWhitespaceMinLength']) ?
+            "Name must be at least 4 characters long" : ""
+        : ""
+    )
+  }
+
+  get getProductDescError() {
+    const formCreateProduct = this.formCreateProduct
+
+    return (
+      formCreateProduct?.get('description')?.invalid &&
+        (formCreateProduct?.get('description')?.dirty ||
+          formCreateProduct?.get('description')?.touched) &&
+        formCreateProduct.get('description')?.errors
+        ?
+        (formCreateProduct.get('description')?.errors?.['required']) ?
+          "Description is required" :
+          (formCreateProduct.get('description')?.errors?.['noWhitespaceMinLength']) ?
+            "Description must be at least 6 characters long" : ""
+        : ""
+    )
+  }
+
+  get getProductPriceError() {
+    const formCreateProduct = this.formCreateProduct
+
+    return (
+      formCreateProduct?.get('price')?.invalid &&
+        (formCreateProduct?.get('price')?.dirty ||
+          formCreateProduct?.get('price')?.touched) &&
+        formCreateProduct.get('price')?.errors
+        ?
+        (formCreateProduct.get('price')?.errors?.['required']) ?
+          "Price is required" :
+          (formCreateProduct.get('price')?.errors?.['min']) ?
+            "Price value must be greater than 0" : ""
+        : ""
+    )
+  }
+
+
+
 }

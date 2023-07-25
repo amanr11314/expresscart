@@ -30,7 +30,7 @@ export function noWhitespaceMinLengthValidator(minContentLength: number): Valida
         }
 
         // check is has minContentLength with trimmed spaces
-        const isValid = value.trim().length > minContentLength;
+        const isValid = value.trim().length >= minContentLength;
 
         return !isValid ? { noWhitespaceMinLength: true } : null;
     }

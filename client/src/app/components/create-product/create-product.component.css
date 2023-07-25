@@ -1,0 +1,11 @@
+.error-container {
+  height: 1.5em;
+}
+
+.msg {
+  visibility: hidden; /* Hide the error message */
+}
+
+.error-container .msg {
+  visibility: visible; /* Show the error message when applicable */
+}
