@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class LoginComponentComponent implements OnInit {
 
   msg?: string;
+  isLoading: boolean = false;
 
   formLoginUser!: FormGroup
   constructor(
@@ -37,9 +38,14 @@ export class LoginComponentComponent implements OnInit {
 
   ngOnInit(): void { }
 
+  onSignInCallback = () => {
+    this.isLoading = false;
+  };
+
   loginUser() {
     if (this.formLoginUser.valid) {
-      this.authService.signIn(this.formLoginUser.value)
+      this.isLoading = true;
+      this.authService.signIn(this.formLoginUser.value, this.onSignInCallback)
     } else {
       console.log('Invalid input');
       this.formLoginUser.markAllAsTouched();

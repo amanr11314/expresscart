@@ -4,8 +4,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { Subscription, Observable, of } from 'rxjs';
+import { Subscription, Observable, of, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-products-table',
@@ -43,17 +44,22 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   constructor(private backendService: BackendService, private router: Router, public authService: AuthService,
-    private actRoute: ActivatedRoute
+    private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService
   ) { }
 
   loadProducts(query?: string) {
+    this.SpinnerServcie.show();
     if (query) {
       const params = {
         search: query
       }
-      this.products$ = this.backendService.getProducts(params)
+      this.products$ = this.backendService.getProducts(params).pipe(
+        tap((data) => this.SpinnerServcie.hide())
+      )
     } else {
-      this.products$ = this.backendService.getProducts()
+      this.products$ = this.backendService.getProducts().pipe(
+        tap((data) => this.SpinnerServcie.hide())
+      )
     }
   }
 
@@ -72,7 +78,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     this.loadProducts()
     this.initDeleteModal();
     this.initPreviewModal();
-
   }
 
   initDeleteModal() {

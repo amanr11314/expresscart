@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { EventBusService } from 'src/app/shared/event-bus.service';
@@ -18,18 +18,29 @@ export class NavigationComponent implements OnInit, OnDestroy {
   @Input()
   cartItemCount?: number;
 
-  user?: User
+  user?: User;
+  userSubscription?: Subscription;
   constructor(public authService: AuthService, private eventBusService: EventBusService) { }
 
 
   ngOnInit(): void {
-    this.user = this.authService.getUserDetails
+    // this.user$ = (this.authService.getuserDetails$)
+    this.userSubscription = this.authService.getUserDetails().subscribe((user) => {
+      if (user) {
+        this.user = user;
+      }
+    })
     this.eventBusSub = this.eventBusService.on('logout', () => {
       this.logOut();
     })
   }
 
   ngOnDestroy(): void {
+
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+
     if (this.eventBusSub) {
       this.eventBusSub.unsubscribe();
     }
@@ -37,6 +48,5 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   logOut() {
     this.authService.doLogout();
-    this.user = undefined;
   }
 }

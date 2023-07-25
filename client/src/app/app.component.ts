@@ -1,37 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { CartService } from './services/cart.service';
 import { CartComponent } from './components/cart/cart.component';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './shared/event-bus.service';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  providers: [AuthService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
   cartItemCount: number = 0;
+  loginSub?: Subscription;
 
 
-  constructor(public cartService: CartService, private eventBusService: EventBusService) { }
+  constructor(public cartService: CartService, private eventBusService: EventBusService, private authService: AuthService) { }
 
   ngOnInit(): void {
     initFlowbite();
 
-    this.cartService.fetchCartCache().subscribe(
-      data => {
-        const count = data.cartProducts?.length
-        this.cartService.changeSelectedCount(count!)
-      }
-    )
+    this.loginSub = this.authService.isLoggedIn$.subscribe({
+      next: (value) => {
+        if (value) {
+          console.log('subscribing now', value);
 
-    this.cartService.localSelectedItemsCount$.subscribe(
-      data => {
-        this.cartItemCount = data
-      }
-    )
+          this.cartService.fetchCartCache().subscribe(
+            data => {
+              const count = data.cartProducts?.length
+              this.cartService.changeSelectedCount(count!)
+            }
+          )
+
+          this.cartService.localSelectedItemsCount$.subscribe(
+            data => {
+              this.cartItemCount = data
+            }
+          )
+        }
+      },
+    })
+
+
+  }
+
+  ngOnDestroy(): void {
+    if (this.loginSub) {
+      this.loginSub.unsubscribe();
+    }
   }
 
   onOutletLoaded(component: any) {

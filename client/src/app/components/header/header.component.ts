@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchSubject.pipe(
-      debounceTime(300),
+      debounceTime(1800),
       distinctUntilChanged(),
       switchMap((searchQuery => of(searchQuery)))
     ).subscribe((searchTerm) => {

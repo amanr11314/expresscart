@@ -18,6 +18,8 @@ import { Location } from '@angular/common';
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
 
+  isLoading = false;
+
   // img-file-upload
   file: any = ''
   fileUploadURL: any = null
@@ -109,6 +111,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   createProduct() {
+    this.isLoading = true;
     const { title, description, price, ...rest } = this.formCreateProduct.value;
 
     const product: Product = {
@@ -122,10 +125,15 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('called complete after creating product');
+        this.isLoading = false;
         this.router.navigate(['/'], {
           skipLocationChange: true
         });
-      }
+      },
+      error: (err) => {
+        console.log('something went wrong: ', err);
+        this.isLoading = false;
+      },
     })
   }
 

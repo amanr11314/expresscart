@@ -18,6 +18,9 @@ import { FileUploadService } from 'src/app/services/upload.service';
 })
 export class EditProductComponent implements OnInit, OnDestroy {
 
+  isLoadingProduct = true;
+  isUpdatingProduct = false;
+
   // img-file-upload
   file: any = ''
   fileUploadURL: any = null
@@ -81,8 +84,9 @@ export class EditProductComponent implements OnInit, OnDestroy {
     this.subRoute = this.route.params.subscribe(
       params => {
         this.id = +params['id'];
-        this.backendServiceSubscription = this.backendService.getProductDetail(this.id).subscribe(
-          (data) => {
+        this.isLoadingProduct = true;
+        this.backendServiceSubscription = this.backendService.getProductDetail(this.id).subscribe({
+          next: (data) => {
             console.log(JSON.stringify(data))
             this.productDetails = data['product']
 
@@ -92,10 +96,15 @@ export class EditProductComponent implements OnInit, OnDestroy {
               description: this.productDetails?.description,
               price: this.productDetails?.price,
             })
-
             return this.productDetails;
-
+          },
+          complete: () => {
+            this.isLoadingProduct = false;
+          },
+          error: () => {
+            this.isLoadingProduct = false;
           }
+        }
         )
       }
     )
@@ -153,12 +162,21 @@ export class EditProductComponent implements OnInit, OnDestroy {
     }
 
     // console.log(updateProductValue)
-
+    this.isUpdatingProduct = true;
     this.backendServiceSubscription = this.backendService.updateProduct(updateProductValue, this.file).subscribe({
       next: (val) => {
         console.log('called next after updating ', val);
       },
       complete: () => {
+        this.isUpdatingProduct = false;
+        this.router.navigate(['/'], {
+          skipLocationChange: true
+        });
+      },
+      error: (err) => {
+        console.log('something went wrong: ', err);
+
+        this.isUpdatingProduct = false;
         this.router.navigate(['/'], {
           skipLocationChange: true
         });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
   HttpClient,
@@ -16,6 +16,8 @@ import { TokenService } from 'src/app/token.service';
 export class AuthService {
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  private userSubject = new BehaviorSubject<User | null>(null);
+
 
   authErr: any;
 
@@ -24,12 +26,15 @@ export class AuthService {
   endpoint: string = 'http://localhost:3000/auth';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-  constructor(private http: HttpClient, public router: Router, private tokenService: TokenService) { }
+  constructor(private http: HttpClient, public router: Router, private tokenService: TokenService) {
+    const user: User = this.tokenService.getUser();
+    this.userSubject.next(user);
+  }
 
   currentuser = {}
 
   // Sign-up
-  signUp(user: any) {
+  signUp(user: any, onSignUpCallback?: () => void) {
     console.log('called signup');
 
     let api = `${this.endpoint}/register`;
@@ -39,9 +44,11 @@ export class AuthService {
       },
       complete: () => {
         this.authErr = null;
+        onSignUpCallback?.();
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
+        onSignUpCallback?.();
         this.authErr = err.error?.['message'] || 'Something went wrong'
       }
     });
@@ -54,7 +61,7 @@ export class AuthService {
   }
 
   // Sign-in
-  signIn(user: User) {
+  signIn(user: User, onSignInCallback?: () => void) {
     return this.http
       .post<any>(`${this.endpoint}/signin`, user)
       .subscribe({
@@ -74,12 +81,17 @@ export class AuthService {
               this.isLoggedInSubject.next(true)
             },
             error: (err: any) => {
+              onSignInCallback?.();
               console.log('error while fetching user data: ', err)
             }
           })
         },
         complete: () => {
+          onSignInCallback?.();
           window.location.replace('/')
+          // this.router.navigate(['/'], {
+          //   skipLocationChange: true
+          // });
         },
         error: (err: HttpErrorResponse) => {
           this.authErr = err.error?.['message'] || 'Something went wrong'
@@ -92,10 +104,14 @@ export class AuthService {
     return this.tokenService.getToken();
   }
 
-  get getUserDetails(): User {
-    const user: User = this.tokenService.getUser();
-    console.log(user);
-    return user;
+  // get getUserDetails(): User {
+  //   const user: User = this.tokenService.getUser();
+  //   console.log(user);
+  //   return user;
+  // }
+
+  public getUserDetails() {
+    return this.userSubject;
   }
 
   private tokenExpired(token: string) {
@@ -108,13 +124,20 @@ export class AuthService {
     return !!authToken;
   }
 
+  get isLoggedIn$(): Observable<boolean> {
+    return of(this.isLoggedIn)
+  }
+
   doLogout() {
     this.http.post(this.endpoint + '/logout', {
       token: this.tokenService.getRefreshToken()
     }).subscribe({
       complete: () => {
         this.tokenService.signOut();
-        window.location.href = '/login'
+        // window.location.href = '/login'
+        this.router.navigate(['/login'], {
+          skipLocationChange: true
+        });
       }
     })
   }

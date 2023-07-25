@@ -9,108 +9,110 @@
       >
     </a>
 
-    <div *ngIf="authService.isLoggedIn" class="flex items-center md:order-2">
-      <div
-        data-tooltip-target="tooltip-default"
-        class="relative inline-flex items-center p-3 mr-6 text-sm font-medium text-center text-white focus:ring-4 focus:outline-none focus:ring-blue-300"
-      >
-        <a
-          [routerLink]="cartItemCount ? ['/cart'] : null"
-          class="flex items-center"
+    <ng-container *ngIf="(authService.isLoggedIn$ | async) && user">
+      <div class="flex items-center md:order-2">
+        <div
+          data-tooltip-target="tooltip-default"
+          class="relative inline-flex items-center p-3 mr-6 text-sm font-medium text-center text-white focus:ring-4 focus:outline-none focus:ring-blue-300"
         >
-          <svg
-            *ngIf="cartItemCount; else empty_cart"
-            aria-label="Cart"
-            class="w-6 h-6 text-gray-800 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 18 21"
+          <a
+            [routerLink]="cartItemCount ? ['/cart'] : null"
+            class="flex items-center"
           >
-            <path
-              d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"
-            />
-          </svg>
-          <ng-template #empty_cart>
             <svg
+              *ngIf="cartItemCount; else empty_cart"
+              aria-label="Cart"
               class="w-6 h-6 text-gray-800 dark:text-white"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 20"
+              fill="currentColor"
+              viewBox="0 0 18 21"
             >
               <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0h8m-8 0-1-4m9 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-9-4h10l2-7H3m2 7L3 4m0 0-.792-3H1"
+                d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"
               />
             </svg>
-          </ng-template>
-          <div
-            *ngIf="cartItemCount"
-            class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-1 dark:border-gray-900"
-          >
-            {{ cartItemCount }}
-          </div>
-        </a>
-      </div>
-      <div
-        id="tooltip-default"
-        role="tooltip"
-        class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-      >
-        {{ !!cartItemCount ? "Cart" : "Empty Cart" }}
-        <div class="tooltip-arrow" data-popper-arrow></div>
-      </div>
-
-      <button
-        type="button"
-        class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-        id="user-menu-button"
-        aria-expanded="false"
-        data-dropdown-toggle="user-dropdown"
-        data-dropdown-placement="bottom"
-      >
-        <span class="sr-only">Open user menu</span>
-        <img
-          class="w-8 h-8 rounded-full"
-          src="https://avatars.githubusercontent.com/u/54585602?v=4"
-          alt="user photo"
-        />
-      </button>
-      <!-- Dropdown menu -->
-      <div
-        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-        id="user-dropdown"
-      >
-        <div class="px-4 py-3">
-          <span class="block text-sm text-gray-900 dark:text-white">{{
-            this.user?.name
-          }}</span>
-          <span
-            class="block text-sm text-gray-500 truncate dark:text-gray-400"
-            >{{ this.user?.email }}</span
-          >
+            <ng-template #empty_cart>
+              <svg
+                class="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0h8m-8 0-1-4m9 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-9-4h10l2-7H3m2 7L3 4m0 0-.792-3H1"
+                />
+              </svg>
+            </ng-template>
+            <div
+              *ngIf="cartItemCount"
+              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-1 dark:border-gray-900"
+            >
+              {{ cartItemCount }}
+            </div>
+          </a>
         </div>
-        <ul class="py-2" aria-labelledby="user-menu-button">
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-              >Profile</a
+        <div
+          id="tooltip-default"
+          role="tooltip"
+          class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+        >
+          {{ !!cartItemCount ? "Cart" : "Empty Cart" }}
+          <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+
+        <button
+          type="button"
+          class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+          id="user-menu-button"
+          aria-expanded="false"
+          data-dropdown-toggle="user-dropdown"
+          data-dropdown-placement="bottom"
+        >
+          <span class="sr-only">Open user menu</span>
+          <img
+            class="w-8 h-8 rounded-full"
+            src="https://avatars.githubusercontent.com/u/54585602?v=4"
+            alt="user photo"
+          />
+        </button>
+        <!-- Dropdown menu -->
+        <div
+          class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+          id="user-dropdown"
+        >
+          <div class="px-4 py-3">
+            <span class="block text-sm text-gray-900 dark:text-white">{{
+              user.name
+            }}</span>
+            <span
+              class="block text-sm text-gray-500 truncate dark:text-gray-400"
+              >{{ user.email }}</span
             >
-          </li>
-          <li>
-            <a
-              (click)="logOut()"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-              >Sign out</a
-            >
-          </li>
-        </ul>
+          </div>
+          <ul class="py-2" aria-labelledby="user-menu-button">
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >Profile</a
+              >
+            </li>
+            <li>
+              <a
+                (click)="logOut()"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >Sign out</a
+              >
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 </nav>

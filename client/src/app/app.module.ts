@@ -22,6 +22,7 @@ import { RegisterComponentComponent } from './components/register-component/regi
 import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
 import { PreviewModalComponent } from './components/preview-modal/preview-modal.component';
 import { CartComponent } from './components/cart/cart.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { CartComponent } from './components/cart/cart.component';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule
   ],
   providers: [
     {

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
 import { Cart } from 'src/app/shared/Cart';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -23,7 +24,13 @@ export class CartComponent implements OnInit {
 
   fetchInitialCart() {
     if (!this.sharedCartService) return;
-    this.cart$ = this.sharedCartService.fetchCart()
+    this.SpinnerServcie.show();
+    this.cart$ = this.sharedCartService.fetchCart().pipe(
+      tap((data) => this.SpinnerServcie.hide())
+    )
   }
+
+  constructor(private SpinnerServcie: NgxSpinnerService
+  ) { }
 
 }

@@ -12,6 +12,7 @@ import { confirmPasswordValidator } from 'src/app/utils/custom_validators';
 })
 export class RegisterComponentComponent {
   formSignupUser!: FormGroup
+  isLoading: boolean = false;
   constructor(
     public authService: AuthService,
     public router: Router
@@ -60,13 +61,18 @@ export class RegisterComponentComponent {
       this.formSignupUser.get('confirm_password')?.value
   }
 
+  onSignUpCallback = () => {
+    this.isLoading = false;
+  }
+
   signupUser() {
     if (this.formSignupUser.valid && this.passowrdMatches) {
       // console.log(this.formSignupUser.value);
       const { name, email, password } = this.formSignupUser.value;
+      this.isLoading = true;
       this.authService.signUp({
         name, email, password
-      })
+      }, this.onSignUpCallback)
     } else {
       console.log('Invalid input');
       console.log(this.formSignupUser.value);
