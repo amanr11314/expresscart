@@ -43,3 +43,4 @@ Thumbs.db
 
 # Swagger files
 /swagger
+/swagger-generated-client
