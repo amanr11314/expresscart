@@ -10,6 +10,7 @@ import { RegisterComponentComponent } from './components/register-component/regi
 import { AuthGuard } from './shared/auth.guard';
 import { LoggedInGuard } from './shared/loggedin.gaurd';
 import { CartComponent } from './components/cart/cart.component';
+import { AllProductsComponent } from './components/all-products/all-products.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,11 @@ const routes: Routes = [
   {
     path: 'lazy',
     loadChildren: () => import('./lazy.module').then(m => m.LazyModule)
+  },
+  {
+    path: 'swagger',
+    component: AllProductsComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

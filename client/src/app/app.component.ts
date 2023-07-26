@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { CartService } from './services/cart.service';
 import { CartComponent } from './components/cart/cart.component';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { EventBusService } from './shared/event-bus.service';
 import { AuthService } from './services/auth/auth.service';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 
 /**
 export class AppComponent implements OnInit {

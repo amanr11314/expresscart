@@ -24,6 +24,9 @@ import { PreviewModalComponent } from './components/preview-modal/preview-modal.
 import { CartComponent } from './components/cart/cart.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AddCartComponent } from './components/add-cart/add-cart.component';
+import { AllProductsComponent } from './components/all-products/all-products.component';
+import { Configuration } from 'swagger-expresscart-client';
+import { AuthService } from './services/auth/auth.service';
 
 
 @NgModule({
@@ -46,6 +49,7 @@ import { AddCartComponent } from './components/add-cart/add-cart.component';
     PreviewModalComponent,
     CartComponent,
     AddCartComponent,
+    AllProductsComponent,
   ],
   imports: [
     BrowserModule,

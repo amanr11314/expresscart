@@ -1,0 +1,35 @@
+<div class="container px-4 py-2">
+  <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="table-container">
+      <thead class="table-col-container">
+        <tr>
+          <th scope="col" class="table-col">Id</th>
+          <th scope="col" class="table-col">Name</th>
+          <th scope="col" class="table-col">Price</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="products$ | async as productsData; else loading">
+        <tr
+          class="bg-white border-b hover:bg-gray-400"
+          *ngFor="let product of productsData.products; let idx = index"
+        >
+          <td class="px-6 py-4 font-semibold text-gray-900">
+            {{ idx + 1 }}
+          </td>
+          <td class="px-6 py-4 font-semibold text-gray-900">
+            <a [routerLink]="['/product/details', product.id]">{{
+              product.title
+            }}</a>
+          </td>
+
+          <td class="px-6 py-4 font-semibold text-gray-900">
+            {{ product.price }}
+          </td>
+        </tr>
+      </tbody>
+      <ng-template #loading>
+        <span>Please wait...</span>
+      </ng-template>
+    </table>
+  </div>
+</div>
