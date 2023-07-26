@@ -18,8 +18,7 @@ import { CartProductsEntity } from 'src/app/shared/Cart';
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
-  // @Input()
-  // sharedCartService?: CartService
+  isAddingToCart = false;
 
   list: any[] = []
   checkedList: any[] = [];
@@ -285,6 +284,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   handleConfirmAddToCart() {
     console.log('adding to cart', this.checkedList);
     this.hideCartModal();
+    this.isAddingToCart = true;
     this.cartService.addBulkCart(this.checkedList).subscribe({
       next: (val) => {
         console.log('items were added: ', val);
@@ -295,10 +295,12 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.log('something went wrong: ', err);
+        this.isAddingToCart = false;
       },
       complete: () => {
         console.log('completed');
         this.resetChecklist();
+        this.isAddingToCart = false;
       }
     })
 

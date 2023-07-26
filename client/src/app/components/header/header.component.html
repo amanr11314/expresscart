@@ -55,13 +55,13 @@
     </div>
   </div>
 
-  <!-- Multi Select Filter
+  <!-- Multi Select Filter -->
   <app-multi-select-dropdown
     *ngIf="products$ | async as products"
     [productList]="products"
     (onItemChange)="onItemChange($event)"
   >
-  </app-multi-select-dropdown> -->
+  </app-multi-select-dropdown>
 
   <div class="text-right">
     <button
