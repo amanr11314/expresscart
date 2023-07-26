@@ -1,8 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+
+const morgan = require('morgan')
+
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 require('dotenv').config()
+const docs = require('./docs')
 
 const app = express();
 const auth = require('./auth/auth')
@@ -14,6 +18,7 @@ const multer = require("multer")
 // import for db connection
 const { User, sequelize } = require('./backend/models')
 
+app.use(morgan("dev"));
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -69,14 +74,14 @@ const options = {
     // apis: ["./routes/*.js"],
     apis: [
         "./auth/routes.js",
-        "./backend/routes/home.js"
+        "./backend/docs.js"
     ]
 };
-const specs = swaggerJsdoc(options);
+// const specs = swaggerJsdoc(options);
 app.use(
     "/api-docs",
     swaggerUi.serve,
-    swaggerUi.setup(specs, { explorer: true })
+    swaggerUi.setup(docs)
 );
 
 

@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  title: Product API
+  version: 1.0.0
+  description: API to get product details
+
+paths:
+  /product/details/{id}:
+    get:
+      summary: Get product details by ID
+      description: Retrieve product details for a specific product by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the product to retrieve
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token to access the API
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK. Product details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "58"
+                      title:
+                        type: string
+                        example: "Oppo reno 5g"
+                      description:
+                        type: string
+                        example: "gfbghnf"
+                      price:
+                        type: number
+                        example: 223
+                      imgUrl:
+                        type: string
+                        example: "file-1689778131181.png"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2023-07-19T14:48:51.198Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2023-07-24T14:49:53.295Z"
+                      UserId:
+                        type: string
+                        nullable: true
+                        example: null
+        "401":
+          description: Unauthorized. Bearer token is missing or invalid.
+        "404":
+          description: Not Found. The requested product ID was not found.
+        "500":
+          description: Internal Server Error. An error occurred while processing the request.

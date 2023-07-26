@@ -19,6 +19,6 @@ exports.validateProductId = async (req, res, next) => {
             res.status(404).json({ message: 'No product found with this id: ' + id })
         }
     } else {
-        res.status(404).json({ message: "Please provide a Product id to edit" })
+        res.status(400).json({ message: "Please provide a Product id to edit" })
     }
 }

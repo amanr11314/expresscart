@@ -6,39 +6,60 @@ exports.getAllProducts = async (req, res) => {
     const sortOrder = req.query['order'] || 'DESC';
     console.log({ sortOrder });
     let products;
-    if (query) {
-        products = await Product.findAll({
-            include: [{ model: User }],
-            where: {
-                title: {
-                    [Op.iLike]: '%' + query + '%'
-                }
-            },
-            order: [
-                [sortCol, sortOrder.toUpperCase()],
-            ]
-        })
-    } else {
-        products = await Product.findAll({
-            include: [{ model: User }],
-            order: [
-                [sortCol, sortOrder.toUpperCase()],
-            ]
+
+    try {
+        if (query) {
+            products = await Product.findAll({
+                include: [{ model: User }],
+                where: {
+                    title: {
+                        [Op.iLike]: '%' + query + '%'
+                    }
+                },
+                order: [
+                    [sortCol, sortOrder.toUpperCase()],
+                ]
+            })
+        } else {
+            products = await Product.findAll({
+                include: [{ model: User }],
+                order: [
+                    [sortCol, sortOrder.toUpperCase()],
+                ]
+            })
+        }
+
+        const resp = {
+            products
+        }
+
+        if (products.length > 0) {
+            res.status(200).json(resp)
+        } else {
+            res.status(204).json({
+                msg: "No product found"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error?.message,
+            internal_code: 500
         })
     }
-
-    const resp = {
-        products
-    }
-
-    res.send(resp)
 }
 
 exports.getProductDetail = async (req, res) => {
-    const resp = {
-        product: req.product
+    if (req.product) {
+        const resp = {
+            product: req.product
+        }
+        res.status(200).json(resp)
+    } else {
+        res.status(500).json({
+            message: 'Something went wrong',
+            internal_code: 500
+        })
     }
-    res.send(resp)
 }
 
 exports.createProduct = async (req, res) => {
@@ -49,13 +70,20 @@ exports.createProduct = async (req, res) => {
         path = req.file.filename;
     }
     const { title, description = '#', price = 0 } = productObj;
-    const resp = await Product.create({
-        title,
-        description,
-        imgUrl: path,
-        price
-    })
-    res.send(resp)
+    try {
+        const resp = await Product.create({
+            title,
+            description,
+            imgUrl: path,
+            price
+        })
+        res.status(200).json(resp)
+    } catch (error) {
+        res.status(500).json({
+            message: error?.message,
+            internal_code: 500
+        })
+    }
 }
 
 exports.editProduct = async (req, res) => {
@@ -71,44 +99,57 @@ exports.editProduct = async (req, res) => {
         // ...product,
         ...productObj
     }
-    // if (product instanceof Product) {
-    const resp = await Product.update(
-        updatedProduct,
-        { where: { id: productObj.id } }
-    )
-    if (((!!resp) === 1)) {
-        res.send({
-            msg: 'Product updated successfully'
-        })
-    } else {
-        res.send({
-            msg: 'Failed to update product'
+
+    try {
+        const resp = await Product.update(
+            updatedProduct,
+            { where: { id: productObj.id } }
+        )
+        console.log('resp = ', resp?.[0]);
+        if ((!!resp) && (!!resp?.[0])) {
+            res.status(204).json({
+                msg: 'Product updated successfully',
+            })
+        } else {
+            res.status(500).json({
+                message: 'Failed to update product',
+                internal_code: 500
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error?.message,
+            internal_code: 500
         })
     }
-    // }
 
 }
 
 exports.deleteProduct = async (req, res) => {
-    // const { id } = req.body || {}
-    // const product = await Product.findOne({ where: { id } });
     const product = req.product
 
-    if (product instanceof Product) {
+    try {
         const resp = await Product.destroy({
             where: {
                 id: product.id
             }
         });
-        // const resp = await product.destroy();
-        if (((!!resp) === 1)) {
-            res.send({
+        console.log('resp delete = ', typeof resp);
+        if ((!!resp) && (resp === 1)) {
+            res.status(204).json({
                 msg: 'Product deleted successfully'
             })
         } else {
-            res.send({
-                msg: 'Failed to delete product'
+            res.status(500).json({
+                message: 'Failed to delete product',
+                internal_code: 500
             })
         }
+    } catch (error) {
+        res.status(500).json({
+            message: error?.message,
+            internal_code: 500
+        })
     }
+
 }

@@ -8,7 +8,7 @@ import { Product } from '../shared/Product';
 })
 export class BackendService {
 
-  private apiUrl = 'http://localhost:3000'
+  private apiUrl = 'http://localhost:3000/product'
 
   private sharedProducts$?: Observable<Product[]>;
 
@@ -19,7 +19,7 @@ export class BackendService {
 
       if (params?.search || params?.order) {
 
-        return this.http.get<any>(this.apiUrl, { params })
+        return this.http.get<any>(this.apiUrl + '/all', { params })
           .pipe(
             map((data: { products: Product[] }) => {
               return data.products
@@ -29,7 +29,7 @@ export class BackendService {
       }
       else {
 
-        return this.http.get<any>(this.apiUrl)
+        return this.http.get<any>(this.apiUrl + '/all')
           .pipe(
             map((data: { products: Product[] }) => {
               return data.products
@@ -42,7 +42,7 @@ export class BackendService {
   }
 
   getProductDetail(id: number): Observable<any> {
-    return this.http.get<any>(this.apiUrl + '/product/details/' + id);
+    return this.http.get<any>(this.apiUrl + '/details/' + id);
   }
 
   createProduct(product: Product, file: any): Observable<any> {
@@ -58,18 +58,18 @@ export class BackendService {
       formData.append('file', file)
     }
 
-    const req = new HttpRequest('POST', this.apiUrl + '/product/create', formData, {
+    const req = new HttpRequest('POST', this.apiUrl + '/create', formData, {
       reportProgress: true,
       responseType: 'json'
     });
 
 
-    // return this.http.post<any>(this.apiUrl + '/product/create', product, httpOptions)
+    // return this.http.post<any>(this.apiUrl + '/create', product, httpOptions)
     return this.http.request(req)
   }
 
   updateProduct(product: Product, file: any): Observable<any> {
-    // return this.http.post<any>(this.apiUrl + '/product/edit', product)
+    // return this.http.post<any>(this.apiUrl + '/edit', product)
     let updateFormData = new FormData();
     console.log(product['id'])
     console.log(product.id)
@@ -86,7 +86,7 @@ export class BackendService {
 
     }
 
-    const req = new HttpRequest('POST', this.apiUrl + '/product/edit', updateFormData, {
+    const req = new HttpRequest('POST', this.apiUrl + '/edit', updateFormData, {
       reportProgress: true,
       responseType: 'json'
     });
@@ -94,11 +94,11 @@ export class BackendService {
     console.log(req.body)
 
 
-    // return this.http.post<any>(this.apiUrl + '/product/edit', product, httpOptions)
+    // return this.http.post<any>(this.apiUrl + '/edit', product, httpOptions)
     return this.http.request(req)
   }
 
   deleteProduct(id: number | string): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/product/delete', { id })
+    return this.http.post<any>(this.apiUrl + '/delete', { id })
   }
 }
