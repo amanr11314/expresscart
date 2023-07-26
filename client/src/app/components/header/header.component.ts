@@ -26,6 +26,9 @@ export class HeaderComponent implements OnInit {
   @Output()
   onAddToCart = new EventEmitter();
 
+  @Input()
+  selectedCount = 0;
+
   onSubmitSearch() {
     if (!!this.searchText.trim()) {
       console.log('searchtext = ', this.searchText);

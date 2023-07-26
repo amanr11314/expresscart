@@ -5,6 +5,8 @@ import { CartComponent } from './components/cart/cart.component';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './shared/event-bus.service';
 import { AuthService } from './services/auth/auth.service';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { ProductsTableComponent } from './components/products-table/products-table.component';
 
 @Component({
   selector: 'app-root',
@@ -58,7 +60,6 @@ export class AppComponent implements OnInit, OnDestroy {
       component.sharedCartService = this.cartService
     }
   }
-
 }
 
 /**

@@ -107,15 +107,20 @@ exports.addBulkToCart = async (req, res) => {
         return !cartProducts.some((cartProduct) => cartProduct.id === productId);
     })
 
+    // console.log('remove products= ', fetchedCart.removeProducts);
+
     if (productsToAdd.length > 0) {
 
         const resp = await fetchedCart.addProducts(productsToAdd, {
             through: { quantity: 1 }
         })
 
+        const updatedCartProducts = await cart?.getProducts();
+
         res.send({
             status: 'Added ' + productsToAdd.length + ' items to cart',
-            count: productsToAdd.length
+            count: productsToAdd.length,
+            updatedCartProducts
         })
     } else {
         res.send({

@@ -94,6 +94,7 @@ export class AuthService {
           // });
         },
         error: (err: HttpErrorResponse) => {
+          onSignInCallback?.();
           this.authErr = err.error?.['message'] || 'Something went wrong'
         }
       });

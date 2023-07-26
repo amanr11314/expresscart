@@ -52,6 +52,13 @@ export class CartService {
     return this.http.post<any>(this.apiUrl, data)
   }
 
+  addBulkCart(productIds: any[]): Observable<any> {
+    const data = {
+      productIds
+    }
+    return this.http.post<any>(this.apiUrl + '/bulk', data)
+  }
+
   removeFromCart(productId: any): Observable<any> {
     const data = {
       productId
