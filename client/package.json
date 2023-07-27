@@ -25,7 +25,6 @@
     "flowbite": "^1.7.0",
     "ngx-spinner": "^16.0.2",
     "rxjs": "~7.8.0",
-    "swagger-expresscart-client": "github:amanr11314/swagger-expresscart-client",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
   },

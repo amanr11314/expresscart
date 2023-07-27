@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 // import { Product } from '../../shared/Product';
-import { Product } from 'swagger-expresscart-client';
+import { Product } from '../../services/swagger-expresscart-client';
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../../services/backend.service';
 import { Subscription } from 'rxjs';
-import { ProductCRUDOperationsService } from 'swagger-expresscart-client';
+import { ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-product-details',

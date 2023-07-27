@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { ProductCRUDOperationsService } from 'swagger-expresscart-client';
+import { ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-all-products',

@@ -7,7 +7,7 @@ import { Subscription, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CartService } from 'src/app/services/cart.service';
-import { DeleteProductRequest, ProductCRUDOperationsService } from 'swagger-expresscart-client';
+import { DeleteProductRequest, ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -66,7 +66,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   // subscriptions
-  getProductSubscription?: Subscription;
+  getProductsSubscription?: Subscription;
   deleteProductSubscription?: Subscription;
 
   currentUser?: User
@@ -133,7 +133,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
 
 
-    this.getProductSubscription = this.backendService.getProducts(search, col, order, 'response').subscribe({
+    this.getProductsSubscription = this.backendService.getProducts(search, col, order, 'response').subscribe({
       next: (resp) => {
 
         if (resp.status === 200) {
@@ -342,7 +342,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     const subscriptions = [
-      this.getProductSubscription,
+      this.getProductsSubscription,
       this.deleteProductSubscription
     ]
     subscriptions.forEach((subscription) => {

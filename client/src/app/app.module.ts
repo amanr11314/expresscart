@@ -25,7 +25,7 @@ import { CartComponent } from './components/cart/cart.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AddCartComponent } from './components/add-cart/add-cart.component';
 import { AllProductsComponent } from './components/all-products/all-products.component';
-import { Configuration } from 'swagger-expresscart-client';
+import { Configuration } from './services/swagger-expresscart-client';
 import { AuthService } from './services/auth/auth.service';
 import { Page404Component } from './components/page404/page404.component';
 

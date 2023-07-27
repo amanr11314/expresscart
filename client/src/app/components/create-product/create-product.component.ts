@@ -9,12 +9,13 @@ import { FileUploadService } from 'src/app/services/upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
+import { ProductCRUDOperationsService, CreateProductRequest } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-create-product',
   templateUrl: './create-product.component.html',
   styleUrls: ['./create-product.component.css'],
-  providers: [BackendService]
+  providers: [ProductCRUDOperationsService]
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
 
@@ -39,7 +40,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  constructor(private backendService: BackendService, private router: Router, private uploadService: FileUploadService, private location: Location) { }
+  constructor(private backendService: ProductCRUDOperationsService, private router: Router, private uploadService: FileUploadService, private location: Location) { }
 
   resetFile() {
     if (this.file) {
@@ -119,9 +120,21 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       description,
       price,
     }
-    this.backendServiceSubscription = this.backendService.createProduct(product, this.file).subscribe({
-      next: (val) => {
-        console.log('called next after creating ', val);
+
+    const createProductRequest: CreateProductRequest = {
+      ...product,
+      file: this.file
+    }
+
+    console.log('sending: ', createProductRequest);
+
+
+    this.backendServiceSubscription = this.backendService.createProduct(createProductRequest, 'response').subscribe({
+      next: (resp) => {
+        console.log(resp);
+        if (resp.status === 200) {
+          console.log('procut created successfully');
+        }
       },
       complete: () => {
         console.log('called complete after creating product');
@@ -133,6 +146,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.log('something went wrong: ', err);
         this.isLoading = false;
+        // show poper error if any
       },
     })
   }
