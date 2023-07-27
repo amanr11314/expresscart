@@ -13,87 +13,11 @@ module.exports = {
             "description": "Product data to edit",
             "required": true,
             "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "title": {
-                                "type": "string"
-                            },
-                            "description": {
-                                "type": "string"
-                            },
-                            "price": {
-                                "type": "number"
-                            },
-                            "file": {
-                                "type": "string",
-                                "format": "binary"
-                            }
-                        },
-                        "required": ["id"],
-                        "oneOf": [
-                            {
-                                "required": ["title"]
-                            },
-                            {
-                                "required": ["description"]
-                            },
-                            {
-                                "required": ["price"]
-                            }
-                        ],
-                        "example": {
-                            "id": 58,
-                            "title": "Sample Product",
-                            "description": "This is a sample product",
-                            "price": 99.99
-                        }
-                    }
-                },
+
                 "multipart/form-data": {
                     "schema": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "title": {
-                                "type": "string"
-                            },
-                            "description": {
-                                "type": "string"
-                            },
-                            "price": {
-                                "type": "number"
-                            },
-                            "file": {
-                                "type": "string",
-                                "format": "binary"
-                            }
-                        },
-                        "required": ["id"],
-                        "oneOf": [
-                            {
-                                "required": ["title"]
-                            },
-                            {
-                                "required": ["description"]
-                            },
-                            {
-                                "required": ["price"]
-                            }
-                        ],
-                        "example": {
-                            "id": 58,
-                            "title": "Sample Product",
-                            "description": "This is a sample product",
-                            "price": 99.99
-                        }
-                    }
+                        "$ref": "#/components/schemas/EditProductRequest"
+                    },
                 }
             }
         },

@@ -94,6 +94,79 @@ module.exports = {
                 },
                 "title": "Productlist array<Product>"
             },
+            "CreateProductRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Oppo reno 5g",
+                        "description": "Name of the product"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "gfbghnfh",
+                        "description": "Description of the product"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": 223,
+                        "description": "Price of the product"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Image file of the product"
+                    }
+                },
+                "required": ["title", "description", "price"]
+            },
+            "EditProductRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique id of the product"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Oppo reno 5g",
+                        "description": "Name of the product"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "gfbghnfh",
+                        "description": "Description of the product"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": 223,
+                        "description": "Price of the product"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Image file of the product"
+                    }
+                },
+                "required": ["id"],
+                "oneOf": [
+                    {
+                        "required": ["title"]
+                    },
+                    {
+                        "required": ["description"]
+                    },
+                    {
+                        "required": ["price"]
+                    }
+                ],
+                "example": {
+                    "id": "58",
+                    "title": "Sample Product",
+                    "description": "This is a sample product",
+                    "price": 99.99
+                }
+            }
         },
         "securitySchemes": {
             "BearerAuth": {
