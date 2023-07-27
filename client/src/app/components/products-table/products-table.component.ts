@@ -156,8 +156,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
           }
         )
         this.list = newList
-        console.log('list = ', this.list);
-
       },
       complete: () => {
         this.isLoading = false
