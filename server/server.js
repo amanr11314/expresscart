@@ -83,7 +83,9 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(docs)
 );
-
+app.get('/swagger-json', (req, res) => {
+    res.json(docs)
+})
 
 app.listen(app.get('port'), function () {
     console.log(`Server listening on port ${app.get('port')}`)
