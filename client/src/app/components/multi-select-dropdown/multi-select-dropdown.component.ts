@@ -65,12 +65,10 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       this.cartService.addToCart(option.id).subscribe(
         {
           next(value) {
-            // console.log(option.title + ' added to cart ');
-            // console.log(value);
           },
-          error(err) {
-            // console.log(option.title + ' not added to cart ');
-            // console.log(err);
+          error: (err) => {
+            // revert optimistic changes on error
+            this.selectedOptions = this.selectedOptions.filter(e => e !== option.id)
           },
         }
       )
@@ -89,16 +87,13 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       this.cartService.removeFromCart(option.id).subscribe(
         {
           next(value) {
-            // console.log(option.title + ' removed from cart ');
-            // console.log(value);
           },
-          error(err) {
-            // console.log(option.title + ' not removed from cart ');
-            // console.log(err);
+          error: (err) => {
+            //revert in case of error
+            this.selectedOptions.push(option.id)
           },
         }
       )
-      // this.updateOptionStatus(option.id, false); // Update status to 'false'
     }
 
     this.onItemChange.emit(this.selectedOptions.length)
@@ -115,8 +110,6 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
 
     this.cartService.fetchCartCache().subscribe(
       data => {
-        console.log('calling fetchinitial');
-
         const v = data.cartProducts?.map(
           (val: CartProductsEntity) => val.id
         );
