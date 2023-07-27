@@ -158,6 +158,108 @@ module.exports = {
                     "description": "This is a sample product",
                     "price": 99.99
                 }
+            },
+            "CartItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "290"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-07-27T13:44:09.276Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-07-27T13:44:09.276Z"
+                    },
+                    "CartId": {
+                        "type": "string",
+                        "example": "4"
+                    },
+                    "ProductId": {
+                        "type": "string",
+                        "example": "90"
+                    },
+                    // "Product": {
+                    //     "$ref": "#/components/schemas/Product"
+                    // }
+                }
+            },
+            "CartItemResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Product"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "CartItem": {
+                                "$ref": "#/components/schemas/CartItem"
+                            },
+                        }
+                    }
+                ]
+            },
+            "CartResponse": {
+                "type": "object",
+                "properties": {
+                    "cartProducts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CartItemResponse"
+                        }
+                    },
+                    "totalAmount": {
+                        "type": "number",
+                        "example": 100000
+                    }
+                }
+            },
+            "AddToCartRequest": {
+                "type": "object",
+                "properties": {
+                    "productId": {
+                        "type": "string",
+                        "example": "90"
+                    }
+                },
+                "required": ["productId"]
+            },
+            "AddToCartResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CartItem"
+                        }
+                    },
+                    "msg": {
+                        "type": "string",
+                        "example": "Item added to cart"
+                    }
+                }
+            },
+            "CartUpdateResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "msg": {
+                        "type": "string",
+                        "example": "1Item removed from cart"
+                    }
+                }
             }
         },
         "securitySchemes": {

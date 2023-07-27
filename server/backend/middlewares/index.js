@@ -9,6 +9,8 @@ const { Product } = require('../models')
  */
 exports.validateProductId = async (req, res, next) => {
 
+    console.log('Route path = ', req.path);
+
     const id = req.method === 'POST' ? req.body?.id : req.params?.id
     if (!!id) {
         const product = await Product.findOne({ where: { id } })
