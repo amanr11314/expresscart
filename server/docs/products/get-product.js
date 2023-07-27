@@ -24,8 +24,13 @@ module.exports = {
                 description: "Product is obtained",
                 content: {
                     'application/json': {
-                        schema: {
-                            $ref: "#/components/schemas/Product"
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "product": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
                         }
                     }
                 }

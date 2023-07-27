@@ -1,14 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Product } from '../../shared/Product';
+// import { Product } from '../../shared/Product';
+import { Product } from 'swagger-expresscart-client';
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../../services/backend.service';
 import { Subscription } from 'rxjs';
+import { ProductCRUDOperationsService } from 'swagger-expresscart-client';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css'],
-  providers: [BackendService]
+  // providers: [BackendService]
+  providers: [ProductCRUDOperationsService]
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
 
@@ -21,6 +24,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   id?: number;
   productDetails?: Product
+  notFound = false;
 
 
   get productImgUrl() {
@@ -36,27 +40,48 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private route: ActivatedRoute, private backendService: BackendService) { }
+  constructor(private route: ActivatedRoute, private backendService: ProductCRUDOperationsService) { }
 
   ngOnInit(): void {
     this.isLoading = true;
     this.routeSubscription = this.route.params.subscribe(
       params => {
-        this.id = +params['id'];
+        const id = +params['id'];
+        this.id = id;
+        this.backendServiceSubscription = this.backendService.getProduct(id, 'response').subscribe({
+          next: (resp) => {
+
+            if (resp.status === 200) {
+              this.productDetails = resp.body?.product;
+            }
+          },
+          complete: () => {
+            this.isLoading = false
+          },
+          error: (err) => {
+            console.log('inside err ', err);
+            if (err.status === 404) {
+              this.notFound = true;
+            }
+            this.isLoading = false;
+
+          }
+        })
       }
     )
-    this.backendServiceSubscription = this.backendService.getProductDetail(this.id!).subscribe({
-      next: (data) => {
-        console.log(JSON.stringify(data))
-        return this.productDetails = data['product']
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-      }
-    })
+
+    // this.backendServiceSubscription = this.backendService.getProductDetail(this.id!).subscribe({
+    //   next: (data) => {
+    //     console.log(JSON.stringify(data))
+    //     return this.productDetails = data['product']
+    //   },
+    //   complete: () => {
+    //     this.isLoading = false;
+    //   },
+    //   error: () => {
+    //     this.isLoading = false;
+    //   }
+    // })
   }
 
   ngOnDestroy(): void {

@@ -1,4 +1,7 @@
-<div class="flex flex-col items-center justify-center">
+<div
+  *ngIf="!notFound; else notFoundContent"
+  class="flex flex-col items-center justify-center"
+>
   <div *ngIf="!isLoading" class="wrapper">
     <img
       *ngIf="productImgUrl"
@@ -55,3 +58,7 @@
     Loading Product...
   </button>
 </div>
+
+<ng-template #notFoundContent>
+  <app-page404 [subTitle]="'Product not found'"></app-page404>
+</ng-template>

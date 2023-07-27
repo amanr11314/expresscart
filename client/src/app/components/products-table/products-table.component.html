@@ -47,65 +47,76 @@
         </tr>
       </thead>
       <tbody *ngIf="!isLoading; else loading">
-        <tr
-          class="bg-white border-b hover:bg-gray-400"
-          *ngFor="let product of products; let idx = index"
-        >
-          <td class="w-4 p-4">
-            <div class="flex items-center">
-              <input
-                id="{{ 'checkbox-table-' + idx }}"
-                type="checkbox"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                [checked]="isAllSelected || checkedList.includes(product.id)"
-                (change)="onChange(list[idx])"
+        <ng-container *ngIf="products && products.length; else noProductsFound">
+          <tr
+            class="bg-white border-b hover:bg-gray-400"
+            *ngFor="let product of products; let idx = index"
+          >
+            <td class="w-4 p-4">
+              <div class="flex items-center">
+                <input
+                  id="{{ 'checkbox-table-' + idx }}"
+                  type="checkbox"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  [checked]="isAllSelected || checkedList.includes(product.id)"
+                  (change)="onChange(list[idx])"
+                />
+                <label for="checkbox-table-1" class="sr-only">checkbox</label>
+              </div>
+            </td>
+            <td class="px-6 py-4 font-semibold text-gray-900">
+              {{ idx + 1 }}
+            </td>
+            <td>
+              <img
+                (click)="showPreview(product)"
+                *ngIf="getThumbnailURL(product); else fallback_thumbnail"
+                src="{{ getThumbnailURL(product) }}"
+                alt="{{ product.title }}"
+                class="w-10 h-10 rounded"
               />
-              <label for="checkbox-table-1" class="sr-only">checkbox</label>
-            </div>
-          </td>
-          <td class="px-6 py-4 font-semibold text-gray-900">
-            {{ idx + 1 }}
-          </td>
-          <td>
-            <img
-              (click)="showPreview(product)"
-              *ngIf="getThumbnailURL(product); else fallback_thumbnail"
-              src="{{ getThumbnailURL(product) }}"
-              alt="{{ product.title }}"
-              class="w-10 h-10 rounded"
-            />
 
-            <ng-template #fallback_thumbnail>-</ng-template>
-          </td>
-          <td class="px-6 py-4 font-semibold text-gray-900">
-            <a [routerLink]="['/product/details', product.id]">{{
-              product.title
-            }}</a>
-          </td>
+              <ng-template #fallback_thumbnail>-</ng-template>
+            </td>
+            <td class="px-6 py-4 font-semibold text-gray-900">
+              <a [routerLink]="['/product/details', product.id]">{{
+                product.title
+              }}</a>
+            </td>
 
-          <td class="px-6 py-4">
-            <div class="flex">
-              <a
-                [routerLink]="['/product/edit', product.id]"
-                class="btn-action-blue"
-                >Edit</a
-              >
-              <app-button
-                text="Delete"
-                classNames="btn-delete focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
-                (btnClick)="handleDelete(product)"
-              ></app-button>
-            </div>
-          </td>
-        </tr>
+            <td class="px-6 py-4">
+              <div class="flex">
+                <a
+                  [routerLink]="['/product/edit', product.id]"
+                  class="btn-action-blue"
+                  >Edit</a
+                >
+                <app-button
+                  text="Delete"
+                  classNames="btn-delete focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+                  (btnClick)="handleDelete(product)"
+                ></app-button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noProductsFound>
+          <!-- <app-page404
+            [title]="'No Products Found'"
+            [subTitle]="
+              searchString.length ? 'No results match this query' : ''
+            "
+          ></app-page404> -->
+          <div *ngIf="!isLoading && !products.length" class="w-auto">
+            <h1
+              class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+            >
+              No Products Found
+            </h1>
+          </div>
+        </ng-template>
       </tbody>
-      <div *ngIf="!isLoading && !products.length" class="w-auto">
-        <h1
-          class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
-        >
-          No Products Found
-        </h1>
-      </div>
+
       <ng-template #loading>
         <ngx-spinner
           bdColor="rgba(51, 51, 51, 0.0)"

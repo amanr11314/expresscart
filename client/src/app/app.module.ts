@@ -27,6 +27,7 @@ import { AddCartComponent } from './components/add-cart/add-cart.component';
 import { AllProductsComponent } from './components/all-products/all-products.component';
 import { Configuration } from 'swagger-expresscart-client';
 import { AuthService } from './services/auth/auth.service';
+import { Page404Component } from './components/page404/page404.component';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { AuthService } from './services/auth/auth.service';
     CartComponent,
     AddCartComponent,
     AllProductsComponent,
+    Page404Component,
   ],
   imports: [
     BrowserModule,
