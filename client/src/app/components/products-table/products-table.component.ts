@@ -1,20 +1,20 @@
 import { Component, Input, OnDestroy, OnInit, } from '@angular/core';
-import { BackendService } from '../../services/backend.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { Subscription, Observable, of, tap, share } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CartService } from 'src/app/services/cart.service';
-import { CartProductsEntity } from 'src/app/shared/Cart';
+import { DeleteProductRequest, ProductCRUDOperationsService } from 'swagger-expresscart-client';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
   styleUrls: ['./products-table.component.css'],
-  providers: [BackendService]
+  providers: [ProductCRUDOperationsService]
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
@@ -65,13 +65,17 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     }, 2300)
   }
 
-  backendServiceDeleteProductSubscription?: Subscription;
+  // subscriptions
+  getProductSubscription?: Subscription;
+  deleteProductSubscription?: Subscription;
 
   currentUser?: User
 
   searchString: string = '';
 
   products$: Observable<Product[]> = of([]);
+  products: Product[] = [];
+  isLoading = false
 
   previewModal?: Modal
   previewProduct?: Product
@@ -100,14 +104,20 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     } return null;
   }
 
-  constructor(private backendService: BackendService, private router: Router, public authService: AuthService,
+  constructor(private backendService: ProductCRUDOperationsService, private router: Router, public authService: AuthService,
     private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private cartService: CartService
   ) { }
 
+  productsResponse$?: Observable<HttpResponse<any>>;
+
   loadProducts(query?: string) {
     this.SpinnerServcie.show();
-    // if (query) {
-    const params = {}
+    this.isLoading = true
+    const params = {
+      search: undefined,
+      col: undefined,
+      order: undefined
+    }
 
     if (this.sortOrder) {
       Object.assign(params, {
@@ -119,24 +129,30 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       Object.assign(params, { search: this.searchString })
     }
 
-    this.products$ = this.backendService.getProducts(params).pipe(
-      tap((data) => {
-        console.log(data);
-        const newList: any[] = [...data]
+    const { search, col, order } = params;
 
-        // maintain checked list
-        newList.forEach(
-          (item, idx) => {
-            if (this.checkedList.includes(item.id)) {
-              newList[idx].checked = true;
-            }
-          }
-        )
-        this.list = newList
 
-        this.SpinnerServcie.hide()
-      })
-    )
+
+    this.getProductSubscription = this.backendService.getProducts(search, col, order, 'response').subscribe({
+      next: (resp) => {
+
+        if (resp.status === 200) {
+          this.products = resp.body?.products
+        } else if (resp.status === 204) {
+          console.log('no products found');
+
+          // No products found
+          this.products = [];
+        }
+      },
+      complete: () => {
+        this.isLoading = false
+        this.SpinnerServcie.hide();
+      },
+      error: (err) => {
+        this.isLoading = false;
+      }
+    })
   }
 
   onSortClick = (val: any) => {
@@ -251,15 +267,24 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   handleConfirmDelete() {
     if (this.deleteProduct) {
       console.log('deleting product', this.deleteProduct)
+      // temp fix
       const productId = this.deleteProduct.id!
-      this.backendServiceDeleteProductSubscription = this.backendService.deleteProduct(productId).subscribe(
-        (response: any) => {
-          console.log(response)
+      const body: DeleteProductRequest = {
+        id: productId,
+      }
+      this.deleteProductSubscription = this.backendService.deleteProduct(body).subscribe({
+        next: (resp) => {
+          console.log(resp);
+        },
+        complete: () => {
+          this.deleteModal?.hide();
           this.loadProducts();
-          // this.products = this.products.filter(item => item.id != productId)
+        },
+        error: (err) => {
+          console.log(err.message);
           this.deleteModal?.hide();
         }
-      )
+      })
     }
   }
 
@@ -316,8 +341,14 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.backendServiceDeleteProductSubscription) {
-      this.backendServiceDeleteProductSubscription.unsubscribe();
-    }
+    const subscriptions = [
+      this.getProductSubscription,
+      this.deleteProductSubscription
+    ]
+    subscriptions.forEach((subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    })
   }
 }

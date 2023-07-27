@@ -46,7 +46,7 @@
           <th scope="col" class="table-col">Action</th>
         </tr>
       </thead>
-      <tbody *ngIf="products$ | async as products; else loading">
+      <tbody *ngIf="!isLoading; else loading">
         <tr
           class="bg-white border-b hover:bg-gray-400"
           *ngFor="let product of products; let idx = index"
@@ -99,6 +99,13 @@
           </td>
         </tr>
       </tbody>
+      <div *ngIf="!isLoading && !products.length" class="w-auto">
+        <h1
+          class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+        >
+          No Products Found
+        </h1>
+      </div>
       <ng-template #loading>
         <ngx-spinner
           bdColor="rgba(51, 51, 51, 0.0)"

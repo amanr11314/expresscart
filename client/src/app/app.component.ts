@@ -28,7 +28,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loginSub = this.authService.isLoggedIn$.subscribe({
       next: (value) => {
         if (value) {
-          console.log('subscribing now', value);
 
           this.cartService.fetchCartCache().subscribe(
             data => {

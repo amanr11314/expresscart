@@ -43,7 +43,6 @@ export class TokenService {
 
   public getUser(): any {
     const user = localStorage.getItem(USER_KEY);
-    console.log('getting user= ', user);
 
     if (user) {
       return JSON.parse(user);

@@ -94,7 +94,6 @@ export class MultiSelectDropdownComponent implements OnInit {
   }
 
   fetchInitialCart() {
-    console.log('calling fetchinital');
 
     this.cartService.fetchCartCache().subscribe(
       data => {

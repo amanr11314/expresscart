@@ -43,8 +43,16 @@ module.exports = {
                 description: "Products fetched",
                 content: {
                     'application/json': {
-                        schema: {
-                            $ref: '#/components/schemas/ProductList'
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "products": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
