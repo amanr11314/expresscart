@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Observable, Subject, debounceTime, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
 import { Product } from 'src/app/shared/Product';
 
@@ -15,7 +15,10 @@ export class HeaderComponent implements OnInit {
   searchText: string = '';
 
   @Input()
-  products$?: Observable<Product[]>;
+  updatedCart: any[] = []
+
+  @Input()
+  products$: any[] = []
 
   @Output()
   onProductSearch = new EventEmitter();
@@ -28,6 +31,13 @@ export class HeaderComponent implements OnInit {
 
   @Input()
   selectedCount = 0;
+
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   // Detect changes to the @Input() property
+  //   if (changes['products$'] && changes['products$'].currentValue) {
+  //     console.log('Updated products in child component:', changes['products$'].currentValue);
+  //   }
+  // }
 
   onSubmitSearch() {
     if (!!this.searchText.trim()) {

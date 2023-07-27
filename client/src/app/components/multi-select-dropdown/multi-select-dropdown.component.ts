@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, Inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, Inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
 import { CartProductsEntity } from 'src/app/shared/Cart';
 import { Product } from 'src/app/shared/Product';
@@ -10,7 +10,7 @@ import { Product } from 'src/app/shared/Product';
   styleUrls: ['./multi-select-dropdown.component.css'],
   // providers: [CartService]
 })
-export class MultiSelectDropdownComponent implements OnInit {
+export class MultiSelectDropdownComponent implements OnInit, OnChanges {
 
 
   constructor(private cartService: CartService) { }
@@ -19,6 +19,24 @@ export class MultiSelectDropdownComponent implements OnInit {
     this.list = [...this.productList];
     this.fetchInitialCart();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+    // Detect changes to the @Input() property
+
+    if (changes['productList'] && changes['productList'].currentValue) {
+      this.list = changes['productList'].currentValue;
+    }
+    if (changes['updatedCart'] && changes['updatedCart'].currentValue) {
+      const _updatedCart = changes['updatedCart'].currentValue?.map(
+        (val: any) => val.id
+      )
+      this.selectedOptions = _updatedCart!;
+    }
+  }
+
+  @Input()
+  updatedCart: any[] = []
 
   @Input() productList: any[] = [];
 
@@ -87,7 +105,7 @@ export class MultiSelectDropdownComponent implements OnInit {
     this.cartService.changeSelectedCount(this.selectedOptions.length)
     this.cartService.localSelectedItemsCount$.subscribe(
       data => {
-        // console.log('changed in service', data);
+        console.log('changed in service', data);
       }
     )
 
@@ -97,6 +115,8 @@ export class MultiSelectDropdownComponent implements OnInit {
 
     this.cartService.fetchCartCache().subscribe(
       data => {
+        console.log('calling fetchinitial');
+
         const v = data.cartProducts?.map(
           (val: CartProductsEntity) => val.id
         );

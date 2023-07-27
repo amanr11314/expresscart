@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { Subscription, Observable, of } from 'rxjs';
+import { Subscription, Observable, of, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CartService } from 'src/app/services/cart.service';
@@ -19,10 +19,10 @@ import { HttpResponse } from '@angular/common/http';
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
   isAddingToCart = false;
+  updatedCart: any[] = []
 
   list: any[] = []
   checkedList: any[] = [];
-
 
   onChange(item: Product) {
     console.log('called onchange ', item);
@@ -75,7 +75,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   searchString: string = '';
 
-  products$: Observable<Product[]> = of([]);
   products: Product[] = [];
   isLoading = false
 
@@ -157,6 +156,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
           }
         )
         this.list = newList
+        console.log('list = ', this.list);
+
       },
       complete: () => {
         this.isLoading = false
@@ -327,7 +328,13 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       next: (val) => {
         console.log('items were added: ', val);
         const msg = val?.status;
+
+        // new cart items (all)
         const updatedCartProducts = val?.updatedCartProducts || [];
+
+        // pass this into multi-select dropdown 
+        this.updatedCart = updatedCartProducts;
+
         this.cartService.changeSelectedCount(updatedCartProducts.length)
         this.showAlert(msg)
       },

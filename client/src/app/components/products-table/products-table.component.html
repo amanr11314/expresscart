@@ -1,7 +1,8 @@
 <div class="container px-4 py-2">
   <!-- Here searchbar is not refreshed -->
   <app-header
-    [products$]="products$"
+    [products$]="list"
+    [updatedCart]="updatedCart"
     [selectedCount]="checkedList.length"
     (onProductSearch)="onProductSearch($event)"
     (onSearchReset)="onSearchReset($event)"
