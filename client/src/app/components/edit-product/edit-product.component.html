@@ -1,4 +1,7 @@
-<div class="relative flex flex-col items-center justify-center">
+<div
+  *ngIf="!notFound; else notFoundContent"
+  class="relative flex flex-col items-center justify-center"
+>
   <div class="wrapper">
     <form
       [formGroup]="formEditProduct"
@@ -168,3 +171,7 @@
     Loading Product...
   </button>
 </div>
+
+<ng-template #notFoundContent>
+  <app-page404 [subTitle]="'Product not found'"></app-page404>
+</ng-template>

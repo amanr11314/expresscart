@@ -29,7 +29,9 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   fileInfos?: Observable<any>;
 
   formCreateProduct!: FormGroup
-  backendServiceSubscription?: Subscription;
+
+  // subscriptions
+  createProductSubscription?: Subscription;
 
   get productImgUrl() {
     // if fileUploadURL is set then populate that image
@@ -106,9 +108,14 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.backendServiceSubscription) {
-      this.backendServiceSubscription.unsubscribe();
-    }
+    const subscriptions = [
+      this.createProductSubscription,
+    ]
+    subscriptions.forEach((subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    })
   }
 
   createProduct() {
@@ -126,10 +133,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       file: this.file
     }
 
-    console.log('sending: ', createProductRequest);
-
-
-    this.backendServiceSubscription = this.backendService.createProduct(createProductRequest, 'response').subscribe({
+    this.createProductSubscription = this.backendService.createProduct(createProductRequest, 'response').subscribe({
       next: (resp) => {
         console.log(resp);
         if (resp.status === 200) {

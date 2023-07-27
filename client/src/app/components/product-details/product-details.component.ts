@@ -17,8 +17,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   isLoading = true;
 
-
-  private backendServiceSubscription?: Subscription;
+  // subscriptions
+  private getProductSubscription?: Subscription;
   private routeSubscription?: Subscription;
 
 
@@ -48,7 +48,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       params => {
         const id = +params['id'];
         this.id = id;
-        this.backendServiceSubscription = this.backendService.getProduct(id, 'response').subscribe({
+        this.getProductSubscription = this.backendService.getProduct(id, 'response').subscribe({
           next: (resp) => {
 
             if (resp.status === 200) {
@@ -85,11 +85,14 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.backendServiceSubscription) {
-      this.backendServiceSubscription.unsubscribe();
-    }
+    const subscriptions = [
+      this.getProductSubscription,
+      this.routeSubscription
+    ]
+    subscriptions.forEach((subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    })
   }
 }

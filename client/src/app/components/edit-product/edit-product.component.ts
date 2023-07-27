@@ -1,19 +1,19 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Product } from '../../shared/Product';
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../../services/backend.service';
 import { noWhitespaceMinLengthValidator } from 'src/app/utils/custom_validators';
 import { Observable, Subscription } from 'rxjs';
 import { FileUploadService } from 'src/app/services/upload.service';
+import { ProductCRUDOperationsService, Product, EditProductRequest } from 'src/app/services/swagger-expresscart-client';
 
 
 @Component({
   selector: 'app-edit-product',
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css'],
-  providers: [BackendService]
+  providers: [ProductCRUDOperationsService]
 
 })
 export class EditProductComponent implements OnInit, OnDestroy {
@@ -30,13 +30,18 @@ export class EditProductComponent implements OnInit, OnDestroy {
   fileInfos?: Observable<any>;
 
   formEditProduct!: FormGroup
+
+  // subscriptions
+  private subRoute?: Subscription;
   valueChangesSubscription?: Subscription;
-  backendServiceSubscription?: Subscription;
+  getProductSubscription?: Subscription;
+  editProductSubscription?: Subscription;
+
   hasChange: boolean = false
 
   id?: number;
-  private subRoute?: any;
   productDetails?: Product
+  notFound = false;
 
   get productImgUrl() {
     // if fileUploadURL is set then populate that image
@@ -55,7 +60,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
     } return null;
   }
 
-  constructor(private route: ActivatedRoute, private backendService: BackendService, private router: Router, private uploadService: FileUploadService) { }
+  constructor(private route: ActivatedRoute, private backendService: ProductCRUDOperationsService, private router: Router, private uploadService: FileUploadService) { }
 
   resetFile() {
     if (this.file) {
@@ -84,36 +89,41 @@ export class EditProductComponent implements OnInit, OnDestroy {
     this.subRoute = this.route.params.subscribe(
       params => {
         this.id = +params['id'];
+        console.log('setting id to: ', this.id);
+
 
         // disable form interaction while product is loaded
         this.formEditProduct.disable();
         this.isLoadingProduct = true;
 
-        this.backendServiceSubscription = this.backendService.getProductDetail(this.id).subscribe({
-          next: (data) => {
-            console.log(JSON.stringify(data))
-            this.productDetails = data['product']
+        this.getProductSubscription = this.backendService.getProduct(this.id, 'response').subscribe({
+          next: (resp) => {
+            console.log(resp);
 
-            // set default valuse in form
-            this.formEditProduct.patchValue({
-              title: this.productDetails?.title,
-              description: this.productDetails?.description,
-              price: this.productDetails?.price,
-            })
-            return this.productDetails;
+            if (resp.status === 200) {
+              this.productDetails = resp.body?.product;
+              console.log('details = ', this.productDetails);
+              // set default valuse in form
+              this.formEditProduct.patchValue({
+                title: this.productDetails?.title,
+                description: this.productDetails?.description,
+                price: this.productDetails?.price,
+              })
+            }
           },
           complete: () => {
             this.isLoadingProduct = false;
             // enable form interaction once product is loaded
             this.formEditProduct.enable();
           },
-          error: () => {
+          error: (err) => {
+            console.log('inside err ', err);
+            if (err.status === 404) {
+              this.notFound = true;
+            }
             this.isLoadingProduct = false;
-            // enable form interaction once product is loaded
-            this.formEditProduct.enable();
           }
-        }
-        )
+        })
       }
     )
 
@@ -148,34 +158,45 @@ export class EditProductComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subRoute) {
-      this.subRoute.unsubscribe();
-    }
-    if (this.valueChangesSubscription) {
-      this.valueChangesSubscription.unsubscribe();
-    }
-    if (this.backendServiceSubscription) {
-      this.backendServiceSubscription.unsubscribe();
-    }
+    const subscriptions = [
+      this.subRoute,
+      this.valueChangesSubscription,
+      this.getProductSubscription,
+      this.editProductSubscription,
+    ]
+    subscriptions.forEach((subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    })
   }
 
   updateProduct() {
     console.log('Called update product')
     const { title, description, price } = this.formEditProduct.value;
-    const updateProductValue: Product = {
+
+    const editProductRequest: EditProductRequest = {
       id: this.productDetails?.id,
       title,
       description,
-      price
+      price,
+      file: this.file
     }
+
+    console.log('sending values: ', editProductRequest);
+
 
     // console.log(updateProductValue)
     this.isUpdatingProduct = true;
-    this.backendServiceSubscription = this.backendService.updateProduct(updateProductValue, this.file).subscribe({
-      next: (val) => {
-        console.log('called next after updating ', val);
+    this.editProductSubscription = this.backendService.editProduct(editProductRequest, 'response').subscribe({
+      next: (resp) => {
+        console.log(resp);
+        if (resp.status === 204) {
+          console.log('product updated successfully');
+        }
       },
       complete: () => {
+        console.log('called complete after creating product');
         this.isUpdatingProduct = false;
         this.router.navigate(['/'], {
           skipLocationChange: true
@@ -183,12 +204,12 @@ export class EditProductComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.log('something went wrong: ', err);
-
         this.isUpdatingProduct = false;
         this.router.navigate(['/'], {
           skipLocationChange: true
         });
-      }
+        // show poper error if any
+      },
     })
   }
 

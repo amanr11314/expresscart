@@ -36,6 +36,7 @@ import { UnauthorizedError } from '../model/unauthorizedError';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
 import { CreateProductRequest } from '../model/createProductRequest';
+import { EditProductRequest } from '../model/editProductRequest';
 
 
 
@@ -291,13 +292,12 @@ export class ProductCRUDOperationsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public editProduct(id: any, title?: any, description?: any, price?: any, file?: any, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<SuccessNoContent>;
-    public editProduct(id: any, title?: any, description?: any, price?: any, file?: any, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<SuccessNoContent>>;
-    public editProduct(id: any, title?: any, description?: any, price?: any, file?: any, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<SuccessNoContent>>;
-    public editProduct(id: any, title?: any, description?: any, price?: any, file?: any, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling editProduct.');
-        }
+    public editProduct(editProductRequest: EditProductRequest, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<SuccessNoContent>;
+    public editProduct(editProductRequest: EditProductRequest, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<SuccessNoContent>>;
+    public editProduct(editProductRequest: EditProductRequest, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<SuccessNoContent>>;
+    public editProduct(editProductRequest: EditProductRequest, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
+
+        const { id } = editProductRequest
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -333,7 +333,7 @@ export class ProductCRUDOperationsService {
         const canConsumeForm = this.canConsumeForm(consumes);
 
         let localVarFormParams: { append(param: string, value: any): any; };
-        let localVarUseForm = false;
+        let localVarUseForm = true;
         let localVarConvertFormParamsToString = false;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
@@ -341,20 +341,19 @@ export class ProductCRUDOperationsService {
             localVarFormParams = new HttpParams({ encoder: this.encoder });
         }
 
-        if (id !== undefined) {
-            localVarFormParams = localVarFormParams.append('id', <any>id) as any || localVarFormParams;
+        localVarFormParams.append('id', id)
+
+        if (editProductRequest.title) {
+            localVarFormParams.append('title', editProductRequest.title)
         }
-        if (title !== undefined) {
-            localVarFormParams = localVarFormParams.append('title', <any>title) as any || localVarFormParams;
+        if (editProductRequest.description) {
+            localVarFormParams.append('description', editProductRequest.description)
         }
-        if (description !== undefined) {
-            localVarFormParams = localVarFormParams.append('description', <any>description) as any || localVarFormParams;
+        if (editProductRequest.price) {
+            localVarFormParams.append('price', editProductRequest.price)
         }
-        if (price !== undefined) {
-            localVarFormParams = localVarFormParams.append('price', <any>price) as any || localVarFormParams;
-        }
-        if (file !== undefined) {
-            localVarFormParams = localVarFormParams.append('file', <any>file) as any || localVarFormParams;
+        if (editProductRequest.file) {
+            localVarFormParams.append('file', editProductRequest.file)
         }
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
