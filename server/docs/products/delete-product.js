@@ -31,17 +31,7 @@ module.exports = {
         },
         responses: {
             '204': {
-                description: "Product Deleted",
-                content: {
-                    'application/json': {
-                        schema: {
-                            $ref: '#/components/schemas/SuccessNoContent',
-                            example: {
-                                msg: 'Product updated successfully',
-                            }
-                        }
-                    }
-                }
+                description: "No Content (Product Deleted Successfully)",
             },
             "400": {
                 "description": "Bad Request. ID parameter is missing or invalid",

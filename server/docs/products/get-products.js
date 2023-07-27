@@ -58,14 +58,7 @@ module.exports = {
                 }
             },
             '204': {
-                "description": "Products fetched list empty",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/SuccessNoContent"
-                        }
-                    }
-                }
+                "description": "No Content (Products fetched list empty)",
             },
             "401": {
                 "description": "Unauthorized. Missing or invalid token.",

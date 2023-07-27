@@ -30,14 +30,6 @@ module.exports = {
                     }
                 }
             },
-            "SuccessNoContent": {
-                "type": "object",
-                "properties": {
-                    "msg": {
-                        "type": "string"
-                    }
-                }
-            },
             "id": {
                 "type": 'string',
                 "description": "An id of a Model",
