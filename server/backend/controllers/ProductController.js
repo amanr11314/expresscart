@@ -88,9 +88,10 @@ exports.createProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
     const productObj = req.body || {};
-
+    // check why edit file is not uploading
     let path = '#'
     if (req.file) {
+        console.log('found file: ', req.file.filename);
         path = req.file.filename;
         productObj['imgUrl'] = path;
     }

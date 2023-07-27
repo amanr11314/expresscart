@@ -17,7 +17,10 @@ router.post('/product/create', authorize,
     thumbnail,
     createProduct)
 // router.post('/product/edit', authorize, validateProductId, withUploadFile.upload('file'), editProduct)
-router.post('/product/edit', authorize, withUploadFile.upload('file'), editProduct)
+router.post('/product/edit', authorize,
+    withUploadFile.upload('file'),
+    thumbnail,
+    editProduct)
 router.post('/product/delete', authorize, validateProductId, deleteProduct)
 
 router.post('/cart', authorize, addToCart);
