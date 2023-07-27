@@ -3,7 +3,36 @@ module.exports = {
         tags: ['Product CRUD operations'],
         description: "Get all products",
         operationId: 'getProducts',
-        parameters: [],
+        parameters: [
+            {
+                "name": "search",
+                "in": "query",
+                "description": "Filter products by search query (optional)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            {
+                "name": "col",
+                "in": "query",
+                "description": "Sort column (optional)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            {
+                "name": "order",
+                "in": "query",
+                "description": "Sort order (optional)",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": ["asc", "desc"]
+                }
+            }
+        ],
         security: [
             {
                 "BearerAuth": []
