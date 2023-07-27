@@ -4,6 +4,7 @@ const servers = require('./servers');
 const components = require('./components');
 const tags = require('./tags');
 const products = require('./products')
+const cart = require('./cart')
 // const todos = require('./todos');
 
 module.exports = {
@@ -11,6 +12,10 @@ module.exports = {
     ...servers,
     ...components,
     ...tags,
-    ...products
+    paths: {
+        ...products.paths,
+        ...cart.paths
+    }
+    // ...cart
     // ...todos
 };
