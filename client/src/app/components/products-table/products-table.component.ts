@@ -25,6 +25,8 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
 
   onChange(item: Product) {
+    console.log('called onchange ', item);
+
     const checked = this.checkedList.includes(item.id)
     if (!checked) {
       // add to checked list
@@ -144,6 +146,17 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
           // No products found
           this.products = [];
         }
+        const newList: any[] = [...this.products]
+
+        // maintain checked list
+        newList.forEach(
+          (item, idx) => {
+            if (this.checkedList.includes(item.id)) {
+              newList[idx].checked = true;
+            }
+          }
+        )
+        this.list = newList
       },
       complete: () => {
         this.isLoading = false
