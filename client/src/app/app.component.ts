@@ -4,13 +4,12 @@ import { CartService as NewCart } from './services/swagger-expresscart-client'
 import { CartComponent } from './components/cart/cart.component';
 import { Subscription } from 'rxjs';
 import { EventBusService } from './shared/event-bus.service';
-import { AuthService } from './services/auth/auth.service';
+import { AuthService as NewAuthService } from './services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [AuthService]
 })
 export class AppComponent implements OnInit, OnDestroy {
 
@@ -22,12 +21,12 @@ export class AppComponent implements OnInit, OnDestroy {
   localSelectedItemsCountSub?: Subscription;
 
 
-  constructor(private eventBusService: EventBusService, private authService: AuthService, private newCartService: NewCart) { }
+  constructor(private eventBusService: EventBusService, private newCartService: NewCart, private newAuthService: NewAuthService) { }
 
   ngOnInit(): void {
     initFlowbite();
 
-    this.loginSub = this.authService.isLoggedIn$.subscribe({
+    this.loginSub = this.newAuthService.isLoggedIn$.subscribe({
       next: (value) => {
         if (value) {
 

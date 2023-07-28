@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse, HttpEvent, HttpResponse } from "@angular/common/http";
-import { AuthService } from "./auth.service";
-import { BehaviorSubject, catchError, switchMap, tap, throwError } from "rxjs";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse } from "@angular/common/http";
+import { AuthService as NewAuthService } from "../swagger-expresscart-client";
+import { BehaviorSubject, catchError, switchMap, throwError } from "rxjs";
 import { TokenService } from "src/app/token.service";
+import { LogoutRequest } from "../swagger-expresscart-client/model/logoutRequest";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -10,7 +11,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private isRefreshing = false;
     private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-    constructor(private authService: AuthService, private tokenService: TokenService) { }
+    constructor(private newAuthService: NewAuthService, private tokenService: TokenService) { }
 
     addTokenHeader(req: HttpRequest<any>, token: string) {
         return req.clone({
@@ -21,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
-        const authToken = this.authService.getToken();
+        const authToken = this.tokenService.getToken();
 
         req = this.addTokenHeader(req, authToken!)
 
@@ -44,8 +45,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
             const token = this.tokenService.getRefreshToken();
 
+            const logoutReq: LogoutRequest = {
+                token
+            }
+
             if (token)
-                return this.authService.refreshToken(token).pipe(
+                return this.newAuthService.refreshToken(logoutReq).pipe(
                     switchMap((token: any) => {
                         this.isRefreshing = false;
 

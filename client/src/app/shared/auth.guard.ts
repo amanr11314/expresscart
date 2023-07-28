@@ -7,12 +7,12 @@ import {
   NavigationExtras,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService as NewAuthService } from '../services/swagger-expresscart-client';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(public authService: AuthService, public router: Router) { }
+  constructor(public newAuthService: NewAuthService, public router: Router) { }
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -21,7 +21,7 @@ export class AuthGuard {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (this.authService.isLoggedIn !== true) {
+    if (this.newAuthService.isLoggedIn !== true) {
       // window.alert('Access not allowed!');
       const navigationExtras: NavigationExtras = { state: { msg: 'Please login to continue' } };
       this.router.navigate(['login'], navigationExtras);

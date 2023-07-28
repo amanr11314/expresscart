@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthService as NewAuthService } from '../../services/swagger-expresscart-client'
 import { Router } from '@angular/router';
+import { SignInRequest } from 'src/app/services/swagger-expresscart-client/model/signInRequest';
+import { TokenService } from 'src/app/token.service';
 
 @Component({
   selector: 'app-login-component',
   templateUrl: './login-component.component.html',
   styleUrls: ['./login-component.component.css'],
-  providers: [AuthService]
 })
 export class LoginComponentComponent implements OnInit {
 
   msg?: string;
   isLoading: boolean = false;
+  authErr?: string;
 
   formLoginUser!: FormGroup
   constructor(
-    public authService: AuthService,
-    public router: Router
+    private newAuthService: NewAuthService,
+    public router: Router,
+    private tokenService: TokenService
   ) {
 
     const navigation = this.router.getCurrentNavigation();
@@ -45,11 +48,49 @@ export class LoginComponentComponent implements OnInit {
   loginUser() {
     if (this.formLoginUser.valid) {
       this.isLoading = true;
-      this.authService.signIn(this.formLoginUser.value, this.onSignInCallback)
+      this.signIn();
+
     } else {
       console.log('Invalid input');
       this.formLoginUser.markAllAsTouched();
     }
+  }
+
+  signIn() {
+    const signInRequest: SignInRequest = this.formLoginUser.value
+    this.newAuthService.signIn(signInRequest, 'response').subscribe({
+      next: (resp) => {
+        if (resp.status === 200) {
+          const signInResp = resp.body;
+          this.tokenService.saveToken(signInResp?.token);
+          this.tokenService.saveRefreshToken(signInResp?.refreshToken)
+
+          // get user details
+          this.newAuthService.getUser(signInResp?.id, 'response').subscribe({
+            next: (userDetailResp) => {
+              this.authErr = undefined;
+              const userDetails = userDetailResp.body?.data;
+
+              // save user details
+              this.tokenService.saveUser(userDetails!);
+            },
+            error: (err: any) => {
+              this.onSignInCallback();
+
+              console.log('error while fetching user data: ', err)
+            }
+          })
+        }
+      },
+      complete: () => {
+        this.onSignInCallback();
+        window.location.replace('/')
+      },
+      error: (err) => {
+        this.onSignInCallback();
+        this.authErr = err.error?.['message'] || 'Something went wrong'
+      }
+    })
   }
 
   get getEmailError() {

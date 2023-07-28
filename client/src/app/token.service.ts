@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from './shared/User';
+import { User as NewUser } from './services/swagger-expresscart-client/model/user';
 
 const TOKEN_KEY = 'access_token';
 const REFRESHTOKEN_KEY = 'auth-refreshtoken';
@@ -34,7 +35,8 @@ export class TokenService {
     return localStorage.getItem(REFRESHTOKEN_KEY);
   }
 
-  public saveUser(user: User): void {
+  public saveUser(user: User): void;
+  public saveUser(user: NewUser): void {
     localStorage.removeItem(USER_KEY);
     const _user = JSON.stringify(user)
     console.log('setting user = ', _user);

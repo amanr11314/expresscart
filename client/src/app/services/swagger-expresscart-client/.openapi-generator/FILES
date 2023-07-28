@@ -3,6 +3,7 @@
 README.md
 api.module.ts
 api/api.ts
+api/auth.service.ts
 api/cart.service.ts
 api/product.service.ts
 configuration.ts
@@ -19,9 +20,18 @@ model/cartUpdateResponse.ts
 model/deleteProductRequest.ts
 model/getProduct200Response.ts
 model/getProducts200Response.ts
+model/getUser200Response.ts
+model/getUserResponse.ts
+model/logoutRequest.ts
 model/modelError.ts
 model/models.ts
 model/product.ts
+model/refreshToken200Response.ts
+model/signInRequest.ts
+model/signInResponse.ts
+model/signUpRequest.ts
+model/signUpResponse.ts
 model/unauthorizedError.ts
+model/user.ts
 param.ts
 variables.ts

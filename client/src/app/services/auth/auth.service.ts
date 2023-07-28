@@ -15,11 +15,11 @@ import { TokenService } from 'src/app/token.service';
 })
 export class AuthService {
 
-  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  // private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   private userSubject = new BehaviorSubject<User | null>(null);
 
 
-  authErr: any;
+  public authErr: any;
 
 
 
@@ -78,7 +78,7 @@ export class AuthService {
               console.log('userdetails= ', user)
               // save user details
               this.tokenService.saveUser(user);
-              this.isLoggedInSubject.next(true)
+              // this.isLoggedInSubject.next(true)
             },
             error: (err: any) => {
               onSignInCallback?.();

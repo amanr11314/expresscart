@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { confirmPasswordValidator } from 'src/app/utils/custom_validators';
+import { AuthService as NewAuthService } from 'src/app/services/swagger-expresscart-client';
+import { SignUpRequest } from 'src/app/services/swagger-expresscart-client/model/signUpRequest';
 
 @Component({
   selector: 'app-register-component',
   templateUrl: './register-component.component.html',
   styleUrls: ['./register-component.component.css'],
-  providers: [AuthService]
 })
 export class RegisterComponentComponent {
   formSignupUser!: FormGroup
   isLoading: boolean = false;
+  authErr?: string;
   constructor(
-    public authService: AuthService,
-    public router: Router
+    public router: Router,
+    public newAuthService: NewAuthService
   ) {
     this.formSignupUser = new FormGroup({
       name: new FormControl('', [
@@ -67,18 +67,39 @@ export class RegisterComponentComponent {
 
   signupUser() {
     if (this.formSignupUser.valid && this.passowrdMatches) {
-      // console.log(this.formSignupUser.value);
       const { name, email, password } = this.formSignupUser.value;
       this.isLoading = true;
-      this.authService.signUp({
-        name, email, password
-      }, this.onSignUpCallback)
+      this.signUp();
+
     } else {
       console.log('Invalid input');
       console.log(this.formSignupUser.value);
       this.getFormValidationErrors();
       this.formSignupUser.markAllAsTouched();
     }
+  }
+
+  signUp() {
+    const signUpRequest: SignUpRequest = this.formSignupUser.value;
+    this.newAuthService.register(signUpRequest, 'response').subscribe({
+      next: (res) => {
+        if (res.status === 201) {
+          console.log('user registered successfully');
+        }
+      },
+      complete: () => {
+        console.log('called complete');
+
+        this.authErr = undefined;
+        this.onSignUpCallback();
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.log('called errror');
+        this.onSignUpCallback();
+        this.authErr = err['message'] || 'Something went wrong'
+      }
+    })
   }
 
   get getNameError() {

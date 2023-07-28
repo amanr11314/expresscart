@@ -25,8 +25,8 @@
         <span class="font-medium">Please Login to continue</span>
       </div>
     </div>
-    <p *ngIf="!!authService.authErr" class="error-msg">
-      {{ authService.authErr }}
+    <p *ngIf="!!authErr" class="error-msg">
+      {{ authErr }}
     </p>
     <form [formGroup]="formLoginUser" (ngSubmit)="loginUser()">
       <!-- Email Address -->

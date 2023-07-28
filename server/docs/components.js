@@ -364,10 +364,6 @@ module.exports = {
                         "format": "email",
                         "description": "The email of the user."
                     },
-                    "password": {
-                        "type": "string",
-                        "description": "The hashed password of the user."
-                    },
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time",

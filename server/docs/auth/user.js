@@ -27,7 +27,7 @@ module.exports = {
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "product": {
+                                "user": {
                                     "$ref": "#/components/schemas/GetUserResponse"
                                 }
                             }

@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, of } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { User } from 'src/app/shared/User';
+import { AuthService as NewAuthService } from 'src/app/services/swagger-expresscart-client';
+import { User } from 'src/app/services/swagger-expresscart-client/model/user';
 import { EventBusService } from 'src/app/shared/event-bus.service';
 
 
@@ -9,7 +9,6 @@ import { EventBusService } from 'src/app/shared/event-bus.service';
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.css'],
-  providers: [AuthService]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 
@@ -20,16 +19,18 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   user?: User;
   userSubscription?: Subscription;
-  constructor(public authService: AuthService, private eventBusService: EventBusService) { }
+  constructor(private eventBusService: EventBusService, private newAuthService: NewAuthService) { }
 
 
   ngOnInit(): void {
-    // this.user$ = (this.authService.getuserDetails$)
-    this.userSubscription = this.authService.getUserDetails().subscribe((user) => {
+
+    this.newAuthService.getUserDetails().subscribe((user) => {
       if (user) {
+        console.log('foubd user in nav: ', user);
         this.user = user;
       }
     })
+
     this.eventBusSub = this.eventBusService.on('logout', () => {
       this.logOut();
     })
@@ -47,6 +48,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   logOut() {
-    this.authService.doLogout();
+    this.newAuthService.doLogout();
   }
 }

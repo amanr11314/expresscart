@@ -39,6 +39,7 @@ router.post("/register", validEmail, async (req, res, next) => {
             password: hash,
         })
         if (user) {
+            user['password'] = undefined;
             console.log('user created successfully');
             res.status(201).json({
                 message: "User successfully created!",
