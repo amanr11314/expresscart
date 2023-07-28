@@ -1,55 +1,37 @@
 module.exports = {
     post: {
-        tags: ['Cart'],
-        description: "Add Prouduct to Cart",
-        operationId: 'addToCart',
-        security: [
-            {
-                "BearerAuth": []
-            }
-        ],
+        tags: ['Auth'],
+        description: "User SignIn using email and password",
+        operationId: 'signIn',
+        parameters: [],
         "requestBody": {
-            "description": "ProductId of product to add to cart",
+            "description": "SignIn Data",
             "required": true,
             "content": {
                 "application/json": {
                     "schema": {
-                        "$ref": "#/components/schemas/AddToCartRequest"
-                    }
+                        "$ref": "#/components/schemas/SignInRequest"
+                    },
                 }
             }
         },
         responses: {
             '200': {
-                "description": "Product Added to Cart",
+                description: "Logged In Successfully",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/AddToCartResponse"
+                            "$ref": "#/components/schemas/SignInResponse"
                         }
                     }
                 }
             },
             "401": {
-                "description": "Unauthorized. Missing or invalid token.",
+                "description": "Unauthorized (Invalid Credentials)",
                 "content": {
                     "application/json": {
                         "schema": {
                             "$ref": "#/components/schemas/UnauthorizedError"
-                        }
-                    }
-                }
-            },
-            '404': {
-                description: "Product not found",
-                content: {
-                    'application/json': {
-                        schema: {
-                            $ref: '#/components/schemas/Error',
-                            example: {
-                                message: "",
-                                internal_code: "Invalid id"
-                            }
                         }
                     }
                 }

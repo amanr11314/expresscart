@@ -1,55 +1,47 @@
 module.exports = {
     post: {
-        tags: ['Cart'],
-        description: "Add Prouduct to Cart",
-        operationId: 'addToCart',
-        security: [
-            {
-                "BearerAuth": []
-            }
-        ],
+        tags: ['Auth'],
+        description: "User SignIn using email and password",
+        operationId: 'register',
+        parameters: [],
         "requestBody": {
-            "description": "ProductId of product to add to cart",
+            "description": "User Data to register",
             "required": true,
             "content": {
                 "application/json": {
                     "schema": {
-                        "$ref": "#/components/schemas/AddToCartRequest"
-                    }
+                        "$ref": "#/components/schemas/SignUpRequest"
+                    },
                 }
             }
         },
         responses: {
-            '200': {
-                "description": "Product Added to Cart",
+            '201': {
+                description: "User created Successfully",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/AddToCartResponse"
+                            "$ref": "#/components/schemas/SignUpResponse"
                         }
                     }
                 }
             },
-            "401": {
-                "description": "Unauthorized. Missing or invalid token.",
+            "400": {
+                "description": "Invalid email id",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/UnauthorizedError"
+                            "$ref": "#/components/schemas/Error"
                         }
                     }
                 }
             },
-            '404': {
-                description: "Product not found",
-                content: {
-                    'application/json': {
-                        schema: {
-                            $ref: '#/components/schemas/Error',
-                            example: {
-                                message: "",
-                                internal_code: "Invalid id"
-                            }
+            "404": {
+                "description": "Email Already Taken",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
                         }
                     }
                 }

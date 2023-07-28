@@ -5,6 +5,7 @@ const components = require('./components');
 const tags = require('./tags');
 const products = require('./products')
 const cart = require('./cart')
+const auth = require('./auth')
 // const todos = require('./todos');
 
 module.exports = {
@@ -14,8 +15,7 @@ module.exports = {
     ...tags,
     paths: {
         ...products.paths,
-        ...cart.paths
+        ...cart.paths,
+        ...auth.paths
     }
-    // ...cart
-    // ...todos
 };

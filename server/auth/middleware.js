@@ -29,6 +29,6 @@ exports.validEmail = async (req, res, next) => {
             res.status(404).json({ message: 'Email already in use' })
         }
     } else {
-        res.status(404).json({ message: "Please provide an email" })
+        res.status(400).json({ message: "Please provide an email" })
     }
 }

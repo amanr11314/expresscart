@@ -10,6 +10,7 @@ module.exports = {
         ],
         "requestBody": {
             "description": "ProductIds of products to bulk add to cart",
+            "required": true,
             "content": {
                 "application/json": {
                     "schema": {

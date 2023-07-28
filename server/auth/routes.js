@@ -9,6 +9,7 @@ const { authorize, validEmail } = require("./middleware");
 const { validationResult } = require("express-validator");
 
 let refreshTokens = []
+const NOT_FOUND = "NOT_FOUND";
 
 const cors = require("cors");
 // CORS OPTIONS
@@ -29,22 +30,30 @@ var corsOptionsDelegate = function (req, callback) {
 
 // Sign-up
 router.post("/register", validEmail, async (req, res, next) => {
-    const hash = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: hash,
-    })
-    if (user) {
-        console.log('user created successfully');
-        res.status(201).json({
-            message: "User successfully created!",
-            result: user,
-        });
-    } else {
-        console.log('somthing went wrong');
-        res.status(500).json({
-            error: 'something went wrong',
+    try {
+        const hash = await bcrypt.hash(req.body.password, 10);
+        const user = await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: hash,
+        })
+        if (user) {
+            console.log('user created successfully');
+            res.status(201).json({
+                message: "User successfully created!",
+                result: user,
+            });
+        } else {
+            console.log('somthing went wrong');
+            res.status(500).json({
+                message: 'something went wrong',
+            });
+        }
+    } catch (error) {
+        console.log('Error');
+        return res.status(500).json({
+            message: "Authentication failed" + err?.message,
+            internal_code: 500
         });
     }
 });
@@ -58,11 +67,12 @@ router.post("/signin", (req, res, next) => {
             where: { email: req.body.email, }
         })
             .then((user) => {
-                if (!user) {
-                    return res.status(401).json({
-                        message: "No user found with this email",
-                    });
-                }
+                if (!user)
+                    throw NOT_FOUND
+                // return res.status(401).json({
+                //     message: "No user found with this email",
+                // });
+                console.log('not executed if user not found');
                 getUser = user;
                 return bcrypt.compare(req.body.password, user.password);
             })
@@ -102,59 +112,96 @@ router.post("/signin", (req, res, next) => {
                     id: getUser.id,
                 });
             })
-    }
-    catch (err) {
+            .catch((err) => {
+                if (err === NOT_FOUND) {
+                    console.log('Error:', err.message);
+                    return res.status(401).json({
+                        message: "No user found with this email",
+                    });
+                } else {
+                    return res.status(500).json({
+                        message: "Authentication failed" + err?.message,
+                        internal_code: 500,
+                    });
+                }
+            });
+    } catch (err) {
+        console.log('outer catch: ', err);
+
         console.log('Error');
-        return res.status(401).json({
-            message: "Authentication failed" + err,
+        return res.status(500).json({
+            message: "Authentication failed" + err?.message,
+            internal_code: 500
         });
     };
 });
 
 router.post("/token", (req, res, next) => {
     // cureent refreshToken
-    const refreshToken = req.body.token
-    if (refreshToken == null) return res.sendStatus(401)
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        const accessToken = jwt.sign(
-            {
-                email: user.email,
-                userId: user.id,
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            {
-                expiresIn: "1h",
-            }
-        );
-        res.json({ accessToken, refreshToken })
-    })
+    try {
+        const refreshToken = req.body.token
+        if (refreshToken == null) return res.sendStatus(401)
+        if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+            if (err) return res.sendStatus(403)
+            const accessToken = jwt.sign(
+                {
+                    email: user.email,
+                    userId: user.id,
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                {
+                    expiresIn: "1h",
+                }
+            );
+            return res.status(200).json({ accessToken, refreshToken })
+        })
+    } catch (error) {
+        console.log('Error');
+        return res.status(500).json({
+            message: "Authentication failed" + err?.message,
+            internal_code: 500
+        });
+    }
 })
 
 router.post('/logout', (req, res) => {
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-    res.sendStatus(204);
+    try {
+        refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+        res.sendStatus(204);
+    } catch (err) {
+        console.log('Error');
+        return res.status(500).json({
+            message: err?.message,
+            internal_code: 500
+        });
+    };
 })
 
 // Get Single User
 router.route("/user/:id").get(authorize, async (req, res, next) => {
 
-    const id = req.params?.id || req.body?.id
-    User.findOne({
-        attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
-        where: { id }
-    })
-        .then((result) => {
-            res.json({
-                data: result,
-                message: "Data successfully retrieved.",
-                status: 200,
-            });
+    try {
+        const id = req.params?.id || req.body?.id
+        const result = await User.findOne({
+            attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+            where: { id }
         })
-        .catch((err) => {
-            return next(err);
+        if (!result) {
+            return res.status(404).json({ message: 'No user found with this id: ' + id })
+        }
+        res.status(200).json({
+            data: result,
+            message: "Data successfully retrieved.",
+            status: 200,
         });
+    } catch (error) {
+        console.log('Error');
+        return res.status(500).json({
+            message: err?.message,
+            internal_code: 500
+        });
+    }
 });
 
 module.exports = router;

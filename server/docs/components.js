@@ -296,6 +296,118 @@ module.exports = {
                         "example": "Added 2 items to cart"
                     }
                 }
+            },
+            "SignInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": ["email", "password"]
+            },
+            "SignInResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "description": "Access token for authenticated user."
+                    },
+                    "refreshToken": {
+                        "type": "string",
+                        "description": "Refresh token for authenticated user."
+                    },
+                    "expiresIn": {
+                        "type": "integer",
+                        "description": "Token expiration time in seconds."
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "User ID."
+                    }
+                },
+                "required": ["token", "refreshToken", "expiresIn", "id"]
+            },
+            "SignUpRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": ["name", "email", "password"]
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The ID of the user."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the user."
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "The email of the user."
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "The hashed password of the user."
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time when the user was last updated."
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time when the user was created."
+                    }
+                },
+                "required": ["id", "name", "email", "updatedAt", "createdAt"]
+            },
+            "SignUpResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A message indicating the success of the user creation."
+                    },
+                    "result": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                }
+            },
+            "GetUserResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A message indicating the success of the user creation."
+                    },
+                    "status": {
+                        "type": "number",
+                        "description": "status code"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                }
             }
         },
         "securitySchemes": {

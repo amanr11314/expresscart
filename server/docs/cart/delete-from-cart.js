@@ -10,6 +10,7 @@ module.exports = {
         ],
         "requestBody": {
             "description": "ProductId of product to remove from cart",
+            "required": true,
             "content": {
                 "application/json": {
                     "schema": {

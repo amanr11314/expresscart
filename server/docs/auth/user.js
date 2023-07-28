@@ -1,47 +1,42 @@
 module.exports = {
-    post: {
-        tags: ['Cart'],
-        description: "Add Prouduct to Cart",
-        operationId: 'addToCart',
+    get: {
+        tags: ['Auth'],
+        description: "Get User details by id",
+        operationId: "getUser",
+        parameters: [
+            {
+                name: "id",
+                in: "path",
+                schema: {
+                    $ref: "#/components/schemas/id"
+                },
+                required: true,
+                description: "A user id"
+            }
+        ],
         security: [
             {
                 "BearerAuth": []
             }
         ],
-        "requestBody": {
-            "description": "ProductId of product to add to cart",
-            "required": true,
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "$ref": "#/components/schemas/AddToCartRequest"
-                    }
-                }
-            }
-        },
         responses: {
             '200': {
-                "description": "Product Added to Cart",
-                "content": {
-                    "application/json": {
+                description: "User details is obtained",
+                content: {
+                    'application/json': {
                         "schema": {
-                            "$ref": "#/components/schemas/AddToCartResponse"
-                        }
-                    }
-                }
-            },
-            "401": {
-                "description": "Unauthorized. Missing or invalid token.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/UnauthorizedError"
+                            "type": "object",
+                            "properties": {
+                                "product": {
+                                    "$ref": "#/components/schemas/GetUserResponse"
+                                }
+                            }
                         }
                     }
                 }
             },
             '404': {
-                description: "Product not found",
+                description: "User not found",
                 content: {
                     'application/json': {
                         schema: {
