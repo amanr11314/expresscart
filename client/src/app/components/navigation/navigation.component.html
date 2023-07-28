@@ -9,7 +9,7 @@
       >
     </a>
 
-    <ng-container *ngIf="(authService.isLoggedIn$ | async) && user">
+    <ng-container *ngIf="(newAuthService.isLoggedIn$ | async) && user">
       <div class="flex items-center md:order-2">
         <div
           data-tooltip-target="tooltip-default"

@@ -19,7 +19,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   user?: User;
   userSubscription?: Subscription;
-  constructor(private eventBusService: EventBusService, private newAuthService: NewAuthService) { }
+  constructor(private eventBusService: EventBusService, public newAuthService: NewAuthService) { }
 
 
   ngOnInit(): void {
