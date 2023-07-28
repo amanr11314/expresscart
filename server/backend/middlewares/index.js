@@ -14,7 +14,7 @@ exports.validateProductId = async (req, res, next) => {
         : req.params?.id
 
     // console.log('Route path = ', req.path);
-    '/cart'.includes('/cart')
+    // '/cart'.includes('/cart')
 
     // add this middleware in addToCart and deleteCartItem
 

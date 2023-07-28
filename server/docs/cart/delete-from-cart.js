@@ -39,6 +39,20 @@ module.exports = {
                     }
                 }
             },
+            '404': {
+                description: "Product not found",
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/Error',
+                            example: {
+                                message: "",
+                                internal_code: "Invalid id"
+                            }
+                        }
+                    }
+                }
+            },
             "500": {
                 "description": "Internal Server Error. An error occurred while processing the request.",
                 "content": {

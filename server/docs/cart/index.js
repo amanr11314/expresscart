@@ -5,13 +5,17 @@
 // const deleteProduct = require('./delete-product')
 const getCart = require('./get-cart')
 const addToCart = require('./add-to-cart')
+const deleteCartItem = require('./delete-from-cart')
 
 module.exports = {
     paths: {
         '/cart': {
             ...getCart,
-            ...addToCart
+            ...addToCart,
         },
+        '/cart/remove': {
+            ...deleteCartItem
+        }
         // '/cart': {
         //     ...addToCart
         // }

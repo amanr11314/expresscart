@@ -20,9 +20,6 @@ module.exports = {
                     }
                 }
             },
-            '204': {
-                "description": "No Content (Cart is empty)",
-            },
             "401": {
                 "description": "Unauthorized. Missing or invalid token.",
                 "content": {

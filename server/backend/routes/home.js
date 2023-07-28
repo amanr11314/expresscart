@@ -23,9 +23,9 @@ router.post('/product/edit', authorize,
     editProduct)
 router.post('/product/delete', authorize, validateProductId, deleteProduct)
 
-router.post('/cart', authorize, addToCart);
+router.post('/cart', authorize, validateProductId, addToCart);
 router.post('/cart/bulk', authorize, addBulkToCart);
 router.get('/cart', authorize, getCart);
-router.post('/cart/remove', authorize, deleteCartItem);
+router.post('/cart/remove', authorize, validateProductId, deleteCartItem);
 
 module.exports = router;
