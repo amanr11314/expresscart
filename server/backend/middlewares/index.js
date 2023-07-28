@@ -54,7 +54,7 @@ exports.validateProductId = async (req, res, next) => {
 
             if (!!id) {
                 const product = await Product.findOne({
-                    attributes: ['id'], where: { id }
+                    where: { id }
                 })
                 if (product) {
                     req.product = product;
