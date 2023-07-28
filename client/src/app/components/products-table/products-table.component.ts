@@ -1,12 +1,11 @@
-import { Component, Input, OnDestroy, OnInit, } from '@angular/core';
+import { Component, OnDestroy, OnInit, } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/shared/User';
 import { Product } from '../../shared/Product';
 import { Modal, ModalOptions } from 'flowbite';
-import { Subscription, Observable, of, BehaviorSubject } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CartService } from 'src/app/services/cart.service';
 import { CartService as NewCart } from '../../services/swagger-expresscart-client'
 import { DeleteProductRequest, ProductService } from '../../services/swagger-expresscart-client';
 import { HttpResponse } from '@angular/common/http';
@@ -72,6 +71,9 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   // subscriptions
   getProductsSubscription?: Subscription;
   deleteProductSubscription?: Subscription;
+  getCartSubscription?: Subscription;
+  localSelectedItemsCountSubscription?: Subscription;
+  addBulkToCartSubscription?: Subscription;
 
   currentUser?: User
 
@@ -108,7 +110,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   constructor(private backendService: ProductService, private router: Router, public authService: AuthService,
-    private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private cartService: CartService, private newCartService: NewCart
+    private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private newCartService: NewCart
   ) { }
 
   productsResponse$?: Observable<HttpResponse<any>>;
@@ -293,6 +295,17 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
         complete: () => {
           this.deleteModal?.hide();
           this.loadProducts();
+
+          this.getCartSubscription = this.newCartService.getCart().subscribe({
+            next: (data) => {
+              const updatedCartProducts = data.cartProducts as [];
+              this.updatedCart = updatedCartProducts;
+              this.newCartService.changeSelectedCount(updatedCartProducts.length)
+            },
+            error: (err) => {
+              console.log('something went wrong');
+            },
+          })
         },
         error: (err) => {
           console.log(err.message);
@@ -306,12 +319,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     console.log('adding items to cart');
     console.log(this.checkedList);
     let alreadyAddedAll = false;
-    // this.cartService.localSelectedItemsCount$.subscribe(
-    //   data => {
-    //     alreadyAddedAll = data === this.list.length;
-    //   }
-    // )
-    this.newCartService.localSelectedItemsCount$.subscribe({
+    this.localSelectedItemsCountSubscription = this.newCartService.localSelectedItemsCount$.subscribe({
       next: (data) => {
         alreadyAddedAll = data === this.list.length
       }
@@ -330,34 +338,10 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     this.hideCartModal();
     this.isAddingToCart = true;
 
-    // this.cartService.addBulkCart(this.checkedList).subscribe({
-    //   next: (val) => {
-    //     console.log('items were added: ', val);
-    //     const msg = val?.status;
-
-    //     // new cart items (all)
-    //     const updatedCartProducts = val?.updatedCartProducts || [];
-
-    //     // pass this into multi-select dropdown 
-    //     this.updatedCart = updatedCartProducts;
-
-    //     this.cartService.changeSelectedCount(updatedCartProducts.length)
-    //     this.showAlert(msg)
-    //   },
-    //   error: (err) => {
-    //     console.log('something went wrong: ', err);
-    //     this.isAddingToCart = false;
-    //   },
-    //   complete: () => {
-    //     console.log('completed');
-    //     this.resetChecklist();
-    //     this.isAddingToCart = false;
-    //   }
-    // })
     const body: BulkAddToCartRequest = {
       productIds: this.checkedList
     }
-    this.newCartService.addBulkToCart(body, 'response').subscribe({
+    this.addBulkToCartSubscription = this.newCartService.addBulkToCart(body, 'response').subscribe({
       next: (resp) => {
         if (resp.status === 200) {
           const bulkAddResp = resp.body;
@@ -391,7 +375,10 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     const subscriptions = [
       this.getProductsSubscription,
-      this.deleteProductSubscription
+      this.deleteProductSubscription,
+      this.getCartSubscription,
+      this.localSelectedItemsCountSubscription,
+      this.addBulkToCartSubscription
     ]
     subscriptions.forEach((subscription) => {
       if (subscription) {

@@ -1,21 +1,27 @@
-import { Component, Input, Output, EventEmitter, OnInit, Inject, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
 import { CartService as NewCart } from '../../services/swagger-expresscart-client'
 import { CartProductsEntity } from 'src/app/shared/Cart';
 import { Product } from 'src/app/shared/Product';
 import { AddToCartRequest } from 'src/app/services/swagger-expresscart-client/model/addToCartRequest';
+import { Subscription } from 'rxjs';
 
 
 @Component({
   selector: 'app-multi-select-dropdown',
   templateUrl: './multi-select-dropdown.component.html',
   styleUrls: ['./multi-select-dropdown.component.css'],
-  // providers: [CartService]
 })
-export class MultiSelectDropdownComponent implements OnInit, OnChanges {
+export class MultiSelectDropdownComponent implements OnInit, OnChanges, OnDestroy {
+
+  // subscriptions
+  deleteCartItemSubscription?: Subscription;
+  fetchCartCacheSubscription?: Subscription;
+  localSelectedItemsCountAddSubscription?: Subscription;
+  localSelectedItemsCountRemoveSubscription?: Subscription;
 
 
-  constructor(private cartService: CartService, private newCartService: NewCart) { }
+  constructor(private newCartService: NewCart) { }
 
   ngOnInit(): void {
     this.list = [...this.productList];
@@ -30,6 +36,8 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       this.list = changes['productList'].currentValue;
     }
     if (changes['updatedCart'] && changes['updatedCart'].currentValue) {
+      console.log('changes detected in cart');
+
       const _updatedCart = changes['updatedCart'].currentValue?.map(
         (val: any) => val.id
       )
@@ -63,26 +71,6 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       // add to selected list
       this.selectedOptions.push(option.id);
 
-      // add this product to cart
-      // this.cartService.addToCart(option.id).subscribe(
-      //   {
-      //     next(value) {
-      //     },
-      //     error: (err) => {
-      //       // revert optimistic changes on error
-      //       this.selectedOptions = this.selectedOptions.filter(e => e !== option.id)
-      //     },
-      //     complete: () => {
-      //       this.onItemChange.emit(this.selectedOptions.length)
-      //       this.cartService.changeSelectedCount(this.selectedOptions.length)
-      //       this.cartService.localSelectedItemsCount$.subscribe(
-      //         data => {
-      //           console.log('changed in service', data);
-      //         }
-      //       )
-      //     }
-      //   }
-      // )
       const body: AddToCartRequest = {
         productId: option.id
       }
@@ -93,7 +81,7 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
 
             this.onItemChange.emit(this.selectedOptions.length)
             this.newCartService.changeSelectedCount(this.selectedOptions.length)
-            this.newCartService.localSelectedItemsCount$.subscribe(
+            this.localSelectedItemsCountAddSubscription = this.newCartService.localSelectedItemsCount$.subscribe(
               data => {
                 console.log('changed in service', data);
               }
@@ -117,36 +105,17 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       this.list.push(option)
 
       // remove from cart
-      // this.cartService.removeFromCart(option.id).subscribe(
-      //   {
-      //     next(value) {
-      //     },
-      //     error: (err) => {
-      //       //revert in case of error
-      //       this.selectedOptions.push(option.id)
-      //     },
-      //     complete: () => {
-      //       this.onItemChange.emit(this.selectedOptions.length)
-      //       this.cartService.changeSelectedCount(this.selectedOptions.length)
-      //       this.cartService.localSelectedItemsCount$.subscribe(
-      //         data => {
-      //           console.log('changed in service', data);
-      //         }
-      //       )
-      //     }
-      //   }
-      // )
       const body: AddToCartRequest = {
         productId: option.id
       }
-      this.newCartService.deleteCartItem(body, 'response').subscribe({
+      this.deleteCartItemSubscription = this.newCartService.deleteCartItem(body, 'response').subscribe({
         next: (resp) => {
           if (resp.status === 200) {
             console.log(resp.body);
 
             this.onItemChange.emit(this.selectedOptions.length)
             this.newCartService.changeSelectedCount(this.selectedOptions.length)
-            this.newCartService.localSelectedItemsCount$.subscribe(
+            this.localSelectedItemsCountRemoveSubscription = this.newCartService.localSelectedItemsCount$.subscribe(
               data => {
                 console.log('changed in service', data);
               }
@@ -160,20 +129,11 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
         },
       })
     }
-
-    // this.onItemChange.emit(this.selectedOptions.length)
-    // this.cartService.changeSelectedCount(this.selectedOptions.length)
-    // this.cartService.localSelectedItemsCount$.subscribe(
-    //   data => {
-    //     console.log('changed in service', data);
-    //   }
-    // )
-
   }
 
   fetchInitialCart() {
 
-    this.newCartService.fetchCartCache().subscribe({
+    this.fetchCartCacheSubscription = this.newCartService.fetchCartCache().subscribe({
       next: (resp) => {
         const v = resp.cartProducts?.map(
           (val) => val.id
@@ -188,20 +148,6 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
     this.newCartService.changeSelectedCount(this.selectedOptions.length)
     this.customSort(this.list, this.selectedOptions)
 
-    // this.cartService.fetchCartCache().subscribe(
-    //   data => {
-    //     const v = data.cartProducts?.map(
-    //       (val: CartProductsEntity) => val.id
-    //     );
-    //     if (v)
-    //       this.selectedOptions = v;
-
-    //     this.cartService.changeSelectedCount(this.selectedOptions.length)
-    //     // maintain selected products at top
-    //     this.customSort(this.list, this.selectedOptions)
-
-    //   }
-    // )
   }
 
   customSort(list: Product[], selectedOptions: string[]) {
@@ -216,6 +162,20 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
       }
       return 1;
     });
+  }
+
+  ngOnDestroy(): void {
+    const subscriptions = [
+      this.deleteCartItemSubscription,
+      this.fetchCartCacheSubscription,
+      this.localSelectedItemsCountAddSubscription,
+      this.localSelectedItemsCountRemoveSubscription,
+    ]
+    subscriptions.forEach((subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    })
   }
 
 }

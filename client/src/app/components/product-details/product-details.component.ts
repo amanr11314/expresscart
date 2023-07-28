@@ -69,19 +69,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         })
       }
     )
-
-    // this.backendServiceSubscription = this.backendService.getProductDetail(this.id!).subscribe({
-    //   next: (data) => {
-    //     console.log(JSON.stringify(data))
-    //     return this.productDetails = data['product']
-    //   },
-    //   complete: () => {
-    //     this.isLoading = false;
-    //   },
-    //   error: () => {
-    //     this.isLoading = false;
-    //   }
-    // })
   }
 
   ngOnDestroy(): void {
