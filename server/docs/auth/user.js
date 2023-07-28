@@ -36,7 +36,7 @@ module.exports = {
                 }
             },
             '404': {
-                description: "User not found",
+                description: "Product not found",
                 content: {
                     'application/json': {
                         schema: {

@@ -10,6 +10,7 @@ const { validationResult } = require("express-validator");
 
 let refreshTokens = []
 const NOT_FOUND = "NOT_FOUND";
+const INCORRECT_PASSWORD = 'INCORRECT_PASSWORD'
 
 const cors = require("cors");
 // CORS OPTIONS
@@ -69,9 +70,6 @@ router.post("/signin", (req, res, next) => {
             .then((user) => {
                 if (!user)
                     throw NOT_FOUND
-                // return res.status(401).json({
-                //     message: "No user found with this email",
-                // });
                 console.log('not executed if user not found');
                 getUser = user;
                 return bcrypt.compare(req.body.password, user.password);
@@ -79,9 +77,7 @@ router.post("/signin", (req, res, next) => {
             .then((response) => {
                 console.log(response);
                 if (!response) {
-                    return res.status(401).json({
-                        message: "Incorrect password",
-                    });
+                    throw INCORRECT_PASSWORD;
                 }
                 let jwtToken = jwt.sign(
                     {
@@ -117,6 +113,10 @@ router.post("/signin", (req, res, next) => {
                     console.log('Error:', err.message);
                     return res.status(401).json({
                         message: "No user found with this email",
+                    });
+                } else if (err === INCORRECT_PASSWORD) {
+                    return res.status(401).json({
+                        message: "Incorrect password",
                     });
                 } else {
                     return res.status(500).json({
