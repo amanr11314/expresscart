@@ -24,7 +24,7 @@ router.post('/product/edit', authorize,
 router.post('/product/delete', authorize, validateProductId, deleteProduct)
 
 router.post('/cart', authorize, validateProductId, addToCart);
-router.post('/cart/bulk', authorize, addBulkToCart);
+router.post('/cart/bulk', authorize, validateProductId, addBulkToCart);
 router.get('/cart', authorize, getCart);
 router.post('/cart/remove', authorize, validateProductId, deleteCartItem);
 

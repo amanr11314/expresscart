@@ -97,42 +97,52 @@ exports.addBulkToCart = async (req, res) => {
     const productIds = req.body?.productIds || [];
     console.log("productsids = ", productIds);
 
-    let cart = await req?.user?.getCart();
-    let cartProducts = [];
+    try {
 
-    if (!cart) {
-        // creates record in Carts table with userId as req?.user?.userId
-        cart = await req?.user.createCart();
-    } else {
-        cartProducts = await cart?.getProducts();
-    }
+        let cart = await req?.user?.getCart();
+        let cartProducts = [];
 
-    let fetchedCart = cart;
+        if (!cart) {
+            // creates record in Carts table with userId as req?.user?.userId
+            cart = await req?.user.createCart();
+        } else {
+            cartProducts = await cart?.getProducts();
+        }
 
-    // filter productIds whose product does not exist in cartProducts
-    const productsToAdd = productIds.filter((productId) => {
-        // Check if the productId is not present in any of the cartProducts' ids
-        return !cartProducts.some((cartProduct) => cartProduct.id === productId);
-    });
+        let fetchedCart = cart;
 
-    // console.log('remove products= ', fetchedCart.removeProducts);
-
-    if (productsToAdd.length > 0) {
-        const resp = await fetchedCart.addProducts(productsToAdd, {
-            through: { quantity: 1 },
+        // filter productIds whose product does not exist in cartProducts
+        const productsToAdd = productIds.filter((productId) => {
+            // Check if the productId is not present in any of the cartProducts' ids
+            return !cartProducts.some((cartProduct) => cartProduct.id === productId);
         });
 
-        const updatedCartProducts = await cart?.getProducts();
+        // console.log('remove products= ', fetchedCart.removeProducts);
 
-        res.send({
-            status: "Added " + productsToAdd.length + " items to cart",
-            count: productsToAdd.length,
-            updatedCartProducts,
-        });
-    } else {
-        res.send({
-            status: "Items already in cart",
-        });
+        if (productsToAdd.length > 0) {
+            const resp = await fetchedCart.addProducts(productsToAdd, {
+                through: { quantity: 1 },
+            });
+
+            const updatedCartProducts = await cart?.getProducts();
+
+            res.status(200).json({
+                status: "Added " + productsToAdd.length + " items to cart",
+                count: productsToAdd.length,
+                updatedCartProducts,
+            });
+        } else {
+            res.status(200).json({
+                status: "Items already in cart",
+                count: 0,
+                updatedCartProducts: []
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error?.message,
+            internal_code: 500
+        })
     }
 };
 

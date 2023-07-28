@@ -260,6 +260,36 @@ module.exports = {
                         "example": "1Item removed from cart"
                     }
                 }
+            },
+            "BulkAddToCartRequest": {
+                "type": "object",
+                "properties": {
+                    "productIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "BulkAddToCartResponse": {
+                "type": "object",
+                "properties": {
+                    "updatedCartProducts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CartItemResponse"
+                        }
+                    },
+                    "count": {
+                        "type": "number",
+                        "example": 2
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "Added 2 items to cart"
+                    }
+                }
             }
         },
         "securitySchemes": {
