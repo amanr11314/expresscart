@@ -9,13 +9,13 @@ import { FileUploadService } from 'src/app/services/upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
-import { ProductCRUDOperationsService, CreateProductRequest } from '../../services/swagger-expresscart-client';
+import { ProductService, CreateProductRequest } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-create-product',
   templateUrl: './create-product.component.html',
   styleUrls: ['./create-product.component.css'],
-  providers: [ProductCRUDOperationsService]
+  providers: [ProductService]
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
 
@@ -42,7 +42,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  constructor(private backendService: ProductCRUDOperationsService, private router: Router, private uploadService: FileUploadService, private location: Location) { }
+  constructor(private backendService: ProductService, private router: Router, private uploadService: FileUploadService, private location: Location) { }
 
   resetFile() {
     if (this.file) {

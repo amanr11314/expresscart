@@ -70,6 +70,15 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
             // revert optimistic changes on error
             this.selectedOptions = this.selectedOptions.filter(e => e !== option.id)
           },
+          complete: () => {
+            this.onItemChange.emit(this.selectedOptions.length)
+            this.cartService.changeSelectedCount(this.selectedOptions.length)
+            this.cartService.localSelectedItemsCount$.subscribe(
+              data => {
+                console.log('changed in service', data);
+              }
+            )
+          }
         }
       )
       // this.updateOptionStatus(option.id, true); // Update status to 'true'
@@ -92,17 +101,26 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges {
             //revert in case of error
             this.selectedOptions.push(option.id)
           },
+          complete: () => {
+            this.onItemChange.emit(this.selectedOptions.length)
+            this.cartService.changeSelectedCount(this.selectedOptions.length)
+            this.cartService.localSelectedItemsCount$.subscribe(
+              data => {
+                console.log('changed in service', data);
+              }
+            )
+          }
         }
       )
     }
 
-    this.onItemChange.emit(this.selectedOptions.length)
-    this.cartService.changeSelectedCount(this.selectedOptions.length)
-    this.cartService.localSelectedItemsCount$.subscribe(
-      data => {
-        console.log('changed in service', data);
-      }
-    )
+    // this.onItemChange.emit(this.selectedOptions.length)
+    // this.cartService.changeSelectedCount(this.selectedOptions.length)
+    // this.cartService.localSelectedItemsCount$.subscribe(
+    //   data => {
+    //     console.log('changed in service', data);
+    //   }
+    // )
 
   }
 

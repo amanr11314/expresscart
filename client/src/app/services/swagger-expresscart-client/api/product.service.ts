@@ -43,7 +43,7 @@ import { EditProductRequest } from '../model/editProductRequest';
 @Injectable({
     providedIn: 'root'
 })
-export class ProductCRUDOperationsService {
+export class ProductService {
 
     protected basePath = 'http://localhost:3000';
     public defaultHeaders = new HttpHeaders();

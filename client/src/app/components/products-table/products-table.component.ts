@@ -7,14 +7,14 @@ import { Subscription, Observable, of, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CartService } from 'src/app/services/cart.service';
-import { DeleteProductRequest, ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
+import { DeleteProductRequest, ProductService } from '../../services/swagger-expresscart-client';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
   styleUrls: ['./products-table.component.css'],
-  providers: [ProductCRUDOperationsService]
+  providers: [ProductService]
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
 
@@ -105,7 +105,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     } return null;
   }
 
-  constructor(private backendService: ProductCRUDOperationsService, private router: Router, public authService: AuthService,
+  constructor(private backendService: ProductService, private router: Router, public authService: AuthService,
     private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private cartService: CartService
   ) { }
 
@@ -306,7 +306,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     let alreadyAddedAll = false;
     this.cartService.localSelectedItemsCount$.subscribe(
       data => {
-        alreadyAddedAll = data === this.checkedList.length;
+        alreadyAddedAll = data === this.list.length;
       }
     )
     if (alreadyAddedAll) {

@@ -4,14 +4,14 @@ import { Product } from '../../services/swagger-expresscart-client';
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../../services/backend.service';
 import { Subscription } from 'rxjs';
-import { ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
+import { ProductService } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css'],
   // providers: [BackendService]
-  providers: [ProductCRUDOperationsService]
+  providers: [ProductService]
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
 
@@ -40,7 +40,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private route: ActivatedRoute, private backendService: ProductCRUDOperationsService) { }
+  constructor(private route: ActivatedRoute, private backendService: ProductService) { }
 
   ngOnInit(): void {
     this.isLoading = true;

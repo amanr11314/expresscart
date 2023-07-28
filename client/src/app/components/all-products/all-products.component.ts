@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { ProductCRUDOperationsService } from '../../services/swagger-expresscart-client';
+import { ProductService } from '../../services/swagger-expresscart-client';
 
 @Component({
   selector: 'app-all-products',
@@ -10,7 +10,7 @@ import { ProductCRUDOperationsService } from '../../services/swagger-expresscart
 export class AllProductsComponent implements OnInit {
   products$?: Observable<any>;
 
-  constructor(private productCrudService: ProductCRUDOperationsService) {
+  constructor(private productCrudService: ProductService) {
 
   }
 

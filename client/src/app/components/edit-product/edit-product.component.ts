@@ -6,14 +6,14 @@ import { BackendService } from '../../services/backend.service';
 import { noWhitespaceMinLengthValidator } from 'src/app/utils/custom_validators';
 import { Observable, Subscription } from 'rxjs';
 import { FileUploadService } from 'src/app/services/upload.service';
-import { ProductCRUDOperationsService, Product, EditProductRequest } from 'src/app/services/swagger-expresscart-client';
+import { ProductService, Product, EditProductRequest } from 'src/app/services/swagger-expresscart-client';
 
 
 @Component({
   selector: 'app-edit-product',
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css'],
-  providers: [ProductCRUDOperationsService]
+  providers: [ProductService]
 
 })
 export class EditProductComponent implements OnInit, OnDestroy {
@@ -60,7 +60,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
     } return null;
   }
 
-  constructor(private route: ActivatedRoute, private backendService: ProductCRUDOperationsService, private router: Router, private uploadService: FileUploadService) { }
+  constructor(private route: ActivatedRoute, private backendService: ProductService, private router: Router, private uploadService: FileUploadService) { }
 
   resetFile() {
     if (this.file) {
