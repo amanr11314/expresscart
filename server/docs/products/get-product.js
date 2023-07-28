@@ -1,6 +1,6 @@
 module.exports = {
     get: {
-        tags: ['Product CRUD operations'],
+        tags: ['Product'],
         description: "Get a Product details by id",
         operationId: "getProduct",
         parameters: [

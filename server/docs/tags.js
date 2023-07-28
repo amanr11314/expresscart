@@ -1,13 +1,13 @@
 module.exports = {
     tags: [
         {
-            name: 'Product CRUD operations'
+            name: 'Product'
         },
         {
-            name: 'Cart CRUD opeartions'
+            name: 'Cart'
         },
         {
-            name: 'User Authentication'
+            name: 'Auth'
         }
     ]
 }

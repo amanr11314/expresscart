@@ -1,6 +1,6 @@
 module.exports = {
     post: {
-        tags: ['Cart CRUD opeartions'],
+        tags: ['Cart'],
         description: "Add Prouduct to Cart",
         operationId: 'addToCart',
         security: [

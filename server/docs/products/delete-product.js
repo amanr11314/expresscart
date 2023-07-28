@@ -1,6 +1,6 @@
 module.exports = {
     post: {
-        tags: ['Product CRUD operations'],
+        tags: ['Product'],
         description: "Delete a product",
         operationId: 'deleteProduct',
         parameters: [],
