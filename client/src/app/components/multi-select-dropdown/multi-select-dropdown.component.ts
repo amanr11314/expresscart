@@ -61,7 +61,9 @@ export class MultiSelectDropdownComponent implements OnInit, OnChanges, OnDestro
   toggleOption(option: any, idx: number) {
     const index = this.selectedOptions.indexOf(option.id);
 
+
     if (index === -1) {
+      console.log('adding to top',)
       // Removes it from the index
       this.list.splice(idx, 1);
 

@@ -295,6 +295,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
         complete: () => {
           this.deleteModal?.hide();
           this.loadProducts();
+          console.log('fetching again');
 
           this.getCartSubscription = this.newCartService.getCart().subscribe({
             next: (data) => {

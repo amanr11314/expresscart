@@ -8,10 +8,10 @@
           <th scope="col" class="table-col">Price</th>
         </tr>
       </thead>
-      <tbody *ngIf="cart$ | async as cart; else loading">
+      <tbody *ngIf="!isLoading; else loading">
         <tr
           class="bg-white border-b hover:bg-gray-400"
-          *ngFor="let product of cart.cartProducts; let idx = index"
+          *ngFor="let product of cart?.cartProducts; let idx = index"
         >
           <td class="px-6 py-4 font-semibold text-gray-900">
             {{ idx + 1 }}

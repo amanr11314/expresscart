@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onOutletLoaded(component: any) {
     if (component instanceof CartComponent) {
-      // component.sharedCartService = this.newCartService
+      component.sharedCartService = this.newCartService
     }
   }
 }
