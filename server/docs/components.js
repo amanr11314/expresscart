@@ -188,10 +188,15 @@ module.exports = {
                         "type": "string",
                         "example": "90"
                     },
-                    // "Product": {
-                    //     "$ref": "#/components/schemas/Product"
-                    // }
-                }
+                },
+                "required": [
+                    "id",
+                    "quantity",
+                    "createdAt",
+                    "updatedAt",
+                    "CartId",
+                    "ProductId"
+                ]
             },
             "CartItemResponse": {
                 "allOf": [
@@ -246,7 +251,8 @@ module.exports = {
                         "type": "string",
                         "example": "Item added to cart"
                     }
-                }
+                },
+                "required": ["data", "msg"]
             },
             "CartUpdateResponse": {
                 "type": "object",

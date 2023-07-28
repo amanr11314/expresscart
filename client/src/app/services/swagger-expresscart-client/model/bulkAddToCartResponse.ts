@@ -11,9 +11,9 @@
  */
 
 
-export interface BulkAddToCartResponse { 
+export interface BulkAddToCartResponse {
     updatedCartProducts?: any | null;
-    count?: any | null;
+    count?: number | null;
     status?: any | null;
 }
 

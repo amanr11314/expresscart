@@ -7,8 +7,10 @@ import { Subscription, Observable, of, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CartService } from 'src/app/services/cart.service';
+import { CartService as NewCart } from '../../services/swagger-expresscart-client'
 import { DeleteProductRequest, ProductService } from '../../services/swagger-expresscart-client';
 import { HttpResponse } from '@angular/common/http';
+import { BulkAddToCartRequest } from 'src/app/services/swagger-expresscart-client/model/bulkAddToCartRequest';
 
 @Component({
   selector: 'app-products-table',
@@ -106,7 +108,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   constructor(private backendService: ProductService, private router: Router, public authService: AuthService,
-    private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private cartService: CartService
+    private actRoute: ActivatedRoute, private SpinnerServcie: NgxSpinnerService, private cartService: CartService, private newCartService: NewCart
   ) { }
 
   productsResponse$?: Observable<HttpResponse<any>>;
@@ -304,11 +306,16 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     console.log('adding items to cart');
     console.log(this.checkedList);
     let alreadyAddedAll = false;
-    this.cartService.localSelectedItemsCount$.subscribe(
-      data => {
-        alreadyAddedAll = data === this.list.length;
+    // this.cartService.localSelectedItemsCount$.subscribe(
+    //   data => {
+    //     alreadyAddedAll = data === this.list.length;
+    //   }
+    // )
+    this.newCartService.localSelectedItemsCount$.subscribe({
+      next: (data) => {
+        alreadyAddedAll = data === this.list.length
       }
-    )
+    })
     if (alreadyAddedAll) {
       this.resetChecklist();
       this.showAlert('Items Already present in cart')
@@ -322,19 +329,42 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     console.log('adding to cart', this.checkedList);
     this.hideCartModal();
     this.isAddingToCart = true;
-    this.cartService.addBulkCart(this.checkedList).subscribe({
-      next: (val) => {
-        console.log('items were added: ', val);
-        const msg = val?.status;
 
-        // new cart items (all)
-        const updatedCartProducts = val?.updatedCartProducts || [];
+    // this.cartService.addBulkCart(this.checkedList).subscribe({
+    //   next: (val) => {
+    //     console.log('items were added: ', val);
+    //     const msg = val?.status;
 
-        // pass this into multi-select dropdown 
-        this.updatedCart = updatedCartProducts;
+    //     // new cart items (all)
+    //     const updatedCartProducts = val?.updatedCartProducts || [];
 
-        this.cartService.changeSelectedCount(updatedCartProducts.length)
-        this.showAlert(msg)
+    //     // pass this into multi-select dropdown 
+    //     this.updatedCart = updatedCartProducts;
+
+    //     this.cartService.changeSelectedCount(updatedCartProducts.length)
+    //     this.showAlert(msg)
+    //   },
+    //   error: (err) => {
+    //     console.log('something went wrong: ', err);
+    //     this.isAddingToCart = false;
+    //   },
+    //   complete: () => {
+    //     console.log('completed');
+    //     this.resetChecklist();
+    //     this.isAddingToCart = false;
+    //   }
+    // })
+    const body: BulkAddToCartRequest = {
+      productIds: this.checkedList
+    }
+    this.newCartService.addBulkToCart(body, 'response').subscribe({
+      next: (resp) => {
+        if (resp.status === 200) {
+          const bulkAddResp = resp.body;
+          const updatedCartProducts = bulkAddResp?.updatedCartProducts as [];
+          this.updatedCart = updatedCartProducts;
+          this.newCartService.changeSelectedCount(updatedCartProducts.length)
+        }
       },
       error: (err) => {
         console.log('something went wrong: ', err);

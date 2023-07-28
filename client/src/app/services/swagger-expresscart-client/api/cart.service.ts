@@ -11,12 +11,13 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext 
-        }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import {
+    HttpClient, HttpHeaders, HttpParams,
+    HttpResponse, HttpEvent, HttpParameterCodec, HttpContext
+} from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
 // @ts-ignore
 import { AddToCartRequest } from '../model/addToCartRequest';
@@ -34,13 +35,13 @@ import { CartUpdateResponse } from '../model/cartUpdateResponse';
 import { UnauthorizedError } from '../model/unauthorizedError';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
 
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class CartService {
 
@@ -49,7 +50,30 @@ export class CartService {
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string|string[], @Optional() configuration: Configuration) {
+    private sharedCart$?: Observable<CartResponse>;
+
+    private localSelectedItemsCount = new BehaviorSubject(0);
+    localSelectedItemsCount$ = this.localSelectedItemsCount.asObservable();
+
+    changeSelectedCount(count: number) {
+        this.localSelectedItemsCount.next(count);
+    }
+
+    fetchCartCache(): Observable<CartResponse> {
+        // API optimization: Check if the shared data is already available
+        if (!this.sharedCart$) {
+            this.sharedCart$ = this.getCart()
+                .pipe(
+                    // shareReplay with a buffer size of 1 to replay the last emitted value to new subscribers
+                    shareReplay(1)
+                )
+        }
+        return this.sharedCart$;
+    }
+
+
+
+    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string | string[], @Optional() configuration: Configuration) {
         if (configuration) {
             this.configuration = configuration;
         }
@@ -84,15 +108,15 @@ export class CartService {
 
         if (typeof value === "object") {
             if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
+                (value as any[]).forEach(elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
             } else if (value instanceof Date) {
                 if (key != null) {
                     httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
                 } else {
-                   throw Error("key may not be null if value is Date");
+                    throw Error("key may not be null if value is Date");
                 }
             } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
+                Object.keys(value).forEach(k => httpParams = this.addToHttpParamsRecursive(
                     httpParams, value[k], key != null ? `${key}.${k}` : k));
             }
         } else if (key != null) {
@@ -109,10 +133,10 @@ export class CartService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<BulkAddToCartResponse>;
-    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<BulkAddToCartResponse>>;
-    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<BulkAddToCartResponse>>;
-    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<BulkAddToCartResponse>;
+    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<BulkAddToCartResponse>>;
+    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<BulkAddToCartResponse>>;
+    public addBulkToCart(bulkAddToCartRequest?: BulkAddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -181,10 +205,10 @@ export class CartService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<AddToCartResponse>;
-    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<AddToCartResponse>>;
-    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<AddToCartResponse>>;
-    public addToCart(addToCartRequest?: AddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<AddToCartResponse>;
+    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<AddToCartResponse>>;
+    public addToCart(addToCartRequest?: AddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<AddToCartResponse>>;
+    public addToCart(addToCartRequest?: AddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -253,10 +277,10 @@ export class CartService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CartUpdateResponse>;
-    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CartUpdateResponse>>;
-    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CartUpdateResponse>>;
-    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<CartUpdateResponse>;
+    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<CartUpdateResponse>>;
+    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<CartUpdateResponse>>;
+    public deleteCartItem(addToCartRequest?: AddToCartRequest, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -324,10 +348,10 @@ export class CartService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCart(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CartResponse>;
-    public getCart(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CartResponse>>;
-    public getCart(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CartResponse>>;
-    public getCart(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getCart(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<CartResponse>;
+    public getCart(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpResponse<CartResponse>>;
+    public getCart(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<HttpEvent<CartResponse>>;
+    public getCart(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json', context?: HttpContext }): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 

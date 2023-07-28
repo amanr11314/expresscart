@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { CartService } from './services/cart.service';
+import { CartService as NewCart } from './services/swagger-expresscart-client'
 import { CartComponent } from './components/cart/cart.component';
 import { Observable, Subscription, tap } from 'rxjs';
 import { EventBusService } from './shared/event-bus.service';
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loginSub?: Subscription;
 
 
-  constructor(public cartService: CartService, private eventBusService: EventBusService, private authService: AuthService) { }
+  constructor(public cartService: CartService, private eventBusService: EventBusService, private authService: AuthService, private newCartService: NewCart) { }
 
   ngOnInit(): void {
     initFlowbite();
@@ -29,18 +30,38 @@ export class AppComponent implements OnInit, OnDestroy {
       next: (value) => {
         if (value) {
 
-          this.cartService.fetchCartCache().subscribe(
-            data => {
-              const count = data.cartProducts?.length
-              this.cartService.changeSelectedCount(count!)
-            }
-          )
+          this.newCartService.getCart('response').subscribe({
+            next: (resp) => {
+              console.log('inside new cart');
+              if (resp.status === 200) {
+                const cartResponse = resp.body;
+                this.newCartService.changeSelectedCount(cartResponse?.cartProducts?.length || 0);
+              }
 
-          this.cartService.localSelectedItemsCount$.subscribe(
-            data => {
-              this.cartItemCount = data
+            },
+            error: (err) => {
+              console.log(err);
             }
-          )
+          })
+
+          this.newCartService.localSelectedItemsCount$.subscribe({
+            next: (val) => {
+              this.cartItemCount = val;
+            }
+          })
+
+          // this.cartService.fetchCartCache().subscribe(
+          //   data => {
+          //     const count = data.cartProducts?.length
+          //     this.cartService.changeSelectedCount(count!)
+          //   }
+          // )
+
+          // this.cartService.localSelectedItemsCount$.subscribe(
+          //   data => {
+          //     this.cartItemCount = data
+          //   }
+          // )
         }
       },
     })

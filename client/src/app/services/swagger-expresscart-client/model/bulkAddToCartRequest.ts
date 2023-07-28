@@ -11,7 +11,7 @@
  */
 
 
-export interface BulkAddToCartRequest { 
-    productIds?: any | null;
+export interface BulkAddToCartRequest {
+    productIds?: string[] | null;
 }
 

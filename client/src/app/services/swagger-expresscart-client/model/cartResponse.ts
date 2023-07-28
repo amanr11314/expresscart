@@ -10,9 +10,11 @@
  * Do not edit the class manually.
  */
 
+import { CartProductsEntity } from "src/app/shared/Cart";
 
-export interface CartResponse { 
-    cartProducts?: any | null;
-    totalAmount?: any | null;
+
+export interface CartResponse {
+    cartProducts?: CartProductsEntity[] | null;
+    totalAmount?: number | null;
 }
 
