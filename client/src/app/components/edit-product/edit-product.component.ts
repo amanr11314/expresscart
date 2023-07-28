@@ -46,6 +46,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
   get productImgUrl() {
     // if fileUploadURL is set then populate that image
     if (this.fileUploadURL) {
+      console.log('found fileuplodurl');
+
       return this.fileUploadURL
     }
 
@@ -55,9 +57,12 @@ export class EditProductComponent implements OnInit, OnDestroy {
       }
       // check if already url
       if (this.productDetails?.imgUrl?.startsWith('https://')) return this.productDetails.imgUrl;
+      const url = 'http://localhost:3000/' + this.productDetails?.imgUrl;
+      console.log('url  = ', url);
 
-      return 'http://localhost:3000/' + this.productDetails?.imgUrl
-    } return null;
+      return url;
+    }
+    return null;
   }
 
   constructor(private route: ActivatedRoute, private backendService: ProductService, private router: Router, private uploadService: FileUploadService) { }
@@ -66,6 +71,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
     if (this.file) {
       this.file = ''
       this.fileInputRef!.nativeElement.value = null;
+      this.fileUploadURL = null;
     }
   }
 
@@ -89,7 +95,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
     this.subRoute = this.route.params.subscribe(
       params => {
         this.id = +params['id'];
-        console.log('setting id to: ', this.id);
 
 
         // disable form interaction while product is loaded
@@ -98,11 +103,9 @@ export class EditProductComponent implements OnInit, OnDestroy {
 
         this.getProductSubscription = this.backendService.getProduct(this.id, 'response').subscribe({
           next: (resp) => {
-            console.log(resp);
 
             if (resp.status === 200) {
               this.productDetails = resp.body?.product;
-              console.log('details = ', this.productDetails);
               // set default valuse in form
               this.formEditProduct.patchValue({
                 title: this.productDetails?.title,
@@ -117,7 +120,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
             this.formEditProduct.enable();
           },
           error: (err) => {
-            console.log('inside err ', err);
             if (err.status === 404) {
               this.notFound = true;
             }
@@ -172,7 +174,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
   }
 
   updateProduct() {
-    console.log('Called update product')
     const { title, description, price } = this.formEditProduct.value;
 
     const editProductRequest: EditProductRequest = {
@@ -183,20 +184,16 @@ export class EditProductComponent implements OnInit, OnDestroy {
       file: this.file
     }
 
-    console.log('sending values: ', editProductRequest);
 
 
-    // console.log(updateProductValue)
     this.isUpdatingProduct = true;
     this.editProductSubscription = this.backendService.editProduct(editProductRequest, 'response').subscribe({
       next: (resp) => {
-        console.log(resp);
         if (resp.status === 204) {
           console.log('product updated successfully');
         }
       },
       complete: () => {
-        console.log('called complete after creating product');
         this.isUpdatingProduct = false;
         this.router.navigate(['/'], {
           skipLocationChange: true
@@ -215,10 +212,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
 
   onSubmit(form: FormGroup) {
     if (form.valid) {
-      console.log('Valid form updating product')
       this.updateProduct();
     } else {
-      console.log('Invalid form');
       form.markAllAsTouched();
       form.markAsDirty();
     }

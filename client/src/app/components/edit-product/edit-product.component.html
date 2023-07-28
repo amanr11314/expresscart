@@ -65,14 +65,14 @@
         </div>
       </div>
       <div>
-        <div *ngIf="!!file" class="flex w-full">
+        <div class="flex w-full">
           <img
             *ngIf="productImgUrl"
             class="w-100 h-100 img-show-wrapper"
             src="{{ productImgUrl }}"
             alt="product image"
           />
-          <div (click)="resetFile()">
+          <div *ngIf="!!file" (click)="resetFile()">
             <svg
               class="icon-search-reset-container"
               aria-hidden="true"
